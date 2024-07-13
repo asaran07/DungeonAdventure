@@ -1,0 +1,30 @@
+import pytest
+from src.Room import Room
+
+
+@pytest.fixture
+def new_room():
+    return Room()
+
+
+def test_room(new_room):
+    assert isinstance(new_room, Room)
+
+
+@pytest.mark.skip(reason="Not implemented yet")
+def test_unmade_room_feature():
+    pass
+
+
+def test_invalid_item():
+    with pytest.raises(TypeError):  # This is like if the class raises a certain exception
+        Room().add_item("Not an item")
+
+
+def test_room_items(new_room):
+    assert len(new_room.items) == 0, "Room should start with no items"
+
+
+@pytest.mark.xfail
+def test_known_bug():
+    assert 1 == 2  # This will fail but the whole test run won't fail
