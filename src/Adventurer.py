@@ -11,6 +11,7 @@ class Adventurer:
         self.total_vision_potions = total_vision_potions
         self.pillars_found: List[Pillar] = [] #list of pillar pieces found(4 total/possible)
 
+
     """
     Delete this guide later upon finishing the Adventurer class:
     
@@ -32,3 +33,8 @@ class Adventurer:
             Adventurers (healing) potion total, as well as changing the
             ROOM's potion total*.
     """
+
+    def to_string(self, name, hit_points, total_healing_potions,
+                 total_vision_potions, pillars_found: List[Pillar]) -> str:
+        string = (name + hit_points + total_healing_potions +
+                  total_vision_potions + pillars_found)
