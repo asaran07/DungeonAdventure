@@ -13,4 +13,3 @@ class Room:
     def add_item(self, item: Item) -> None:
         """Adds an item to the room."""
         self.items.append(item)
-
