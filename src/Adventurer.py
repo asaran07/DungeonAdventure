@@ -35,6 +35,19 @@ class Adventurer:
             Adventurers (healing) potion total, as well as changing the
             ROOM's potion total*.
     """
+    def  use_health_potion(self) -> None:
+        """Uses health potion on Adventurer to increase health"""
+        self._hit_points += 15 #currently 15, can change later? check w/ team
+        self._total_healing_potions -= 1
+    def use_vision_potion(self) -> None:
+        # Check w/ team regarding how this is going to work
+        """Should allow adventurer to see more?"""
+        pass
+
+    def move(self):
+        """To be implemented"""
+        #Check w/ team regarding how this is going to work
+        pass
 
     def to_string(self) -> str:
         """PILLAR NOT INCLUDED YET SINCE NOT IMPLEMENTED YET, just testing
