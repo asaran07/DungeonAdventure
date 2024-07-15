@@ -1,18 +1,17 @@
-# from src.Pillar import Pillar #in order to make a list of pillars
+from src.Pillar import Pillar #in order to make a list of pillars
 from typing import List  # allows use of list?
 
 
 class Adventurer:
 
     def __init__(self, name, hit_points, total_healing_potions,
-                 total_vision_potions) -> None:
-        # pillars_found: List[Pillar] --> add as last parameter later
+                 total_vision_potions, pillars_found: List[Pillar]) -> None:
         """Constructor for Adventurer Class"""
         self._name = name
         self._hit_points = hit_points  # 75-100; ***should be randomly generated between 75 & 100***
         self._total_healing_potions = total_healing_potions
         self._total_vision_potions = total_vision_potions
-        # self.pillars_found: List[Pillar] = [] #list of pillar pieces found(4 total/possible)
+        self._pillars_found: List[Pillar] = pillars_found #list of pillar pieces found(4 total/possible)
 
     """
     Delete this guide later upon finishing the Adventurer class:
@@ -52,10 +51,17 @@ class Adventurer:
     def to_string(self) -> str:
         """PILLAR NOT INCLUDED YET SINCE NOT IMPLEMENTED YET, just testing
          if it is working for the other fields"""
+        pillar_string = self._pillars_found  # default to display the list
+        #If no pillars have been found, maybe display message?
+        no_pillars = "No pillars have been found yet!"
+        if len(self._pillars_found) == 0:
+            #if list of pillars Adventurer has is empty, display no_pillars message
+            pillar_string = no_pillars
 
         string = ("Name: " + self._name + "\n" +
                   "Hit Points: " + str(self._hit_points) + "\n" +
                   "Healing Potions: " + str(self._total_healing_potions) + "\n" +
-                  "Vision Potions: " + str(self._total_vision_potions))
+                  "Vision Potions: " + str(self._total_vision_potions) + "\n" +
+                  "Pillars Found: " + pillar_string)
 
         return string
