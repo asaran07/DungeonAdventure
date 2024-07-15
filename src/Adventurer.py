@@ -1,15 +1,16 @@
-from src.Pillar import Pillar #in order to make a list of pillars
+#from src.Pillar import Pillar #in order to make a list of pillars
 from typing import List #allows use of list?
 class Adventurer:
 
     def __init__(self, name, hit_points, total_healing_potions,
-                 total_vision_potions, pillars_found: List[Pillar]) -> None:
+                 total_vision_potions) -> None:
+        #pillars_found: List[Pillar] --> add as last parameter later
         """Constructor for Adventurer Class"""
-        self.name = name
-        self.hit_points = hit_points #75-100; ***should be randomly generated between 75 & 100***
-        self.total_healing_potions = total_healing_potions
-        self.total_vision_potions = total_vision_potions
-        self.pillars_found: List[Pillar] = [] #list of pillar pieces found(4 total/possible)
+        self._name = name
+        self._hit_points = hit_points #75-100; ***should be randomly generated between 75 & 100***
+        self._total_healing_potions = total_healing_potions
+        self._total_vision_potions = total_vision_potions
+        #self.pillars_found: List[Pillar] = [] #list of pillar pieces found(4 total/possible)
 
 
     """
@@ -34,7 +35,15 @@ class Adventurer:
             ROOM's potion total*.
     """
 
-    def to_string(self, name, hit_points, total_healing_potions,
-                 total_vision_potions, pillars_found: List[Pillar]) -> str:
-        string = (name + hit_points + total_healing_potions +
-                  total_vision_potions + pillars_found)
+    def to_string(self) -> str:
+
+        """PILLAR NOT INCLUDED YET SINCE NOT IMPLEMENTED YET, just testing
+         if it is working for the other fields"""
+
+        #to do: format the string so it displays nicely (also change test method
+        #to account for it)
+
+        string = (self._name + str(self._hit_points) + str(self._total_healing_potions) +
+                  str(self._total_vision_potions))
+        return string
+
