@@ -5,7 +5,7 @@ from src.items.item import Item
 
 
 class Room:
-    def __init__(self, room_type) -> None:
+    def __init__(self, room_type: RoomType) -> None:
         self.room_type = room_type
         self.items: List[Item] = []
         self.has_pit = False

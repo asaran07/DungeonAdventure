@@ -1,11 +1,12 @@
 import pytest
 
 from src.dungeon.room import Room
+from src.enums.room_types import RoomType
 
 
 @pytest.fixture
 def new_room():
-    return Room()
+    return Room(RoomType.NORMAL)
 
 
 def test_room(new_room):
@@ -18,7 +19,9 @@ def test_unmade_room_feature():
 
 
 def test_invalid_item():
-    with pytest.raises(TypeError):  # This is like if the class raises a certain exception
+    with pytest.raises(
+        TypeError
+    ):  # This is like if the class raises a certain exception
         Room().add_item("Not an item")
 
 

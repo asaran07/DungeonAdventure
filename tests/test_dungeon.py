@@ -1,6 +1,6 @@
 import pytest
-
 from src.dungeon.dungeon import Dungeon
+from src.dungeon.room import Room
 from src.items.item import Item
 
 

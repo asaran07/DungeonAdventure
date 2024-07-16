@@ -1,7 +1,8 @@
 from typing import List, Optional
 
-from src.Item import Item
-from src.Room import Room
+from src.dungeon.room import Room
+from src.enums.room_types import RoomType
+from src.items.item import Item
 
 
 class Dungeon:
@@ -17,7 +18,10 @@ class Dungeon:
         self.dungeon: List[List[Room]] = self._generate_dungeon()
 
     def _generate_dungeon(self) -> List[List[Room]]:
-        return [[Room() for _ in range(self.width)] for _ in range(self.height)]
+        return [
+            [Room(RoomType.NORMAL) for _ in range(self.width)]
+            for _ in range(self.height)
+        ]
 
     def get_room(self, x: int, y: int) -> Optional[Room]:
         if 0 <= x < self.width and 0 <= y < self.height:
@@ -45,5 +49,5 @@ class Dungeon:
             room.add_item(item)
 
     def get_size(self) -> tuple[int, int]:
-        """Returns a tuple of the dungeon's size. Eg. (height, width)"""
-        return (self.height, self.width)
+        """Returns a tuple of the dungeon's size. E.g. (height, width)"""
+        return self.height, self.width
