@@ -10,7 +10,7 @@ def default_dungeon():
 
 
 @pytest.fixture
-def another_dungeon():
+def custom_dungeon():
     return Dungeon(10, 15)
 
 
@@ -24,6 +24,13 @@ def test_dungeon_default_size(default_dungeon: Dungeon):
         5,
         5,
     )  # The default is 5 for both width and height.
+
+
+def test_dungeon_custom_size(custom_dungeon: Dungeon):
+    assert custom_dungeon.get_size() == (
+        10,
+        15,
+    )  # Check if returned size is the same as the one we put in (10, 15)
 
 
 def test_get_room(default_dungeon: Dungeon):

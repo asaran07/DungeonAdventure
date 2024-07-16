@@ -50,4 +50,4 @@ class Dungeon:
 
     def get_size(self) -> tuple[int, int]:
         """Returns a tuple of the dungeon's size. E.g. (height, width)"""
-        return self.height, self.width
+        return self.width, self.height

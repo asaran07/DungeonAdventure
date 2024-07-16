@@ -8,9 +8,6 @@ class Room:
     def __init__(self, room_type: RoomType) -> None:
         self.room_type = room_type
         self.items: List[Item] = []
-        self.has_pit = False
-        self.is_entrance = False
-        self.is_exit = False
 
     def add_item(self, item: Item) -> None:
         """Adds an item to the room."""

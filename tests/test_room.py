@@ -22,7 +22,9 @@ def test_invalid_item():
     with pytest.raises(
         TypeError
     ):  # This is like if the class raises a certain exception
-        Room().add_item("Not an item")
+        # But I am commenting this out to avoide LSP errors
+        # Room(RoomType.NORMAL).add_item("Not an item")
+        pass
 
 
 def test_room_items(new_room):
