@@ -1,6 +1,7 @@
 import pytest
-from Item import Item
-from src.Dungeon import Dungeon
+
+from src.dungeon.dungeon import Dungeon
+from src.items.item import Item
 
 
 @pytest.fixture
@@ -22,4 +23,8 @@ def test_dungeon_default_size(default_dungeon: Dungeon):
     assert default_dungeon.get_size() == (
         5,
         5,
-    )  # The deafult is 5 for both width and height.
+    )  # The default is 5 for both width and height.
+
+
+def test_get_room(default_dungeon: Dungeon):
+    assert isinstance(default_dungeon.get_room(1, 1), Room)

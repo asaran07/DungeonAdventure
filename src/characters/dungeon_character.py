@@ -1,5 +1,6 @@
 import random
 
+
 class DungeonCharacter:
 
     def __init__(self, name, hp, minDamage, maxDamage, attackSpeed, chanceToHit):
@@ -17,9 +18,9 @@ class DungeonCharacter:
             pass
             opponent.lose_health(self.random.randint(self.minDamage, self.maxDamage))  #if the hit connected
         elif self.hp > 0 and dice_roll_to_hit >= self.chanceToHit:
-            pass #if the hit missed
+            pass  #if the hit missed
         else:
-            pass #if this attacking character is at 0 or less hp
+            pass  #if this attacking character is at 0 or less hp
 
     def lose_health(self, amount):
         if amount > self.hp:

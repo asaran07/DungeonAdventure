@@ -1,5 +1,6 @@
 import pytest
-from src.Room import Room
+
+from src.dungeon.room import Room
 
 
 @pytest.fixture

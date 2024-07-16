@@ -1,5 +1,6 @@
-from src.Pillar import Pillar #in order to make a list of pillars
-from typing import List  # allows use of list?
+from typing import List
+
+from src.items.pillar import Pillar
 
 
 class Adventurer:
@@ -11,7 +12,7 @@ class Adventurer:
         self._hit_points = hit_points  # 75-100; ***should be randomly generated between 75 & 100***
         self._total_healing_potions = total_healing_potions
         self._total_vision_potions = total_vision_potions
-        self._pillars_found: List[Pillar] = pillars_found #list of pillar pieces found(4 total/possible)
+        self._pillars_found: List[Pillar] = pillars_found  # list of pillar pieces found(4 total/possible)
 
     """
     Delete this guide later upon finishing the Adventurer class:
@@ -34,10 +35,12 @@ class Adventurer:
             Adventurers (healing) potion total, as well as changing the
             ROOM's potion total*.
     """
-    def  use_health_potion(self) -> None:
+
+    def use_health_potion(self) -> None:
         """Uses health potion on Adventurer to increase health"""
-        self._hit_points += 15 #currently 15, can change later? check w/ team
+        self._hit_points += 15  # currently 15, can change later? check w/ team
         self._total_healing_potions -= 1
+
     def use_vision_potion(self) -> None:
         # Check w/ team regarding how this is going to work
         """Should allow adventurer to see more?"""
@@ -45,17 +48,17 @@ class Adventurer:
 
     def move(self):
         """To be implemented"""
-        #Check w/ team regarding how this is going to work
+        # Check w/ team regarding how this is going to work
         pass
 
     def to_string(self) -> str:
         """PILLAR NOT INCLUDED YET SINCE NOT IMPLEMENTED YET, just testing
          if it is working for the other fields"""
         pillar_string = self._pillars_found  # default to display the list
-        #If no pillars have been found, maybe display message?
+        # If no pillars have been found, maybe display message?
         no_pillars = "No pillars have been found yet!"
         if len(self._pillars_found) == 0:
-            #if list of pillars Adventurer has is empty, display no_pillars message
+            # if list of pillars Adventurer has is empty, display no_pillars message
             pillar_string = no_pillars
 
         string = ("Name: " + self._name + "\n" +
