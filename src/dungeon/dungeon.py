@@ -28,21 +28,6 @@ class Dungeon:
             return self.dungeon[y][x]
         return None
 
-    def set_entrance(self, x: int, y: int) -> None:
-        room = self.get_room(x, y)
-        if room:
-            room.is_entrance = True
-
-    def set_exit(self, x: int, y: int) -> None:
-        room = self.get_room(x, y)
-        if room:
-            room.is_exit = True
-
-    def add_pit(self, x: int, y: int) -> None:
-        room = self.get_room(x, y)
-        if room:
-            room.has_pit = True
-
     def add_item_to_room(self, x: int, y: int, item: Item) -> None:
         room = self.get_room(x, y)
         if room:
