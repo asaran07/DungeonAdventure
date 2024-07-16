@@ -5,7 +5,13 @@ from src.Room import Room
 
 
 class Dungeon:
-    def __init__(self, width: int, height: int):
+    def __init__(self, width=5, height=5):
+        """
+        Creates an empty dungeon with a 2D list of rooms.
+
+        :param width: The width of the dungeon. Default is 5.
+        :param height: The height of the dungeon. Default is 5.
+        """
         self.height = height
         self.width = width
         self.dungeon: List[List[Room]] = self._generate_dungeon()
@@ -37,3 +43,7 @@ class Dungeon:
         room = self.get_room(x, y)
         if room:
             room.add_item(item)
+
+    def get_size(self) -> tuple[int, int]:
+        """Returns a tuple of the dungeon's size. Eg. (height, width)"""
+        return (self.height, self.width)
