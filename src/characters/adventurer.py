@@ -38,7 +38,6 @@ class Adventurer:
 
     #The contents of this method may be better suited to be in the healing_potion class
     #Perhaps an implementation of this method would be to make a call to that class?
-    #
     def use_health_potion(self) -> None:
         """Uses health potion on Adventurer to increase health"""
         self._hit_points += 15  # agreed upon by team that 15 is good
@@ -57,11 +56,9 @@ class Adventurer:
         if len(self._pillars_found) == 0:
             # if list of pillars Adventurer has is empty, display no_pillars message
             pillar_string = no_pillars
-
         string = ("Name: " + self._name + "\n" +
                   "Hit Points: " + str(self._hit_points) + "\n" +
                   "Healing Potions: " + str(self._total_healing_potions) + "\n" +
                   "Vision Potions: " + str(self._total_vision_potions) + "\n" +
                   "Pillars Found: " + pillar_string)
-
         return string

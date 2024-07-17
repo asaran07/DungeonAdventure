@@ -21,7 +21,7 @@ def test_to_string():
     assert actual_string == expected_string
 
 def test_use_health_potion():
-    """Test method for use_health_potion. Requires to_string to work in order to test."""
+    """Test method for use_health_potion. Requires to_string() to work in order to test."""
     expected_string = ("Name: John\n"
                        "Hit Points: 65\n"
                        "Healing Potions: 0\n"
