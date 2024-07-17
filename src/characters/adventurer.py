@@ -38,19 +38,15 @@ class Adventurer:
 
     #The contents of this method may be better suited to be in the healing_potion class
     #Perhaps an implementation of this method would be to make a call to that class?
+    #
     def use_health_potion(self) -> None:
         """Uses health potion on Adventurer to increase health"""
         self._hit_points += 15  # agreed upon by team that 15 is good
         self._total_healing_potions -= 1
 
-    def use_vision_potion(self) -> None:
-        # Check w/ team regarding how this is going to work
-        """Should allow adventurer to see more?"""
-        pass
-
     def move(self):
         """To be implemented"""
-        # Check w/ team regarding how this is going to work
+        # Check w/ team regarding how this is going to work --> team verdict: will come back to later
         pass
 
     def to_string(self) -> str:
