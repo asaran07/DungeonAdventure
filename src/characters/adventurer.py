@@ -1,6 +1,8 @@
 from typing import List
 
 from src.items.pillar import Pillar
+from src.dungeon import Room
+from src.items import item
 
 
 class Adventurer:
@@ -48,6 +50,34 @@ class Adventurer:
         # Check w/ team regarding how this is going to work --> team verdict: will come back to later
         pass
 
+    def get_items_description(self):
+        #So adventurer can view descriptions of items in room
+        """
+            Things to consider:
+
+
+
+        """
+
+
+    def adventurer_pick_up_item(self):
+        #if there is a item in the room, adventurer is able to pick the item up
+
+    """
+    Things to consider:
+    - How many items can be in a room?
+
+
+    """
+
+    def adventurer_drop_item(self, item, adventurer):
+        #player to be able to drop item in the room if they don't want it anymore
+        """
+            Things to consider:
+
+
+
+        """
     def to_string(self) -> str:
         """Turns the attributes of the Adventurer class into a readable format."""
         pillar_string = self._pillars_found  # default to display the list
@@ -62,3 +92,4 @@ class Adventurer:
                   "Vision Potions: " + str(self._total_vision_potions) + "\n" +
                   "Pillars Found: " + pillar_string)
         return string
+
