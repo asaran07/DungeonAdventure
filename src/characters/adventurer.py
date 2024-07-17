@@ -5,8 +5,8 @@ from src.items.pillar import Pillar
 
 class Adventurer:
 
-    def __init__(self, name, hit_points, total_healing_potions,
-                 total_vision_potions, pillars_found: List[Pillar]) -> None:
+    def __init__(self, name: str, hit_points: int, total_healing_potions: int,
+                 total_vision_potions: int, pillars_found: List[Pillar]) -> None:
         """Constructor for Adventurer Class"""
         self._name = name
         self._hit_points = hit_points  # 75-100; ***should be randomly generated between 75 & 100***
@@ -36,9 +36,11 @@ class Adventurer:
             ROOM's potion total*.
     """
 
+    #The contents of this method may be better suited to be in the healing_potion class
+    #Perhaps an implementation of this method would be to make a call to that class?
     def use_health_potion(self) -> None:
         """Uses health potion on Adventurer to increase health"""
-        self._hit_points += 15  # currently 15, can change later? check w/ team
+        self._hit_points += 15  # agreed upon by team that 15 is good
         self._total_healing_potions -= 1
 
     def use_vision_potion(self) -> None:
@@ -52,8 +54,7 @@ class Adventurer:
         pass
 
     def to_string(self) -> str:
-        """PILLAR NOT INCLUDED YET SINCE NOT IMPLEMENTED YET, just testing
-         if it is working for the other fields"""
+        """Turns the attributes of the Adventurer class into a readable format."""
         pillar_string = self._pillars_found  # default to display the list
         # If no pillars have been found, maybe display message?
         no_pillars = "No pillars have been found yet!"
