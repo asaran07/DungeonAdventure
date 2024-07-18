@@ -1,38 +1,18 @@
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from src.dungeon.room import Room
-from src.enums.room_types import RoomType
+from src.enums.room_types import Direction, RoomType
 from src.items.item import Item
 
 
 class Dungeon:
-    def __init__(self, width=5, height=5):
-        """
-        Creates an empty dungeon with a 2D list of rooms.
+    def __init__(self):
+        self.rooms: Dict[str, Room] = {}
 
-        :param width: The width of the dungeon. Default is 5.
-        :param height: The height of the dungeon. Default is 5.
-        """
-        self.height = height
-        self.width = width
-        self.dungeon: List[List[Room]] = self._generate_dungeon()
+    def add_room(self, name: str) -> Room:
+        room = Room(name)
+        self.rooms[name] = room
+        return room
 
-    def _generate_dungeon(self) -> List[List[Room]]:
-        return [
-            [Room(RoomType.NORMAL) for _ in range(self.width)]
-            for _ in range(self.height)
-        ]
-
-    def get_room(self, x: int, y: int) -> Optional[Room]:
-        if 0 <= x < self.width and 0 <= y < self.height:
-            return self.dungeon[y][x]
-        return None
-
-    def add_item_to_room(self, x: int, y: int, item: Item) -> None:
-        room = self.get_room(x, y)
-        if room:
-            room.add_item(item)
-
-    def get_size(self) -> tuple[int, int]:
-        """Returns a tuple of the dungeon's size. E.g. (height, width)"""
-        return self.width, self.height
+    def connect_rooms(self, room1: Room, direction: Direction, room2: Room) -> bool:
+        return room1.connect(direction, room2)
