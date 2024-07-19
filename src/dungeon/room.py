@@ -23,6 +23,13 @@ class Room:
             return True
         return False
 
+    def get_open_gates(self):
+        return [
+            (direction, room)
+            for direction, room in self.connections.items()
+            if room is not None
+        ]
+
     def add_item(self, item: Item) -> None:
         """Adds an item to the room."""
         self.items.append(item)
