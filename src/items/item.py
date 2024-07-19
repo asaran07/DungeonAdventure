@@ -1,6 +1,9 @@
-class Item:
-    def __init__(self, name: str) -> None:
-        self.name: str = name
+from dataclasses import dataclass
 
-    def get_name(self) -> str:
-        return self.name
+
+@dataclass
+class Item:
+    name: str
+    item_type: ItemType
+    description: str
+    weight: float = 1.0

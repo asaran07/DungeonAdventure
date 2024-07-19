@@ -1,6 +1,13 @@
 from enum import Enum, auto
 
 
+class ItemType(Enum):
+    WEAPON = "Weapon"
+    POTION = "Potion"
+    KEY = "Key"
+    TREASURE = "Treasure"
+
+
 class PotionType(Enum):
     HEALING = auto()
     VISION = auto()
