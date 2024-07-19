@@ -2,10 +2,10 @@ from enum import Enum, auto
 
 
 class ItemType(Enum):
-    WEAPON = "Weapon"
-    POTION = "Potion"
-    KEY = "Key"
-    TREASURE = "Treasure"
+    WEAPON = auto()
+    POTION = auto()
+    KEY = auto()
+    TREASURE = auto()
 
 
 class PotionType(Enum):
@@ -18,3 +18,9 @@ class PillarType(Enum):
     ENCAPSULATION = auto()
     INHERITANCE = auto()
     POLYMORPHISM = auto()
+
+
+class WeaponType(Enum):
+    SWORD = auto()
+    AXE = auto()
+    BOW = auto()

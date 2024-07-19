@@ -3,6 +3,7 @@ from typing import List
 from src.items.pillar import Pillar
 from src.items.item import Item
 
+
 class Adventurer:
 
     def __init__(self, name: str, hit_points: int, total_healing_potions: int,
@@ -45,7 +46,7 @@ class Adventurer:
             description = healing_potion
         elif item_name == "vision_potion":
             description = vision_potion
-        else: #pillar is left. If more items are added, add above this?
+        else:  #pillar is left. If more items are added, add above this?
             #Able to be rewritten to be more specific to each pillar of OO if wanted
             description = pillar
         return description
@@ -71,8 +72,8 @@ class Adventurer:
     def inventory_to_string(self):
         """Returns the adventurer's inventory in a readable string format."""
         inventory = ("Healing Potions: " + str(self._total_healing_potions) + "\n" +
-                    "Vision Potions: " + str(self._total_vision_potions) + "\n" +
-                    "Pillars Found: " + self._pillars_to_string())
+                     "Vision Potions: " + str(self._total_vision_potions) + "\n" +
+                     "Pillars Found: " + self._pillars_to_string())
         return inventory
 
     def to_string(self) -> str:
@@ -81,4 +82,3 @@ class Adventurer:
                   "Hit Points: " + str(self._hit_points) + "\n" +
                   self.inventory_to_string())
         return string
-

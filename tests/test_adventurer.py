@@ -2,10 +2,12 @@ import pytest
 
 from src.characters.adventurer import Adventurer
 
+
 @pytest.fixture
 def new_adventurer():
     return Adventurer("John", 50, 1,
                       0, [])
+
 
 def test_to_string(new_adventurer):
     """Test method for to_string"""
@@ -18,6 +20,7 @@ def test_to_string(new_adventurer):
     actual_string = adventurer_one.to_string()
     # NOTE: switching these around changes what is shown as expected vs actual
     assert actual_string == expected_string
+
 
 def test_use_health_potion(new_adventurer):
     """Test method for use_health_potion. Requires to_string() to work in order to test."""
@@ -32,6 +35,7 @@ def test_use_health_potion(new_adventurer):
     # NOTE: switching these around changes what is shown as expected vs actual
     assert actual_string == expected_string
 
+
 def test_adventurer_pick_up_item(new_adventurer):
     """Test method for adventurer_pick_up_item."""
     expected_string = ("Name: John\n"
@@ -43,6 +47,7 @@ def test_adventurer_pick_up_item(new_adventurer):
     adventurer.adventurer_pick_up_item("healing_potion")
     actual_string = adventurer.to_string()
     assert actual_string == expected_string
+
 
 def test_adventurer_drop_item(new_adventurer):
     """Test method for adventurer_drop_item."""

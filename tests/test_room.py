@@ -37,7 +37,7 @@ def test_invalid_item():
     # with pytest.raises(
     #    TypeError
     # ):  # This is like if the class raises a certain exception
-    # But I am commenting this out to avoide LSP errors
+    # But I am commenting this out to avoid LSP errors
     # Room(RoomType.NORMAL).add_item("Not an item")
     pass
 

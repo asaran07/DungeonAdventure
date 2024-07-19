@@ -25,7 +25,6 @@ class DungeonCharacter:
         else:  #if this attacking character is at 0 or less hp (aka already KOed)
             pass
 
-
     def lose_health(self, amount: int):
         """determines how much health this character loses
         :type amount: int
