@@ -10,3 +10,10 @@ class RoomType(Enum):
     ENTRANCE = auto()
     EXIT = auto()
     PIT = auto()
+
+
+class Direction(Enum):
+    NORTH = "N"
+    EAST = "E"
+    SOUTH = "S"
+    WEST = "W"
