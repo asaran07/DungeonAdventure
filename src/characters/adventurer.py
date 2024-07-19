@@ -1,9 +1,7 @@
 from typing import List
 
 from src.items.pillar import Pillar
-from src.dungeon import Room
 from src.items.item import Item
-
 
 class Adventurer:
 
@@ -17,30 +15,10 @@ class Adventurer:
         self._pillars_found: List[Pillar] = pillars_found  # list of pillar pieces found(4 total/possible)
 
         #What should be type hint if it consists of integers and another list?
-        self._adventurer_inventory = [self._total_healing_potions, self._total_vision_potions,
-                                      self._pillars_found]
-
-    """
-    Delete this guide later upon finishing the Adventurer class:
-
-    NOTABLE BEHAVIORS (from Adventurer portion of Course Project canvas page)
-
-        Adventurer/Hero & Dungeon will need to interact:
-            When Adventurer walks into a room, if there is a potion
-            in the room, the Adventurer automatically picks up the potion.
-
-                (If want?, change pickup behavior AFTER this works)
-
-            Likewise, if there is a pit in the room, the Adventure r automatically
-            falls in the pit and takes a Hit Point loss.
-
-            *These changes obviously affect the room*
-
-            For example, if the Adventurer walks into a room with a Healing
-            Potion, the Adventurer will pick up the potion, changing the 
-            Adventurers (healing) potion total, as well as changing the
-            ROOM's potion total*.
-    """
+        self._adventurer_inventory = []
+        #self.location = room
+        #adventurer.setLocation("main entrance") --> implement in main.py? adventurer won't have
+        # access to main entrance since not made yet
 
     #The contents of this method may be better suited to be in the healing_potion class
     #Perhaps an implementation of this method would be to make a call to that class?
@@ -55,66 +33,32 @@ class Adventurer:
         # Check w/ team regarding how this is going to work --> team verdict: will come back to later
         pass
 
-    def get_items_description(self) -> str:
+    def get_items_description(self, item_name: str) -> str:
         """This allows adventurer to get descriptions of items in the room."""
         #So adventurer can view descriptions of items in room
-        #Here maybe just iterate through the items in the room, and for each item
-        #look at its description(just "item.name" as of now) and print it
 
+        healing_potion = "This potion heals the player by 5-15 health points."
+        vision_potion = "This potion grants the player sight to the surrounding 8 rooms"
+        pillar = "A pillar of Object Oriented Programming"
 
-    def adventurer_pick_up_item(self, item_name: str) -> None:
+        if item_name == "healing_potion":
+            description = healing_potion
+        elif item_name == "vision_potion":
+            description = vision_potion
+        else: #pillar is left. If more items are added, add above this?
+            #Able to be rewritten to be more specific to each pillar of OO if wanted
+            description = pillar
+        return description
+
+    def add_item_to_adventurer_inventory(self, item: Item) -> None:
         #if there is an item in the room, adventurer is able to pick the item up(add to inventory)
-        #names("healing_potion" & "vision_potion" in progress and not officially named yet
-        if item_name == "healing_potion":
-            #increment player number of healing potion
-            self._total_healing_potions += 1
-            self._adventurer_inventory[0] = self._total_healing_potions
-            #decrement the room's number of healing potions
-                #check with group if can remove from room's list, like is room's list of items
-                # supposed to be private and not accessible
-        elif item_name == "vision_potion":
-            #increment player number of vision potion
-            self._total_vision_potions += 1
-            self._adventurer_inventory[1] = self._total_vision_potions
-            # decrement the room's number of vision potions:
-            #   check with group if can remove from room's list, like is room's list of items
-            #    supposed to be private and not accessible
+        self._adventurer_inventory.append(item)
+        #removing from room's list will be implemented somewhere later**
 
-        else: #item is a pillar
-            #add to list of pillars
-            self._pillars_found.append(Pillar(item_name))
-            #update player inventory
-            self._adventurer_inventory[2] = self._pillars_found
-            #remove from room's list of items
-                #check w/ group
-
-    def adventurer_drop_item(self, item_name: str) -> None:
+    def drop_item_from_adventurer_inventory(self, item) -> None:
         # if there is an item in the room, adventurer is able to drop the item (add to room's list of items)
-        # names("healing_potion" & "vision_potion" in progress and not officially named yet
-        if item_name == "healing_potion":
-            # decrement player number of healing potion
-            self._total_healing_potions -= 1
-            self._adventurer_inventory[0] = self._total_healing_potions
-
-            # increment the room's number of healing potions
-            # check with group if can remove from room's list, like is room's list of items
-            # supposed to be private and not accessible
-        elif item_name == "vision_potion":
-            # decrement player number of vision potion
-            self._total_vision_potions -= 1 # **BUILD SETTER METHOD TO PREVENT GOING NEGATIVE!!!!!************
-            self._adventurer_inventory[1] = self._total_vision_potions
-
-            # increment the room's number of vision potions:
-            #   check with group if can remove from room's list, like is room's list of items
-            #    supposed to be private and not accessible
-
-        else:  #item is a pillar
-            #Remove from list of pillars
-            self._pillars_found.remove(Pillar(item_name))
-            #update player inventory
-            self._adventurer_inventory[2] = self._pillars_found
-            #remove from room's list of items
-                #check w/ group
+        self._adventurer_inventory.pop(item)
+        # removing from room's list will be implemented somewhere later**
 
     def _pillars_to_string(self):
         """This helper method helps print the pillars that the adventurer has found."""
