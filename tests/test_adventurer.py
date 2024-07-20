@@ -1,7 +1,10 @@
 import pytest
 
 from src.characters.adventurer import Adventurer
-from src.items import healing_potion
+from src.items.healing_potion import HealingPotion, Potion
+from src.items.potion import Item
+# from src.items import healing_potion
+# from src.items.item import Item
 
 
 
@@ -46,7 +49,7 @@ def test_add_item_to_adventurer_inventory(new_adventurer):
                        "Vision Potions: 0\n"
                        "Pillars Found: ")
     adventurer = new_adventurer
-    adventurer.add_item_to_adventurer_inventory(healing_potion)
+    adventurer.add_item_to_adventurer_inventory(HealingPotion)
     actual_string = adventurer.to_string()
     assert actual_string == expected_string
 
@@ -59,6 +62,6 @@ def test_drop_item_from_adventurer_inventory(new_adventurer):
                        "Vision Potions: 0\n"
                        "Pillars Found: ")
     adventurer = new_adventurer
-    adventurer.drop_item_from_adventurer_inventory(healing_potion)
+    adventurer.drop_item_from_adventurer_inventory(HealingPotion)
     actual_string = adventurer.to_string()
     assert actual_string == expected_string
