@@ -4,7 +4,7 @@ import random
 class DungeonCharacter:
     """this class can be used with either the Hero or Monster classes"""
 
-    def __init__(self, name: str, hp: int, min_damage: int, max_damage: int, attack_speed: int, chance_to_hit: int):
+    def __init__(self, name: str, hp: int, min_damage: int, max_damage: int, attack_speed: int, chance_to_hit: int) -> object:
         self.name = name
         self.hp = hp
         self.min_damage = min_damage
@@ -18,17 +18,17 @@ class DungeonCharacter:
 
         if self.hp > 0 and dice_roll_to_hit <= self.chance_to_hit:  #if the hit connected
             #ex: If character has 90% chance to hit, anything from 1 to 90 would hit
-            opponent.lose_health(random.randint(self.min_damage, self.max_damage))
+            opponent.lose_health()
         elif self.hp > 0 and dice_roll_to_hit > self.chance_to_hit:  #if the hit missed
             #ex: If character has 90% chance to hit, anything from 91 to 100 would miss
             pass
         else:  #if this attacking character is at 0 or less hp (aka already KOed)
             pass
 
-    def lose_health(self, amount: int):
-        """determines how much health this character loses
-        :type amount: int
-        """
+    def lose_health(self):
+        """determines how much health this character loses"""
+        amount: int = random.randint(self.min_damage, self.max_damage)
+
         if amount > self.hp:
             self.hp = 0
         else:
