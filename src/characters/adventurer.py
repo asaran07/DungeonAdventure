@@ -15,7 +15,7 @@ class Adventurer:
         self._total_vision_potions = total_vision_potions
         self._pillars_found: List[Pillar] = pillars_found  # list of pillar pieces found(4 total/possible)
 
-        #What should be type hint if it consists of integers and another list?
+        #Adventurer inventory will be empty list, append and pop items as needed
         self._adventurer_inventory = []
         #self.location = room
         #adventurer.setLocation("main entrance") --> implement in main.py? adventurer won't have
@@ -54,11 +54,26 @@ class Adventurer:
     def add_item_to_adventurer_inventory(self, item: Item) -> None:
         #if there is an item in the room, adventurer is able to pick the item up(add to inventory)
         self._adventurer_inventory.append(item)
+
+        #keeping track of total vision & healing potions as well as pillars:
+        if item.get_name() == "healing_potion":
+            self._total_healing_potions += 1
+        elif item.get_name() == "vision_potion":
+            self._total_vision_potions += 1
+        elif item.get_name() == "Pillar":
+            self._pillars_found.append(Pillar(item.get_name()))
         #removing from room's list will be implemented somewhere later**
 
-    def drop_item_from_adventurer_inventory(self, item) -> None:
+    def drop_item_from_adventurer_inventory(self, item: Item) -> None:
         # if there is an item in the room, adventurer is able to drop the item (add to room's list of items)
-        self._adventurer_inventory.pop(item)
+        self._adventurer_inventory.remove(item)
+        # keeping track of total vision & healing potions as well as pillars:
+        if item.get_name() == "healing_potion":
+            self._total_healing_potions -= 1
+        elif item.get_name() == "vision_potion":
+            self._total_vision_potions -= 1
+        elif item.get_name() == "Pillar":
+            self._pillars_found.remove(Pillar(item.get_name()))
         # removing from room's list will be implemented somewhere later**
 
     def _pillars_to_string(self):

@@ -1,6 +1,8 @@
 import pytest
 
 from src.characters.adventurer import Adventurer
+from src.items import healing_potion
+
 
 
 @pytest.fixture
@@ -36,7 +38,7 @@ def test_use_health_potion(new_adventurer):
     assert actual_string == expected_string
 
 
-def test_adventurer_pick_up_item(new_adventurer):
+def test_add_item_to_adventurer_inventory(new_adventurer):
     """Test method for adventurer_pick_up_item."""
     expected_string = ("Name: John\n"
                        "Hit Points: 50\n"
@@ -44,12 +46,12 @@ def test_adventurer_pick_up_item(new_adventurer):
                        "Vision Potions: 0\n"
                        "Pillars Found: ")
     adventurer = new_adventurer
-    adventurer.adventurer_pick_up_item("healing_potion")
+    adventurer.add_item_to_adventurer_inventory(healing_potion)
     actual_string = adventurer.to_string()
     assert actual_string == expected_string
 
 
-def test_adventurer_drop_item(new_adventurer):
+def test_drop_item_from_adventurer_inventory(new_adventurer):
     """Test method for adventurer_drop_item."""
     expected_string = ("Name: John\n"
                        "Hit Points: 50\n"
@@ -57,6 +59,6 @@ def test_adventurer_drop_item(new_adventurer):
                        "Vision Potions: 0\n"
                        "Pillars Found: ")
     adventurer = new_adventurer
-    adventurer.adventurer_drop_item("healing_potion")
+    adventurer.drop_item_from_adventurer_inventory(healing_potion)
     actual_string = adventurer.to_string()
     assert actual_string == expected_string
