@@ -11,7 +11,7 @@ class Monster(DungeonCharacter):
         self.max_heal_points = max_heal_points
 
         DungeonCharacter.__init__(name, hp, min_damage, max_damage,
-        attack_speed, chance_to_hit)
+                                  attack_speed, chance_to_hit)
 
     """ a Monster has a chance to heal after any attack that causes a loss of hit points 
     -- this should be checked after the Monster has been attacked and hit points have 
