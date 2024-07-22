@@ -3,9 +3,10 @@ from src.characters.dungeon_character import DungeonCharacter
 
 
 class Monster(DungeonCharacter):
-    def __init__(self, name: str, hp: int, min_damage: int, max_damage: int,
-                 attack_speed: int, chance_to_hit: int, chance_to_heal: int,
-                 min_heal_points: int, max_heal_points: int):
+    def __init__(self, name: str = "generic monster", hp: int = 70, min_damage: int = 15,
+                 max_damage: int = 30, attack_speed: int = 2, chance_to_hit: int = 60,
+                 chance_to_heal: int = 10, min_heal_points: int = 20,
+                 max_heal_points: int = 40):
         self.chance_to_heal = chance_to_heal
         self.min_heal_points = min_heal_points
         self.max_heal_points = max_heal_points
@@ -16,9 +17,10 @@ class Monster(DungeonCharacter):
     """ a Monster has a chance to heal after any attack that causes a loss of hit points 
     -- this should be checked after the Monster has been attacked and hit points have 
     been lost  """
+
     def heal(self):
         # Note: Still need to set a condition that calls heal when a monster takes damage
-        dice_roll_to_heal = random.randint(1, 100)
+        dice_roll_to_heal = random.randint(0, 100)
 
         if self.hp > 0 and dice_roll_to_heal <= self.chance_to_heal:  # if heal successful
             # ex: If monster has 90% chance to heal, anything from 1 to 90 would heal

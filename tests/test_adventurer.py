@@ -1,6 +1,6 @@
 import pytest
 
-from src.characters.adventurer import Adventurer
+from src.characters.player import Adventurer
 from src.items.healing_potion import HealingPotion, Potion
 from src.items.potion import Item
 # from src.items import healing_potion

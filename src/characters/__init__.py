@@ -1,2 +1,2 @@
-from .adventurer import Adventurer, Pillar
+from .player import Adventurer, Pillar
 __all__ = ['Adventurer', 'Pillar']

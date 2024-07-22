@@ -11,4 +11,5 @@ class Hero(DungeonCharacter):
                                   attack_speed, chance_to_hit)
 
     def block(self):
+
         dice_roll_to_block = random.randint(1, 100)

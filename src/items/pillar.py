@@ -1,12 +1,14 @@
+from dataclasses import dataclass
+
 from src.items.item import Item
 
 
+# Pillar(Item) means pillar inherits from Item
+# Not complete implementation, just created this to complete Adventurer class -Austin
+# Make into data class
+@dataclass
 class Pillar(Item):
-    # Pillar(Item) means pillar inherits from Item
-
-    # Not complete implementation, just created this to complete Adventurer class -Austin
-    def __init__(self, name: str) -> None:
-        super().__init__(name)
+    name: str = super().__init__()
 
     def get_name(self) -> str:
         return super().get_name()

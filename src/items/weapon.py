@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from src.enums.item_types import WeaponType
+from src.enums.item_types import WeaponType, ItemType
 from src.items.item import Item
 
 
@@ -17,9 +17,10 @@ class Weapon(Item):
         weight (float): The weight of the weapon. Default is 2.0.
         durability (int): The durability of the weapon. Default is 100.
     """
-    weapon_type: WeaponType
-    damage: int
     name: str = "Unknown Weapon"
+    item_type: ItemType.WEAPON
+    weapon_type: WeaponType = WeaponType.SWORD
+    damage: int = 10
     description: str = "A mysterious weapon"
     weight: float = 2.0
     durability: int = 100
