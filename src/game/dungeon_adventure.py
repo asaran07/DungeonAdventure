@@ -23,13 +23,5 @@ class GameModel:
         self.current_room = self.dungeon.get_entrance_room()
         self.player.current_room = self.current_room
 
-    def move_player(self, direction):
-        new_room = self.current_room.get_connection(direction)
-        if new_room:
-            self.current_room = new_room
-            self.player.current_room = new_room
-            return True
-        return False
-
     def is_game_over(self):
         return self.game_over
