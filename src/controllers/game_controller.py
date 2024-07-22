@@ -3,6 +3,11 @@ from src.views.view import View
 
 
 class GameController:
+    """
+    This class manages the game loop, processes user inputs by using the PlayerActionController, updates the game
+    state, and ensures the view is refreshed. It's responsible for initializing the game, handling turn-based logic,
+    checking for game-over conditions, and manage any game mechanics not specific to player actions.
+    """
     def __init__(self, game_model, view: View):
         self.game_model = game_model
         self.view = view

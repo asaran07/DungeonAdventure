@@ -16,3 +16,6 @@ class Dungeon:
         room = Room(name)
         self.rooms[name] = room
         return room
+
+    def get_entrance_room(self):
+        pass

@@ -2,6 +2,12 @@ from src.enums.room_types import Direction
 
 
 class PlayerActionController:
+    """
+    Serves as the bridge between user inputs and game state changes. This class contains methods for all possible
+    player actions (e.g., moving, picking up items, using items, attacking) and is responsible for validating these
+    actions and updating the game state accordingly. It works with GameModel ensuring all player actions
+    are consistent with the game's rules and current state.
+    """
     def __init__(self, game_model):
         self.game_model = game_model
 
