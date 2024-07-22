@@ -1,4 +1,5 @@
 from src.enums.room_types import Direction
+from src.game.dungeon_adventure import GameModel
 
 
 class PlayerActionController:
@@ -8,7 +9,8 @@ class PlayerActionController:
     actions and updating the game state accordingly. It works with GameModel ensuring all player actions
     are consistent with the game's rules and current state.
     """
-    def __init__(self, game_model):
+
+    def __init__(self, game_model: GameModel):
         self.game_model = game_model
 
     def move_player(self, direction: Direction):
