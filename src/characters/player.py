@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from src.dungeon.room import Room
 from src.items.pillar import Pillar
@@ -31,7 +31,16 @@ class Player:
         # self.location = room
         # player.setLocation("main entrance") --> implement in main.py? player won't have
         # access to main entrance since not made yet
-        self.current_room = None
+        self.current_room: Optional[Room] = None
+
+    def get_current_room(self) -> Optional[Room]:
+        return self.current_room
+
+    def get_hp(self) -> int:
+        return self._hit_points
+
+    def get_name(self) -> str:
+        return self._name
 
     # The contents of this method may be better suited to be in the healing_potion class
     # Perhaps an implementation of this method would be to make a call to that class?

@@ -7,3 +7,4 @@ class GameState(Enum):
     COMBAT = auto()
     INVENTORY = auto()
     GAME_OVER = auto()
+    PLAYER_CREATION = auto()

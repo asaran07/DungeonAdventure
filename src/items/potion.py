@@ -1,42 +1,36 @@
-from dataclasses import dataclass
-
+from abc import ABC
+from src.enums.item_types import ItemType, PotionType
 from src.items.item import Item
-from src.enums.item_types import PotionType
 
 
-@dataclass
-class Potion(Item):
-    name: str = "Potion"
-    item_type = PotionType
-    description: str = "An Unknown Potion"
-    weight: float = 0.5
+class Potion(Item, ABC):
+    def __init__(
+        self, name: str, description: str, weight: float, potion_type: PotionType
+    ):
+        super().__init__(name, description, weight, ItemType.POTION)
+        self._potion_type = potion_type
 
-    def get_name(self):
-        return self.name
-
-    def get_description(self):
-        return self.description
+    def get_potion_type(self) -> PotionType:
+        return self._potion_type
 
 
-@dataclass
-class VisionPotion(Potion):
-    name: str = "vision_potion"
-    item_type = PotionType.VISION
-    description: str = "A healing potion. Heals the player by 5-15 Health Points."
-
-    def get_name(self):
-        return self.name
-
-
-@dataclass
 class HealingPotion(Potion):
-    name: str = "healing_potion"
-    item_type = PotionType.HEALING
-    description: str = "A vision potion. Grants the player sight to the surrounding 8 rooms."
-    hp_recovery: int = 15
+    def __init__(self, name: str, description: str, weight: float, hp_recovery: int):
+        super().__init__(name, description, weight, PotionType.HEALING)
+        self._hp_recovery = hp_recovery
 
-    def get_name(self):
-        return self.name
+    def get_hp_recovery(self) -> int:
+        return self._hp_recovery
 
-    def get_description(self):
-        return self.description
+    def use(self):
+        print(
+            f"You drink the {self.get_name()}, recovering {self.get_hp_recovery()} HP!"
+        )
+
+
+class VisionPotion(Potion):
+    def __init__(self, name: str, description: str, weight: float):
+        super().__init__(name, description, weight, PotionType.VISION)
+
+    def use(self):
+        print(f"You drink the {self.get_name()}, revealing nearby rooms!")

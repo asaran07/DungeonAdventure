@@ -1,3 +1,4 @@
+from src.dungeon import Room
 from src.enums.room_types import Direction
 from src.game.dungeon_adventure import GameModel
 
@@ -15,7 +16,7 @@ class PlayerActionController:
 
     def move_player(self, direction: Direction):
         player = self.game_model.player
-        current_room = player.current_room
+        current_room: Room = player.current_room
 
         if direction in dict(current_room.get_open_gates()):
             new_room = current_room.connections[direction]
@@ -27,8 +28,10 @@ class PlayerActionController:
         player = self.game_model.player
         if item in player.current_room.items:
             player.current_room.remove_item(item)
-            player.add_item_to_inventory(item)
+            player.add_item_to_player_inventory(item)
             return True
         return False
 
     # and we can add other player actions like use_item or attack etc
+    def handle_action(self, action):
+        pass

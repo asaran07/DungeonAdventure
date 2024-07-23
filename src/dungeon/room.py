@@ -35,8 +35,14 @@ class Room:
         """Adds an item to the room."""
         self.items.append(item)
 
+    def remove_item(self, item: Item) -> None:
+        self.items.remove(item)
+
     def set_room_type(self, room_type: RoomType) -> None:
         self.room_type = room_type
+
+    def get_description(self) -> str:
+        return self.__str__()
 
     def __str__(self) -> str:
         connections = ", ".join(
@@ -45,7 +51,11 @@ class Room:
                 for d, r in self.connections.items()
             ]
         )
-        items = ", ".join([item.name for item in self.items]) if self.items else "None"
+        items = (
+            ", ".join([item.get_name() for item in self.items])
+            if self.items
+            else "None"
+        )
 
         return (
             f"Room: {self.name}\n"

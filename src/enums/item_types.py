@@ -6,6 +6,7 @@ class ItemType(Enum):
     POTION = auto()
     KEY = auto()
     TREASURE = auto()
+    PILLAR = auto()
 
 
 class PotionType(Enum):

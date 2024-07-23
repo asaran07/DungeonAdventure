@@ -1,26 +1,31 @@
-from dataclasses import dataclass
-
-from src.enums.item_types import WeaponType, ItemType
+from src.enums.item_types import ItemType, WeaponType
 from src.items.item import Item
 
 
-@dataclass
 class Weapon(Item):
-    """
-    Weapon class for representing a weapon item.
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        weight: float,
+        weapon_type: WeaponType,
+        damage: int,
+        durability: int = 100,
+    ):
+        super().__init__(name, description, weight, ItemType.WEAPON)
+        self._weapon_type = weapon_type
+        self._damage = damage
+        self._durability = durability
 
-    Attributes:
-        weapon_type (WeaponType): The type of weapon.
-        damage (int): The amount of damage the weapon inflicts.
-        name (str): The name of the weapon. Default is "Unknown Weapon".
-        description (str): The description of the weapon. Default is "A mysterious weapon".
-        weight (float): The weight of the weapon. Default is 2.0.
-        durability (int): The durability of the weapon. Default is 100.
-    """
-    name: str = "Unknown Weapon"
-    item_type: ItemType.WEAPON
-    weapon_type: WeaponType = WeaponType.SWORD
-    damage: int = 10
-    description: str = "A mysterious weapon"
-    weight: float = 2.0
-    durability: int = 100
+    def get_weapon_type(self) -> WeaponType:
+        return self._weapon_type
+
+    def get_damage(self) -> int:
+        return self._damage
+
+    def get_durability(self) -> int:
+        return self._durability
+
+    def use(self):
+        print(f"You swing the {self.get_name()}, dealing {self.get_damage()} damage!")
+        self._durability -= 1

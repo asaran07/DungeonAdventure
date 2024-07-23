@@ -1,6 +1,7 @@
 from src.controllers.player_action_controller import PlayerActionController
 from src.game.dungeon_adventure import GameModel
 from src.views.view import View
+from src.enums.game_state import GameState
 
 
 class GameController:
@@ -16,10 +17,35 @@ class GameController:
         self.player_action_controller = PlayerActionController(game_model)
 
     def run_game(self):
+        self.game_model.set_state(GameState.TITLE_SCREEN)
+
         while not self.game_model.is_game_over():
-            self.view.display_game_state(self.game_model)
-            user_input = self.view.get_user_input()
-            self.handle_input(user_input)
+            current_state = self.game_model.get_state()
+
+            if current_state == GameState.TITLE_SCREEN:
+                self.handle_title_screen()
+            elif current_state == GameState.PLAYER_CREATION:
+                self.handle_player_creation()
+            elif current_state == GameState.EXPLORING:
+                self.handle_exploration()
+
+    def handle_title_screen(self):
+        self.view.display_title_screen()
+        choice = self.view.get_user_input()
+        if choice == "1":  # Start New Game
+            self.game_model.set_state(GameState.PLAYER_CREATION)
+        elif choice == "2":  # Quit
+            self.game_model.set_game_over(True)
+
+    def handle_player_creation(self):
+        player_data = self.view.get_player_creation_input()
+        self.game_model.create_player(player_data)
+        self.game_model.set_state(GameState.EXPLORING)
+
+    def handle_exploration(self):
+        self.view.display_game_state(self.game_model)
+        action = self.view.get_user_input()
+        self.player_action_controller.handle_action(action)
 
     def handle_input(self, user_input):
         pass

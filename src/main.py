@@ -1,17 +1,11 @@
 from src.controllers.game_controller import GameController
-from src.dungeon import Room
-from src.enums import Direction
-from src.enums.item_types import ItemType, WeaponType
 from src.game.dungeon_adventure import GameModel
-from src.items.weapon import Weapon
 from src.views.console_view import ConsoleView
 
 
 def main():
     # We create the GameModel and initialize the core game stuff we need like player and dungeon map etc.
     game_model = GameModel()
-    game_model.initialize_game()
-
     view = ConsoleView()
     controller = GameController(game_model, view)
 

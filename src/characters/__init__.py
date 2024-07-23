@@ -1,2 +1,3 @@
-from .player import Adventurer, Pillar
-__all__ = ['Adventurer', 'Pillar']
+from .player import Player, Pillar
+
+__all__ = ['Player', 'Pillar']

@@ -11,6 +11,10 @@ def connect_rooms(room1: Room, direction: Direction, room2: Room) -> bool:
 class Dungeon:
     def __init__(self):
         self.rooms: Dict[str, Room] = {}
+        self.entrance_room: Optional[Room] = None
+
+    def get_entrance_room(self) -> Optional[Room]:
+        return self.entrance_room
 
     def add_room(self, name: str) -> Room:
         """Creates and adds a room to the dungeon, then returns the newly created room"""

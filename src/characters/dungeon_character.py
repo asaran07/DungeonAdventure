@@ -1,14 +1,18 @@
 import random
 from random import Random
+
 random_hit_roll = Random(222)
 # assert random_hit_roll.randint(1, 100) == 20
 random_damage = Random(222)
+
+
 # assert random_damage.randint(2, 5) == 5
 
 class DungeonCharacter:
     """this class can be used with either the Hero or Monster classes"""
 
-    def __init__(self, name: str, hp: int, min_damage: int, max_damage: int, attack_speed: int, chance_to_hit: int) -> object:
+    def __init__(self, name: str, hp: int, min_damage: int, max_damage: int, attack_speed: int,
+                 chance_to_hit: int) -> object:
         self.name = name
         self.hp = hp
         self.min_damage = min_damage
