@@ -8,6 +8,7 @@ from src.views.console_view import ConsoleView
 
 
 def main():
+    # We create the GameModel and initialize the core game stuff we need like player and dungeon map etc.
     game_model = GameModel()
     game_model.initialize_game()
 

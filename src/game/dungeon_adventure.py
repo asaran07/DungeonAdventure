@@ -1,4 +1,4 @@
-from src.characters.adventurer import Adventurer
+from src.characters.player import Player
 from src.dungeon import Dungeon
 
 
@@ -12,14 +12,15 @@ class GameModel:
     """
 
     def __init__(self):
-        self.dungeon = None
+        # NOTE: Not sure if the Dungeon should be passed from the main class or not
+        self.dungeon: Dungeon = Dungeon()
         self.player = None
         self.current_room = None
         self.game_over = False
 
     def initialize_game(self):
         self.dungeon = Dungeon()
-        self.player = Adventurer("Player1", 100, 0, 0, [])
+        self.player = Player("Player1", 100, 0, 0, [])
         self.current_room = self.dungeon.get_entrance_room()
         self.player.current_room = self.current_room
 

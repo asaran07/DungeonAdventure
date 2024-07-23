@@ -1,4 +1,5 @@
 from src.controllers.player_action_controller import PlayerActionController
+from src.game.dungeon_adventure import GameModel
 from src.views.view import View
 
 
@@ -9,7 +10,7 @@ class GameController:
     checking for game-over conditions, and manage any game mechanics not specific to player actions.
     """
 
-    def __init__(self, game_model, view: View):
+    def __init__(self, game_model: GameModel, view: View):
         self.game_model = game_model
         self.view = view
         self.player_action_controller = PlayerActionController(game_model)
