@@ -9,11 +9,11 @@ class Player:
 
     def __init__(
         self,
-        name: str,
-        hit_points: int,
-        total_healing_potions: int,
-        total_vision_potions: int,
-        pillars_found: List[Pillar],
+        name: str = "John",
+        hit_points: int = 50,
+        total_healing_potions: int = 1,
+        total_vision_potions: int = 0,
+        pillars_found: List[Pillar] = [],
     ) -> None:
         """Constructor for player Class"""
         self._name = name
@@ -55,20 +55,21 @@ class Player:
         # Check w/ team regarding how this is going to work --> team verdict: will come back to later
         pass
 
-    def add_item_to_player_inventory(self, item: Item) -> None:
+    def add_to_inventory(self, item: Item) -> None:
+        """This adds an item to the players inventory."""
         # if there is an item in the room, player is able to pick the item up(add to inventory)
         self._player_inventory.append(item)
 
         # keeping track of total vision & healing potions as well as pillars:
         if item.get_name() == "healing_potion":
             self._total_healing_potions += 1
-        # elif item.get_name() == "vision_potion":
-        #     self._total_vision_potions += 1
-        # elif item.get_name() == "Pillar":
-        #     self._pillars_found.append(Pillar(item.get_name()))
+        elif item.get_name() == "vision_potion":
+            self._total_vision_potions += 1
+        elif item.get_name() == "Pillar":
+            self._pillars_found.append(Pillar(item.get_name()))
         # removing from room's list will be implemented somewhere later**
 
-    def drop_item_from_player_inventory(self, item: Item) -> None:
+    def drop_from_inventory(self, item: Item) -> None:
         # if there is an item in the room, player is able to drop the item (add to room's list of items)
         self._player_inventory.remove(item)
         # keeping track of total vision & healing potions as well as pillars:
