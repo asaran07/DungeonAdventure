@@ -62,10 +62,10 @@ class Player:
         # keeping track of total vision & healing potions as well as pillars:
         if item.get_name() == "healing_potion":
             self._total_healing_potions += 1
-        elif item.get_name() == "vision_potion":
-            self._total_vision_potions += 1
-        elif item.get_name() == "Pillar":
-            self._pillars_found.append(Pillar(item.get_name()))
+        # elif item.get_name() == "vision_potion":
+        #     self._total_vision_potions += 1
+        # elif item.get_name() == "Pillar":
+        #     self._pillars_found.append(Pillar(item.get_name()))
         # removing from room's list will be implemented somewhere later**
 
     def drop_item_from_player_inventory(self, item: Item) -> None:
@@ -76,7 +76,7 @@ class Player:
             self._total_healing_potions -= 1
         elif item.get_name() == "vision_potion":
             self._total_vision_potions -= 1
-        elif item.get_name() == "Pillar":
+        elif item.get_name() == "pillar":
             self._pillars_found.remove(Pillar(item.get_name()))
         # removing from room's list will be implemented somewhere later**
 
