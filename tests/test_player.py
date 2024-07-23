@@ -1,6 +1,8 @@
 import pytest
 
 from src.characters.player import Player
+from src.enums.item_types import ItemType
+from src.items.potion import HealingPotion
 
 
 @pytest.fixture
@@ -39,28 +41,30 @@ def test_use_health_potion(new_adventurer):
     # NOTE: switching these around changes what is shown as expected vs actual
     assert actual_string == expected_string
 
-# def test_add_item_to_adventurer_inventory(new_adventurer):
-#     """Test method for adventurer_pick_up_item."""
-#     expected_string = ("Name: John\n"
-#                        "Hit Points: 50\n"
-#                        "Healing Potions: 2\n"
-#                        "Vision Potions: 0\n"
-#                        "Pillars Found: ")
-#     adventurer = new_adventurer
-#     healing_potion = Item(ItemType.POTION, "healing_potion", "Descr", 1)
-#     adventurer.add_item_to_player_inventory(healing_potion)
-#     actual_string = adventurer.to_string()
-#     assert actual_string == expected_string
 
+def test_add_item_to_adventurer_inventory(new_adventurer):
+    """Test method for adventurer_pick_up_item."""
+    expected_string = ("Name: John\n"
+                       "Hit Points: 50\n"
+                       "Healing Potions: 2\n"
+                       "Vision Potions: 0\n"
+                       "Pillars Found: ")
+    adventurer = new_adventurer
+    healing_potion = HealingPotion("healing_potion", "description", .5, 10)
+    adventurer.add_item_to_player_inventory(healing_potion)
+    actual_string = adventurer.to_string()
+    assert actual_string == expected_string
 
-# def test_drop_item_from_adventurer_inventory(new_adventurer):
-#     """Test method for adventurer_drop_item."""
-#     expected_string = ("Name: John\n"
-#                        "Hit Points: 50\n"
-#                        "Healing Potions: 0\n"
-#                        "Vision Potions: 0\n"
-#                        "Pillars Found: ")
-#     adventurer = new_adventurer
-#     adventurer.drop_item_from_player_inventory(HealingPotion)
-#     actual_string = adventurer.to_string()
-#     assert actual_string == expected_string
+def test_drop_item_from_adventurer_inventory(new_adventurer):
+    """Test method for adventurer_drop_item."""
+    expected_string = ("Name: John\n"
+                       "Hit Points: 50\n"
+                       "Healing Potions: 1\n"
+                       "Vision Potions: 0\n"
+                       "Pillars Found: ")
+    adventurer = new_adventurer
+    healing_potion = HealingPotion("healing_potion", "description", .5, 10)
+    adventurer.add_item_to_player_inventory(healing_potion)
+    adventurer.drop_item_from_player_inventory(healing_potion)
+    actual_string = adventurer.to_string()
+    assert actual_string == expected_string
