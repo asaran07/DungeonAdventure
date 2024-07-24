@@ -5,7 +5,9 @@ from src.enums.item_types import ItemType
 from src.items.pillar import Pillar
 from src.items.potion import HealingPotion, VisionPotion
 
-
+@pytest.fixture
+def new_player():
+    player_one = Player()
 def test_to_string():
     """Test method for to_string(). Requires player.inventory_to_string() to work in order to test."""
     expected_string = ("Name: John\n"

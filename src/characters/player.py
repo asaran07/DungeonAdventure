@@ -8,7 +8,7 @@ from src.items.potion import HealingPotion, VisionPotion
 
 class Player:
     """Represents the player / adventurer."""
-    # creating class level variables of items to prevent object mismatch
+    # creating class level variables of just these items to prevent object mismatch when removing from inventory
     _healing_potion: HealingPotion = HealingPotion()
     _vision_potion: VisionPotion = VisionPotion()
     _abstraction_pillar = Pillar("abstraction")
@@ -42,6 +42,8 @@ class Player:
         self._pillars_found: List[Pillar] = (
             pillars_found  # list of pillar pieces found(4 total/possible)
         )
+        # if self._pillars_found is None:
+        #     self._pillars_found = []
         self.current_room: Optional[Room] = None
 
         # player inventory will initially be empty list, append and remove items as needed
@@ -110,8 +112,11 @@ class Player:
     def _pillars_to_string(self) -> str:
         """This helper method helps print the pillars that the player has found."""
         pillars = ""
-        for pillar in self._pillars_found:
-            pillars += pillar.get_name() + " "
+        if self._pillars_found is None:
+            return pillars  # do nothing
+        else:
+            for pillar in self._pillars_found:
+                pillars += pillar.get_name() + " "
 
         return pillars
 
