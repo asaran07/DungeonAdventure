@@ -35,7 +35,10 @@ class HealingPotion(Potion):
 
 
 class VisionPotion(Potion):
-    def __init__(self, name: str, description: str, weight: float):
+    def __init__(self,
+                 name: str = "vision_potion",
+                 description: str = "Allows player to see the surrounding 8 rooms.",
+                 weight: float = .5):
         super().__init__(name, description, weight, PotionType.VISION)
 
     def use(self):

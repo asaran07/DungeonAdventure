@@ -11,14 +11,14 @@ from src.items.potion import HealingPotion, VisionPotion
 #                   0, [])
 
 
-def test_to_string(new_adventurer):
+def test_to_string():
     """Test method for to_string(). Requires player.inventory_to_string() to work in order to test."""
     expected_string = ("Name: John\n"
                        "Hit Points: 50\n"
                        "Healing Potions: 1\n"
                        "Vision Potions: 0\n"
                        "Pillars Found: ")
-    adventurer_one = new_adventurer
+    adventurer_one = Player()
     actual_string = adventurer_one.to_string()
     # NOTE: switching these around changes what is shown as expected vs actual
     assert actual_string == expected_string
@@ -81,8 +81,9 @@ def test_drop_non_existent_items():
                        "Pillars Found: ")
     adventurer = Player("John", 50, 1, 0, [])
     healing_potion = HealingPotion()
+    vision_potion = VisionPotion()
     adventurer.drop_from_inventory(healing_potion)
-    # adventurer.drop_from_inventory(healing_potion)
+    adventurer.drop_from_inventory(vision_potion)
     # adventurer.drop_from_inventory(healing_potion)
     actual_string = adventurer.to_string()
     assert actual_string == expected_string
