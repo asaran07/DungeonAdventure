@@ -3,17 +3,20 @@ from typing import List, Optional
 from src.dungeon.room import Room
 from src.items.pillar import Pillar
 from src.items.item import Item
+from src.items.potion import HealingPotion
 
 
 class Player:
+    # testing to see if this works; creating class level variable
+    _healing_potion: HealingPotion = HealingPotion()
 
     def __init__(
-        self,
-        name: str = "John",
-        hit_points: int = 50,
-        total_healing_potions: int = 1,
-        total_vision_potions: int = 0,
-        pillars_found: List[Pillar] = [],
+            self,
+            name: str = "John",
+            hit_points: int = 50,
+            total_healing_potions: int = 1,
+            total_vision_potions: int = 0,
+            pillars_found: List[Pillar] = [],
     ) -> None:
         """Constructor for player Class"""
         self._name = name
@@ -25,13 +28,15 @@ class Player:
         self._pillars_found: List[Pillar] = (
             pillars_found  # list of pillar pieces found(4 total/possible)
         )
-
-        # player inventory will be empty list, append and pop items as needed
-        self._player_inventory = []
-        # self.location = room
-        # player.setLocation("main entrance") --> implement in main.py? player won't have
-        # access to main entrance since not made yet
         self.current_room: Optional[Room] = None
+
+        # player inventory will initially be empty list, append and remove items as needed
+        self._player_inventory: List = []
+
+        # assign parameter values to player inventory
+        self._assign_inventory()
+
+
 
     def get_current_room(self) -> Optional[Room]:
         return self.current_room
@@ -62,26 +67,49 @@ class Player:
 
         # keeping track of total vision & healing potions as well as pillars:
         if item.get_name() == "healing_potion":
+
             self._total_healing_potions += 1
         elif item.get_name() == "vision_potion":
             self._total_vision_potions += 1
         elif item.get_name() == "Pillar":
             self._pillars_found.append(Pillar(item.get_name()))
+
+        # maybe add something so that if the item isn't valid, display something? or do nothing
         # removing from room's list will be implemented somewhere later**
 
     def drop_from_inventory(self, item: Item) -> None:
-        # if there is an item in the room, player is able to drop the item (add to room's list of items)
-        self._player_inventory.remove(item)
+        # if inventory cant find item to drop then pass
         # keeping track of total vision & healing potions as well as pillars:
         if item.get_name() == "healing_potion":
+            # check amount of healing potions
+            # print("\n\nSTART")
+            # print("Total healing potions Before removal: " + str(self._total_healing_potions) )
+            # print()
+            # print("Player Inventory: " + str(self._player_inventory))
+            # print()
+            # print("Item parameter: " + str(item))
+            if self._total_healing_potions == 0:
+                pass  # nothing, skip the method
             self._total_healing_potions -= 1
-        elif item.get_name() == "vision_potion":
-            self._total_vision_potions -= 1
-        elif item.get_name() == "pillar":
-            self._pillars_found.remove(Pillar(item.get_name()))
+            self._player_inventory.remove(self._healing_potion)
+            # print()
+            # print("AFTER REMOVAL:")
+            # print("Total healing potions after removal: " + str(self._total_healing_potions) )
+            # print()
+            # print("Player Inventory: " + str(self._player_inventory))
+            # print()
+            # print("Item parameter: " + str(item))
+            # print("END\n")
+        # elif item.get_name() == "vision_potion":
+        #     self._total_vision_potions -= 1
+        # elif item.get_name() == "pillar":
+        #     self._pillars_found.remove(Pillar(item.get_name()))
+        # if there is an item in the room, player is able to drop the item (add to room's list of items)
+        # self._player_inventory.remove(item)
+
         # removing from room's list will be implemented somewhere later**
 
-    def _pillars_to_string(self):
+    def _pillars_to_string(self) -> str:
         """This helper method helps print the pillars that the player has found."""
         pillars = ""
         for pillar in self._pillars_found:
@@ -89,29 +117,44 @@ class Player:
 
         return pillars
 
-    def inventory_to_string(self):
+    def _assign_inventory(self) -> None:
+        """This helper method creates an inventory based on the player parameter values."""
+        # if player was created with 1 healing potion, add a healing potion to inventory.
+        # print("\n\nin assign_inventory, showing numHealingPotions: " + str(self._total_healing_potions))
+        if self._total_healing_potions > 0:
+            num = self._total_healing_potions
+            while num != 0:
+                # print("\n\nin assign_inventory, test One\n")
+                self._player_inventory.append(self._healing_potion)
+                # print("in assign_inventory, test Two")
+                num -= 1
+
+        # print(
+        #     "\n\nin assign_inventory, showing numHealingPotions after method call: " + str(self._total_healing_potions))
+
+    def inventory_to_string(self) -> str:
         """Returns the player's inventory in a readable string format."""
         inventory = (
-            "Healing Potions: "
-            + str(self._total_healing_potions)
-            + "\n"
-            + "Vision Potions: "
-            + str(self._total_vision_potions)
-            + "\n"
-            + "Pillars Found: "
-            + self._pillars_to_string()
+                "Healing Potions: "
+                + str(self._total_healing_potions)
+                + "\n"
+                + "Vision Potions: "
+                + str(self._total_vision_potions)
+                + "\n"
+                + "Pillars Found: "
+                + self._pillars_to_string()
         )
         return inventory
 
     def to_string(self) -> str:
         """Turns the attributes of the player class into a readable format."""
         string = (
-            "Name: "
-            + self._name
-            + "\n"
-            + "Hit Points: "
-            + str(self._hit_points)
-            + "\n"
-            + self.inventory_to_string()
+                "Name: "
+                + self._name
+                + "\n"
+                + "Hit Points: "
+                + str(self._hit_points)
+                + "\n"
+                + self.inventory_to_string()
         )
         return string

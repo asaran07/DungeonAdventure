@@ -72,6 +72,23 @@ def test_add_and_drop_vision_potion():
     assert actual_string == expected_string
 
 
+def test_drop_non_existent_items():
+    """Testing if drop_from_inventory accounts for dropping non-existent items."""
+    expected_string = ("Name: John\n"
+                       "Hit Points: 50\n"
+                       "Healing Potions: 0\n"
+                       "Vision Potions: 0\n"
+                       "Pillars Found: ")
+    adventurer = Player("John", 50, 1, 0, [])
+    healing_potion = HealingPotion()
+    adventurer.drop_from_inventory(healing_potion)
+    # adventurer.drop_from_inventory(healing_potion)
+    # adventurer.drop_from_inventory(healing_potion)
+    actual_string = adventurer.to_string()
+    assert actual_string == expected_string
+
+
+
 def test_add_pillar():
     """Test method for adding pillar."""
     pass
