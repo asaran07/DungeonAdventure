@@ -7,9 +7,14 @@ from src.items.potion import HealingPotion, VisionPotion
 
 
 class Player:
-    # creating class level variables of items to prevent errors
+    """Represents the player / adventurer."""
+    # creating class level variables of items to prevent object mismatch
     _healing_potion: HealingPotion = HealingPotion()
     _vision_potion: VisionPotion = VisionPotion()
+    _abstraction_pillar = Pillar("abstraction")
+    _encapsulation_pillar = Pillar("encapsulation")
+    _inheritance_pillar = Pillar("inheritance")
+    _polymorphism_pillar = Pillar("polymorphism")
 
     def __init__(
             self,
@@ -19,7 +24,15 @@ class Player:
             total_vision_potions: int = 0,
             pillars_found: List[Pillar] = [],
     ) -> None:
-        """Constructor for player Class"""
+        """
+        Constructor for player Class
+
+        :param str name: Name of player
+        :param int hit_points: health of the player
+        :param int total_healing_potions: Number of healing potions
+        :param int total_vision_potions: Number of vision potions
+        :param List pillars_found: List of pillars found
+        """
         self._name = name
         self._hit_points = (
             hit_points  # 75-100; ***should be randomly generated between 75 & 100***
@@ -62,7 +75,6 @@ class Player:
     def add_to_inventory(self, item: Item) -> None:
         """This adds an item to the players inventory."""
         # if there is an item in the room, player is able to pick the item up(add to inventory)
-
         # keeping track of total vision & healing potions as well as pillars:
         if item.get_name() == "healing_potion":
             self._total_healing_potions += 1
@@ -92,7 +104,7 @@ class Player:
             self._player_inventory.remove(self._vision_potion)
         elif item.get_name() == "pillar":
             self._pillars_found.remove(Pillar(item.get_name()))
-            self._player_inventory.remove(item) # <-- SHOULD FIX THIS
+            self._player_inventory.remove(item)  # <-- SHOULD FIX THIS
         # removing from room's list will be implemented somewhere later**
 
     def _pillars_to_string(self) -> str:
