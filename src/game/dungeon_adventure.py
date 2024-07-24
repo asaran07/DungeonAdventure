@@ -4,6 +4,9 @@ from src.characters import Player
 from src.dungeon import Dungeon, Room
 from src.enums import Direction
 from src.enums.game_state import GameState
+from src.enums.item_types import WeaponType
+from src.items.item import Item
+from src.items.weapon import Weapon
 
 
 class GameModel:
@@ -42,6 +45,7 @@ class GameModel:
     def make_rooms(self):
         self._dungeon.add_room("Room 1")
         self._dungeon.add_and_connect_room("Room 2", "Room 1", Direction.NORTH)
+        self._dungeon.get_room("Room 1").add_item(Weapon("Basic Sword", "A basic sword", 1, WeaponType.SWORD, 2, 10))
 
     def is_game_over(self):
         return self.game_over

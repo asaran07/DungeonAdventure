@@ -1,26 +1,51 @@
 from abc import ABC, abstractmethod
+
 from src.enums.item_types import ItemType
 
 
 class Item(ABC):
+    """
+    Abstract base class for game items.
+    Each Item must implement a `use` method.
+    """
+
     def __init__(self, name: str, description: str, weight: float, item_type: ItemType):
+        """
+        Creates an Item object
+        :param name: The name of the item
+        :param description: The description of the item
+        :param weight: The weight of the item
+        :param item_type: The type of the item (should be an instance of ItemType)
+        """
         self._name = name
         self._description = description
         self._weight = weight
         self._item_type = item_type
 
-    def get_name(self) -> str:
+    @property
+    def name(self) -> str:
+        """Returns the name of the item"""
         return self._name
 
-    def get_description(self) -> str:
+    @property
+    def description(self) -> str:
+        """Returns the description of the item"""
         return self._description
 
-    def get_weight(self) -> float:
+    @property
+    def weight(self) -> float:
+        """Returns the weight of the item"""
         return self._weight
 
-    def get_item_type(self) -> ItemType:
+    @property
+    def item_type(self) -> ItemType:
+        """Returns the item type of the item"""
         return self._item_type
 
     @abstractmethod
     def use(self):
+        """
+        Method to be implemented by child classes that
+        defines the behavior when the item is used.
+        """
         pass

@@ -8,7 +8,6 @@ def main():
     game_model = GameModel()
     view = ConsoleView()
     controller = GameController(game_model, view)
-
     controller.run_game()
 
 

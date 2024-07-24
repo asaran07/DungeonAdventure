@@ -52,7 +52,7 @@ class Room:
             ]
         )
         items = (
-            ", ".join([item.get_name() for item in self.items])
+            ", ".join([item.name for item in self.items])
             if self.items
             else "None"
         )
