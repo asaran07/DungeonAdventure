@@ -11,7 +11,7 @@ class Monster(DungeonCharacter):
         self.min_heal_points = min_heal_points
         self.max_heal_points = max_heal_points
 
-        DungeonCharacter.__init__(name, hp, min_damage, max_damage,
+        super().__init__(name, hp, min_damage, max_damage,
                                   attack_speed, chance_to_hit)
 
     """ a Monster has a chance to heal after any attack that causes a loss of hit points 
@@ -25,7 +25,7 @@ class Monster(DungeonCharacter):
         if self.hp > 0 and dice_roll_to_heal <= self.chance_to_heal:  # if heal successful
             # ex: If monster has 90% chance to heal, anything from 1 to 90 would heal
             self.gain_health()
-        elif self.hp > 0 and dice_roll_to_heal > self.chance_to_hit:  # if heal unsuccessful
+        elif self.hp > 0 and dice_roll_to_heal > self.chance_to_heal:  # if heal unsuccessful
             # ex: If monster has 90% chance to heal, anything from 91 to 100 would not heal
             pass
         else:  # if this monster is at 0 or less hp (aka already KOed)

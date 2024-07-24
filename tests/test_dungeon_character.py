@@ -1,33 +1,56 @@
-import pytest
-import random
-from random import Random
 import unittest
 from unittest.mock import patch
-
 from src.characters.dungeon_character import DungeonCharacter
 
+class TestDungeonCharacter(unittest.TestCase):
 
-@pytest.fixture
-def dungeon_character():
-    return DungeonCharacter()
+    def setUp(self):
+        self.character = DungeonCharacter("Test Character", 100, 10,
+                                          20, 2, 70)
 
+    def test_init(self):
+        self.assertEqual(self.character.name, "Test Character")
+        self.assertEqual(self.character.hp, 100)
+        self.assertEqual(self.character.min_damage, 10)
+        self.assertEqual(self.character.max_damage, 20)
+        self.assertEqual(self.character.attack_speed, 2)
+        self.assertEqual(self.character.chance_to_hit, 70)
 
-# def set_up(self):
-#     self.random_hit_roll = Random(222)
-#     self.random_damage = Random(222)
+    @patch('random.randint')
+    def test_attack_hit(self, mock_randint):
+        mock_randint.return_value = 50  # Simulating a die roll that hits
+        opponent = DungeonCharacter("Opponent", 100)
+        with patch.object(opponent, 'lose_health') as mock_lose_health:
+            self.character.attack(opponent)
+            mock_lose_health.assert_called_once()
 
-# @patch('src.characters.dungeon_character.DungeonCharacter.random_hit_roll')
-#trying to learn how to use mock to test the random numbers, this section is not complete
-def test_attack():
-    pass
+    @patch('random.randint')
+    def test_attack_miss(self, mock_randint):
+        mock_randint.return_value = 80  # Simulating a die roll that misses
+        opponent = DungeonCharacter("Opponent", 100)
+        with patch.object(opponent, 'lose_health') as mock_lose_health:
+            self.character.attack(opponent)
+            mock_lose_health.assert_not_called()
 
-# @patch('src.characters.dungeon_character.DungeonCharacter.random_damage')
-def test_lose_health():
-    pass
-    # random_damage.randint.mock_side_effect = self.random_damage.randint
-    #
-    # dungeon_character_one = DungeonCharacter("Skeleton", 20,
-    #                                          2, 5,
-    #                                          1, 80)
-    # dungeon_character_one.lose_health()
-    # self.assert dungeon_character_one.hp == 15
+    def test_attack_when_ko(self):
+        self.character.hp = 0
+        opponent = DungeonCharacter("Opponent", 100)
+        with patch.object(opponent, 'lose_health') as mock_lose_health:
+            self.character.attack(opponent)
+            mock_lose_health.assert_not_called()
+
+    @patch('random.randint')
+    def test_lose_health(self, mock_randint):
+        mock_randint.return_value = 15  # Simulating a damage roll
+        initial_hp = self.character.hp
+        self.character.lose_health()
+        self.assertEqual(self.character.hp, initial_hp - 15)
+
+    @patch('random.randint')
+    def test_lose_health_ko(self, mock_randint):
+        mock_randint.return_value = 150  # Simulating a damage roll greater than current HP
+        self.character.lose_health()
+        self.assertEqual(self.character.hp, 0)
+
+if __name__ == '__main__':
+    unittest.main()
