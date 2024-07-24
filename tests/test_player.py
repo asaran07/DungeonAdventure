@@ -2,13 +2,8 @@ import pytest
 
 from src.characters.player import Player
 from src.enums.item_types import ItemType
+from src.items.pillar import Pillar
 from src.items.potion import HealingPotion, VisionPotion
-
-
-# @pytest.fixture
-# def new_adventurer():
-#     return Player("John", 50, 1,
-#                   0, [])
 
 
 def test_to_string():
@@ -82,12 +77,19 @@ def test_drop_non_existent_items():
     adventurer = Player("John", 50, 1, 0, [])
     healing_potion = HealingPotion()
     vision_potion = VisionPotion()
+    abstraction_pillar = Pillar("abstraction")
+    encapsulation_pillar = Pillar("encapsulation")
+    inheritance_pillar = Pillar("inheritance")
+    polymorphism_pillar = Pillar("polymorphism")
+
     adventurer.drop_from_inventory(healing_potion)
     adventurer.drop_from_inventory(vision_potion)
-    # adventurer.drop_from_inventory(healing_potion)
+    adventurer.drop_from_inventory(abstraction_pillar)
+    adventurer.drop_from_inventory(encapsulation_pillar)
+    adventurer.drop_from_inventory(inheritance_pillar)
+    adventurer.drop_from_inventory(polymorphism_pillar)
     actual_string = adventurer.to_string()
     assert actual_string == expected_string
-
 
 
 def test_add_pillar():
