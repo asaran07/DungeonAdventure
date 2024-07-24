@@ -13,11 +13,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-# TODO: Move everything below into their appropriate classes.
-# room = Room("Main Entrance")
-# room2 = Room("Lobby")
-# room.connect(Direction.NORTH, room2)
-# sword = Weapon("Excalibur", ItemType.WEAPON, "A legendary sword", 5.0, WeaponType.SWORD, 100)
-#
-# print(room)

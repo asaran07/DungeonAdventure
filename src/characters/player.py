@@ -22,7 +22,7 @@ class Player:
             hit_points: int = 50,
             total_healing_potions: int = 1,
             total_vision_potions: int = 0,
-            pillars_found: List[Pillar] = [],
+            pillars_found: Optional[List[Pillar]] = None,
     ) -> None:
         """
         Constructor for player Class
@@ -76,14 +76,14 @@ class Player:
         """This adds an item to the players inventory."""
         # if there is an item in the room, player is able to pick the item up(add to inventory)
         # keeping track of total vision & healing potions as well as pillars:
-        if item.get_name() == "healing_potion":
+        if item.name == "healing_potion":
             self._total_healing_potions += 1
             self._player_inventory.append(self._healing_potion)
-        elif item.get_name() == "vision_potion":
+        elif item.name == "vision_potion":
             self._total_vision_potions += 1
             self._player_inventory.append(self._vision_potion)
-        elif item.get_name() == "Pillar":
-            self._pillars_found.append(Pillar(item.get_name()))
+        elif item.name == "Pillar":
+            self._pillars_found.append(Pillar(item.name))
             self._player_inventory.append(item)  # <-- SHOULD FIX THIS!
 
         # maybe add something so that if the item isn't valid, display something? or do nothing
@@ -91,19 +91,19 @@ class Player:
 
     def drop_from_inventory(self, item: Item) -> None:
         # if there is an item in the room, player is able to drop the item (add to room's list of items)
-        if item.get_name() == "healing_potion":
+        if item.name == "healing_potion":
             # check amount of healing potions
             if self._total_healing_potions == 0:
                 return  # return nothing--> in order to skip the method
             self._total_healing_potions -= 1
             self._player_inventory.remove(self._healing_potion)
-        elif item.get_name() == "vision_potion":
+        elif item.name == "vision_potion":
             if self._total_vision_potions == 0:  # skip the method
                 return
             self._total_vision_potions -= 1
             self._player_inventory.remove(self._vision_potion)
-        elif item.get_name() == "pillar":
-            self._pillars_found.remove(Pillar(item.get_name()))
+        elif item.name == "pillar":
+            self._pillars_found.remove(Pillar(item.name))
             self._player_inventory.remove(item)  # <-- SHOULD FIX THIS
         # removing from room's list will be implemented somewhere later**
 
