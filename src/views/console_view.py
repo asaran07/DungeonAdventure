@@ -27,7 +27,7 @@ class ConsoleView(View):
         return {"name": name}
 
     def display_game_state(self, game_model: GameModel):
-        player = game_model.get_player()
+        player = game_model.player
         if player is not None:
             print(f"Player: {player.get_name()}")
             print(f"HP: {player.get_hp()}")

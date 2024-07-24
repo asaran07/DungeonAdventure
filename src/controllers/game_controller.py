@@ -17,10 +17,10 @@ class GameController:
         self.player_action_controller = PlayerActionController(game_model)
 
     def run_game(self):
-        self.game_model.set_state(GameState.TITLE_SCREEN)
+        self.game_model.game_state = GameState.TITLE_SCREEN
 
         while not self.game_model.is_game_over():
-            current_state = self.game_model.get_state()
+            current_state = self.game_model.game_state
 
             if current_state == GameState.TITLE_SCREEN:
                 self.handle_title_screen()
@@ -33,14 +33,16 @@ class GameController:
         self.view.display_title_screen()
         choice = self.view.get_user_input()
         if choice == "1":  # Start New Game
-            self.game_model.set_state(GameState.PLAYER_CREATION)
+            self.game_model.game_state = GameState.PLAYER_CREATION
         elif choice == "2":  # Quit
             self.game_model.set_game_over(True)
 
     def handle_player_creation(self):
         player_data = self.view.get_player_creation_input()
         self.game_model.create_player(player_data)
-        self.game_model.set_state(GameState.EXPLORING)
+        self.game_model.make_rooms()
+        self.game_model.player.current_room = self.game_model.dungeon.get_room("Room 1")
+        self.game_model.game_state = GameState.EXPLORING
 
     def handle_exploration(self):
         self.view.display_game_state(self.game_model)
