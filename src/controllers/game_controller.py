@@ -46,6 +46,7 @@ class GameController:
         self.game_model.game_state = GameState.EXPLORING
 
     def handle_exploration(self):
+        self.view.display_player_status(self.game_model)
         self.view.display_available_actions(self.game_model)
         action = self.view.get_user_input("Please enter your choice: ")
         self.player_action_controller.handle_action(action)

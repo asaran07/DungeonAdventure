@@ -21,7 +21,6 @@ class GameModel:
         self._player: Player = self._create_default_player()
         self._game_state = GameState.TITLE_SCREEN
         self.game_over = False
-        self.make_rooms()
         self.current_room = self._dungeon.get_entrance_room()
         self._player.current_room = self.current_room
 

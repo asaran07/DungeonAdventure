@@ -12,7 +12,7 @@ class View(ABC):
     """
 
     @abstractmethod
-    def display_available_actions(self, game_model: GameModel) -> str:
+    def display_available_actions(self, game_model: GameModel):
         pass
 
     @abstractmethod
@@ -29,4 +29,8 @@ class View(ABC):
 
     @abstractmethod
     def display_message(self, message):
+        pass
+
+    @abstractmethod
+    def display_player_status(self, game_model: GameModel):
         pass
