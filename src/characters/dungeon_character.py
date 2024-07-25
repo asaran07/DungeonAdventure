@@ -8,11 +8,19 @@ random_damage = Random(222)
 
 # assert random_damage.randint(2, 5) == 5
 
+
 class DungeonCharacter:
     """this class can be used with either the Hero or Monster classes"""
 
-    def __init__(self, name: str = "generic character", hp: int = 10, min_damage: int = 1, max_damage: int = 10,
-                 attack_speed: int = 1, chance_to_hit: int = 50) -> object:
+    def __init__(
+        self,
+        name: str = "generic character",
+        hp: int = 10,
+        min_damage: int = 1,
+        max_damage: int = 10,
+        attack_speed: int = 1,
+        chance_to_hit: int = 50,
+    ) -> None:
         self.name = name
         self.hp = hp
         self.min_damage = min_damage
@@ -24,13 +32,15 @@ class DungeonCharacter:
         """determines this character's attack against an opponent character"""
         dice_roll_to_hit = random.randint(1, 100)
 
-        if self.hp > 0 and dice_roll_to_hit <= self.chance_to_hit:  #if the hit connected
-            #ex: If character has 90% chance to hit, anything from 1 to 90 would hit
+        if (
+            self.hp > 0 and dice_roll_to_hit <= self.chance_to_hit
+        ):  # if the hit connected
+            # ex: If character has 90% chance to hit, anything from 1 to 90 would hit
             opponent.lose_health()
-        elif self.hp > 0 and dice_roll_to_hit > self.chance_to_hit:  #if the hit missed
-            #ex: If character has 90% chance to hit, anything from 91 to 100 would miss
+        elif self.hp > 0 and dice_roll_to_hit > self.chance_to_hit:  # if the hit missed
+            # ex: If character has 90% chance to hit, anything from 91 to 100 would miss
             pass
-        else:  #if this attacking character is at 0 or less hp (aka already KOed)
+        else:  # if this attacking character is at 0 or less hp (aka already KOed)
             pass
 
     def lose_health(self):

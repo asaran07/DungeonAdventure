@@ -31,7 +31,8 @@ class GameController:
 
     def handle_title_screen(self):
         self.view.display_title_screen()
-        choice = self.view.get_user_input()
+        choice = self.view.get_user_input("Please enter your choice: ")
+
         if choice == "1":  # Start New Game
             self.game_model.game_state = GameState.PLAYER_CREATION
         elif choice == "2":  # Quit
@@ -45,8 +46,8 @@ class GameController:
         self.game_model.game_state = GameState.EXPLORING
 
     def handle_exploration(self):
-        self.view.display_game_state(self.game_model)
-        action = self.view.get_user_input()
+        self.view.display_available_actions(self.game_model)
+        action = self.view.get_user_input("Please enter your choice: ")
         self.player_action_controller.handle_action(action)
 
     def handle_input(self, user_input):

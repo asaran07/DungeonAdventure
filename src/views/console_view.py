@@ -1,12 +1,12 @@
 from typing import Dict
+from src.enums.game_state import GameState
 from src.game.dungeon_adventure import GameModel
 from src.views.view import View
 
 
 class ConsoleView(View):
     """
-    Implements the 'View' interface for text-based gameplay. This class handles all console I/O operations,
-    including displaying the current game state, room descriptions, player status etc.
+    This class displays things to the console and gets input from the player
     """
 
     def display_message(self, message):
@@ -18,15 +18,16 @@ class ConsoleView(View):
         print("2. Quit")
 
     # TODO: Update this method to use a custom string as params
-    def get_user_input(self):
-        return input("Enter your choice: ")
+    def get_user_input(self, prompt: str) -> str:
+        return input(prompt)
 
     def get_player_creation_input(self) -> Dict:
         name = input("Enter your character's name: ")
         # We can add more inputs later
         return {"name": name}
 
-    def display_game_state(self, game_model: GameModel):
+    def display_player_status(self, game_model: GameModel):
+        """Displays the Player's info and location, along with room details"""
         player = game_model.player
         if player is not None:
             print(f"Player: {player.get_name()}")
@@ -40,7 +41,12 @@ class ConsoleView(View):
         else:
             print("Player does not exist.")
 
-        print("Available actions:")
-        print("- move [direction]")
-        print("- use [item]")
-        print("- inventory")
+    def display_available_actions(self, game_model) -> str:
+        if game_model.game_state == GameState.EXPLORING:
+            print("Available actions:")
+            print("- move [direction]")
+            print("- use [item]")
+            print("- inventory")
+            return self.get_user_input("Please enter your action: ")
+        else:
+            return "No info on what to display using game state"

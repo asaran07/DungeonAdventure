@@ -16,7 +16,7 @@ class PlayerActionController:
 
     def move_player(self, direction: Direction):
         player = self.game_model.player
-        current_room: Room = player.current_room
+        current_room = player.current_room
 
         if direction in dict(current_room.get_open_gates()):
             new_room = current_room.connections[direction]

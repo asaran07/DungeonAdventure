@@ -1,11 +1,9 @@
-from typing import Optional, Dict
-
+from typing import Dict
 from src.characters import Player
 from src.dungeon import Dungeon, Room
 from src.enums import Direction
 from src.enums.game_state import GameState
 from src.enums.item_types import WeaponType
-from src.items.item import Item
 from src.items.weapon import Weapon
 
 
@@ -19,19 +17,20 @@ class GameModel:
     """
 
     def __init__(self):
-        # Note: Not sure if the Dungeon should be passed from the main class or not
         self._dungeon: Dungeon = Dungeon()
-        self._player: Optional[Player] = None
-        self.current_room = None
-        self.game_over = False
+        self._player: Player = self._create_default_player()
         self._game_state = GameState.TITLE_SCREEN
+        self.game_over = False
+        self.make_rooms()
+        self.current_room = self._dungeon.get_entrance_room()
+        self._player.current_room = self.current_room
 
     @property
     def dungeon(self) -> Dungeon:
         return self._dungeon
 
     @property
-    def player(self) -> Optional[Player]:
+    def player(self) -> Player:
         return self._player
 
     @property
@@ -45,49 +44,53 @@ class GameModel:
     def make_rooms(self):
         self._dungeon.add_room("Room 1")
         self._dungeon.add_and_connect_room("Room 2", "Room 1", Direction.NORTH)
-        self._dungeon.get_room("Room 1").add_item(Weapon("Basic Sword", "A basic sword", 1, WeaponType.SWORD, 2, 10))
+        self._dungeon.get_room("Room 1").add_item(
+            Weapon("Basic Sword", "A basic sword", 1, WeaponType.SWORD, 2, 10)
+        )
+        self._dungeon.set_entrance_room("Room 1")
 
-    def is_game_over(self):
+    def is_game_over(self) -> bool:
         return self.game_over
 
     def set_game_over(self, boolean: bool) -> None:
         if boolean:
             self._game_state = GameState.GAME_OVER
+        self.game_over = boolean
 
-    def create_default_player(self):
-        self.create_player({
-            "name": "Player1",
-            "hit_points": 100,
-            "total_healing_potions": 0,
-            "total_vision_potions": 0,
-            "pillars_found": []
-        })
+    def _create_default_player(self) -> Player:
+        return Player(
+            name="Player1",
+            hit_points=100,
+            total_healing_potions=0,
+            total_vision_potions=0,
+            pillars_found=[],
+        )
 
     def create_player(self, player_data: Dict):
         """
-        Creates the player instance based on the provided player data.
+        Creates or updates the player instance based on the provided player data.
         :param player_data: A dictionary containing player attributes
         """
-        if self.player is None:
-            self._player = Player(
-                name=player_data.get("name", "Unnamed Hero"),
-                hit_points=player_data.get("hit_points", 100),
-                total_healing_potions=player_data.get("total_healing_potions", 0),
-                total_vision_potions=player_data.get("total_vision_potions", 0),
-                pillars_found=player_data.get("pillars_found", []),
-            )
-            if self.current_room is None:
-                self.current_room = self._dungeon.get_entrance_room()
-            self.player.current_room = self.current_room
+        self._player = Player(
+            name=player_data.get("name", self._player.get_name),
+            hit_points=player_data.get("hit_points", self._player.get_hp),
+            total_healing_potions=player_data.get(
+                "total_healing_potions", self._player._total_healing_potions
+            ),
+            total_vision_potions=player_data.get(
+                "total_vision_potions", self._player._total_vision_potions
+            ),
+            pillars_found=player_data.get("pillars_found", self._player._pillars_found),
+        )
+        self._player.current_room = self.current_room
 
     def update_player(self, player_data: Dict):
         """
         Updates the player instance based on the provided player data.
         :param player_data: A dictionary containing player attributes
         """
-        if self.player is not None:
-            for key, value in player_data.items():
-                try:
-                    setattr(self.player, key, value)
-                except AttributeError:
-                    print(f"Warning: Attribute '{key}' not found in Player class.")
+        for key, value in player_data.items():
+            if hasattr(self._player, key):
+                setattr(self._player, key, value)
+            else:
+                print(f"Warning: Attribute '{key}' not found in Player class.")

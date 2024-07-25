@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Dict
 
+from src.game.dungeon_adventure import GameModel
+
 
 class View(ABC):
     """
@@ -10,11 +12,11 @@ class View(ABC):
     """
 
     @abstractmethod
-    def display_game_state(self, game_model):
+    def display_available_actions(self, game_model: GameModel) -> str:
         pass
 
     @abstractmethod
-    def get_user_input(self) -> str:
+    def get_user_input(self, prompt: str) -> str:
         pass
 
     @abstractmethod
