@@ -8,6 +8,7 @@ from src.items.potion import HealingPotion, VisionPotion
 
 class Player:
     """Represents the player / adventurer."""
+
     # creating class level variables of just these items to prevent object mismatch when removing from inventory
     _healing_potion: HealingPotion = HealingPotion()
     _vision_potion: VisionPotion = VisionPotion()
@@ -17,12 +18,12 @@ class Player:
     _polymorphism_pillar = Pillar("polymorphism")
 
     def __init__(
-            self,
-            name: str = "John",
-            hit_points: int = 50,
-            total_healing_potions: int = 1,
-            total_vision_potions: int = 0,
-            pillars_found: Optional[List[Pillar]] = None,
+        self,
+        name: str = "John",
+        hit_points: int = 50,
+        total_healing_potions: int = 1,
+        total_vision_potions: int = 0,
+        pillars_found: Optional[List[Pillar]] = None,
     ) -> None:
         """
         Constructor for player Class
@@ -46,8 +47,7 @@ class Player:
         #     self._pillars_found = []
         self.current_room: Optional[Room] = None
 
-        # player inventory will initially be empty list, append and remove items as needed
-        self._player_inventory: List = []
+        # player inventory will initially be empty list, append and remove items as needed self._player_inventory: List = []
 
         # assign parameter values to (initially empty) player inventory
         self._assign_inventory()
@@ -137,26 +137,26 @@ class Player:
     def inventory_to_string(self) -> str:
         """Returns the player's inventory in a readable string format."""
         inventory = (
-                "Healing Potions: "
-                + str(self._total_healing_potions)
-                + "\n"
-                + "Vision Potions: "
-                + str(self._total_vision_potions)
-                + "\n"
-                + "Pillars Found: "
-                + self._pillars_to_string()
+            "Healing Potions: "
+            + str(self._total_healing_potions)
+            + "\n"
+            + "Vision Potions: "
+            + str(self._total_vision_potions)
+            + "\n"
+            + "Pillars Found: "
+            + self._pillars_to_string()
         )
         return inventory
 
     def to_string(self) -> str:
         """Turns the attributes of the player class into a readable format."""
         string = (
-                "Name: "
-                + self._name
-                + "\n"
-                + "Hit Points: "
-                + str(self._hit_points)
-                + "\n"
-                + self.inventory_to_string()
+            "Name: "
+            + self._name
+            + "\n"
+            + "Hit Points: "
+            + str(self._hit_points)
+            + "\n"
+            + self.inventory_to_string()
         )
         return string

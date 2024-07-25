@@ -53,6 +53,19 @@ class PlayerActionController:
             return True
         return False
 
-    # and we can add other player actions like use_item or attack etc
-    def handle_action(self, action):
-        pass
+    def handle_action(self, action: str):
+        action_parts = action.lower().split()
+        if action_parts[0] == "move" and len(action_parts) > 1:
+            direction_str = action_parts[1]
+            self.handle_movement(direction_str)
+
+    def handle_movement(self, direction_str: str):
+        try:
+            direction = Direction[direction_str.upper()]
+            success = self.move_player(direction)
+            if success:
+                print(f"You moved {direction.name.lower()}.")
+            else:
+                print(f"You can't move {direction.name.lower()} from here.")
+        except KeyError:
+            print("Invalid direction. Please use North, South, East, or West.")
