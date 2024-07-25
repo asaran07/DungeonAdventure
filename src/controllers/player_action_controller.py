@@ -61,11 +61,11 @@ class PlayerActionController:
 
     def handle_movement(self, direction_str: str):
         try:
-            direction = Direction[direction_str.upper()]
+            direction = Direction.from_string(direction_str)
             success = self.move_player(direction)
             if success:
                 print(f"You moved {direction.name.lower()}.")
             else:
                 print(f"You can't move {direction.name.lower()} from here.")
-        except KeyError:
-            print("Invalid direction. Please use North, South, East, or West.")
+        except ValueError as e:
+            print(str(e))
