@@ -60,9 +60,6 @@ class GameModel:
         return Player(
             name="Player1",
             hit_points=100,
-            total_healing_potions=0,
-            total_vision_potions=0,
-            pillars_found=[],
         )
 
     def create_player(self, player_data: Dict):
@@ -71,15 +68,8 @@ class GameModel:
         :param player_data: A dictionary containing player attributes
         """
         self._player = Player(
-            name=player_data.get("name", self._player.get_name),
-            hit_points=player_data.get("hit_points", self._player.get_hp),
-            total_healing_potions=player_data.get(
-                "total_healing_potions", self._player._total_healing_potions
-            ),
-            total_vision_potions=player_data.get(
-                "total_vision_potions", self._player._total_vision_potions
-            ),
-            pillars_found=player_data.get("pillars_found", self._player._pillars_found),
+            name=player_data.get("name", self._player.name),
+            hit_points=player_data.get("hit_points", self._player.hit_points),
         )
         self._player.current_room = self.current_room
 

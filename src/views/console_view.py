@@ -66,9 +66,9 @@ class ConsoleView(View):
         if player is None:
             raise PlayerNotExistException("Player does not exist in the game model")
 
-        print(f"Player: {player.get_name()}")
-        print(f"HP: {player.get_hp()}")
-        current_room = player.get_current_room()
+        print(f"Player: {player.name}")
+        print(f"HP: {player.hit_points}")
+        current_room = player.current_room
         if current_room is None:
             raise RoomNotExistException("Player is not in a room")
 

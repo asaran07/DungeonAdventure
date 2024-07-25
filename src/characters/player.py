@@ -1,162 +1,162 @@
 from typing import List, Optional
 
 from src.dungeon.room import Room
+from src.enums.item_types import ItemType
 from src.items.pillar import Pillar
 from src.items.item import Item
 from src.items.potion import HealingPotion, VisionPotion
 
+from typing import Dict, Tuple, Optional
+from src.dungeon.room import Room
+from src.items.item import Item
+
+
+class InvalidPlayerAttributeError(Exception):
+    """Custom exception for invalid player attributes."""
+    pass
+
+
+class InventoryFullError(Exception):
+    """Custom exception for when the inventory is full."""
+    pass
+
 
 class Player:
-    """Represents the player / adventurer."""
-
-    # creating class level variables of just these items to prevent object mismatch when removing from inventory
-    _healing_potion: HealingPotion = HealingPotion()
-    _vision_potion: VisionPotion = VisionPotion()
-    _abstraction_pillar = Pillar("abstraction")
-    _encapsulation_pillar = Pillar("encapsulation")
-    _inheritance_pillar = Pillar("inheritance")
-    _polymorphism_pillar = Pillar("polymorphism")
+    """Represents the player character in the game."""
 
     def __init__(
-        self,
-        name: str = "John",
-        hit_points: int = 50,
-        total_healing_potions: int = 1,
-        total_vision_potions: int = 0,
-        pillars_found: Optional[List[Pillar]] = None,
+            self,
+            name: str,
+            hit_points: int,
+            inventory_weight_limit: float = 50.0
     ) -> None:
         """
-        Constructor for player Class
+        Initialize a new Player instance.
 
-        :param str name: Name of player
-        :param int hit_points: health of the player
-        :param int total_healing_potions: Number of healing potions
-        :param int total_vision_potions: Number of vision potions
-        :param List pillars_found: List of pillars found
+        :param name: The name of the player
+        :param hit_points: The initial hit points of the player
+        :param inventory_weight_limit: The maximum weight the player can carry
+        :raises InvalidPlayerAttributeError: If name or hit_points are invalid
         """
-        self._name = name
-        self._hit_points = (
-            hit_points  # 75-100; ***should be randomly generated between 75 & 100***
-        )
-        self._total_healing_potions = total_healing_potions
-        self._total_vision_potions = total_vision_potions
-        self._pillars_found: List[Pillar] = (
-            pillars_found  # list of pillar pieces found(4 total/possible)
-        )
-        # if self._pillars_found is None:
-        #     self._pillars_found = []
+        # NOTE: Raising an exception might seem weird because we don't want the game to break when
+        # the player enters wrong info. However, this is the player class, checking for correct input
+        # should already be delt with somewhere else. As if we let this slide deep here in the player
+        # class, things would break further.
+        if not name or not isinstance(name, str):
+            raise InvalidPlayerAttributeError("Name must be a non-empty string")
+        if not isinstance(hit_points, int) or hit_points <= 0 or hit_points > 100:
+            raise InvalidPlayerAttributeError("Hit points must be a positive integer between 1 and 100")
+
+        self._name: str = name
+        self._hit_points: int = hit_points
+        self._inventory: Dict[str, Tuple[Item, int]] = {}
+        self._inventory_weight_limit: float = inventory_weight_limit
         self.current_room: Optional[Room] = None
 
-        # player inventory will initially be empty list, append and remove items as needed self._player_inventory: List = []
-
-        # assign parameter values to (initially empty) player inventory
-        self._assign_inventory()
-
-    def get_current_room(self) -> Optional[Room]:
-        return self.current_room
-
-    def get_hp(self) -> int:
-        return self._hit_points
-
-    def get_name(self) -> str:
+    @property
+    def name(self) -> str:
+        """Get the player's name."""
         return self._name
 
-    # The contents of this method may be better suited to be in the healing_potion class
-    # Perhaps an implementation of this method would be to make a call to that class?
-    def use_health_potion(self) -> None:
-        """Uses health potion on player to increase health"""
-        self._hit_points += 15  # agreed upon by team that 15 is good
-        self._total_healing_potions -= 1
-        # Update player inventory as well as room's list
+    @property
+    def hit_points(self) -> int:
+        """Get the player's current hit points."""
+        return self._hit_points
 
-    def move(self):
-        """To be implemented"""
-        # Check w/ team regarding how this is going to work --> team verdict: will come back to later
-        pass
+    @hit_points.setter
+    def hit_points(self, value: int) -> None:
+        """
+        Set the player's hit points.
+
+        :param value: The new hit points value
+        :raises InvalidPlayerAttributeError: If the value is invalid
+        """
+        if not isinstance(value, int) or value < 0:
+            raise InvalidPlayerAttributeError("Hit points must be a non-negative integer")
+        self._hit_points = value
 
     def add_to_inventory(self, item: Item) -> None:
-        """This adds an item to the players inventory."""
-        # if there is an item in the room, player is able to pick the item up(add to inventory)
-        # keeping track of total vision & healing potions as well as pillars:
-        if item.name == "healing_potion":
-            self._total_healing_potions += 1
-            self._player_inventory.append(self._healing_potion)
-        elif item.name == "vision_potion":
-            self._total_vision_potions += 1
-            self._player_inventory.append(self._vision_potion)
-        elif item.name == "Pillar":
-            self._pillars_found.append(Pillar(item.name))
-            self._player_inventory.append(item)  # <-- SHOULD FIX THIS!
+        """
+        Add an item to the player's inventory.
 
-        # maybe add something so that if the item isn't valid, display something? or do nothing
-        # removing from room's list will be implemented somewhere later**
+        :param item: The item to add
+        :raises InventoryFullError: If adding the item would exceed the weight limit
+        """
+        current_weight = sum(item.weight * quantity for item, quantity in self._inventory.values())
+        if current_weight + item.weight > self._inventory_weight_limit:
+            raise InventoryFullError("Adding this item would exceed the inventory weight limit")
 
-    def drop_from_inventory(self, item: Item) -> None:
-        # if there is an item in the room, player is able to drop the item (add to room's list of items)
-        if item.name == "healing_potion":
-            # check amount of healing potions
-            if self._total_healing_potions == 0:
-                return  # return nothing--> in order to skip the method
-            self._total_healing_potions -= 1
-            self._player_inventory.remove(self._healing_potion)
-        elif item.name == "vision_potion":
-            if self._total_vision_potions == 0:  # skip the method
-                return
-            self._total_vision_potions -= 1
-            self._player_inventory.remove(self._vision_potion)
-        elif item.name == "pillar":
-            self._pillars_found.remove(Pillar(item.name))
-            self._player_inventory.remove(item)  # <-- SHOULD FIX THIS
-        # removing from room's list will be implemented somewhere later**
-
-    def _pillars_to_string(self) -> str:
-        """This helper method helps print the pillars that the player has found."""
-        pillars = ""
-        if self._pillars_found is None:
-            return pillars  # do nothing
+        if item.name in self._inventory:
+            self._inventory[item.name] = (item, self._inventory[item.name][1] + 1)
         else:
-            for pillar in self._pillars_found:
-                pillars += pillar.get_name() + " "
+            self._inventory[item.name] = (item, 1)
 
-        return pillars
+    def remove_from_inventory(self, item_name: str) -> Optional[Item]:
+        """
+        Remove an item from the player's inventory.
 
-    def _assign_inventory(self) -> None:
-        """This helper method creates an inventory based on the player parameter values."""
-        # ex: if player was created with 1 healing potion, add a healing potion to inventory.
-        if self._total_healing_potions > 0:
-            num = self._total_healing_potions
-            while num != 0:
-                self._player_inventory.append(self._healing_potion)
-                num -= 1
-        elif self._total_vision_potions > 0:
-            num = self._total_vision_potions
-            while num != 0:
-                self._player_inventory.append(self._vision_potion)
-                num -= 1
+        :param item_name: The name of the item to remove
+        :return: The removed item, or None if the item was not in the inventory
+        """
+        if item_name in self._inventory:
+            item, quantity = self._inventory[item_name]
+            if quantity > 1:
+                self._inventory[item_name] = (item, quantity - 1)
+            else:
+                del self._inventory[item_name]
+            return item
+        return None
+
+    def use_item(self, item_name: str) -> bool:
+        """
+        Use an item from the player's inventory.
+
+        :param item_name: The name of the item to use
+        :return: True if the item was used successfully, False otherwise
+        """
+        if item_name in self._inventory:
+            item, quantity = self._inventory[item_name]
+            use_result = item.use()
+
+            if use_result:
+                # If the item is a consumable (like a potion), remove it after use
+                if item.item_type == ItemType.POTION:
+                    if quantity > 1:
+                        self._inventory[item_name] = (item, quantity - 1)
+                    else:
+                        del self._inventory[item_name]
+                # For other item types (like weapons), we keep them in the inventory
+                return True
+
+        return False
 
     def inventory_to_string(self) -> str:
-        """Returns the player's inventory in a readable string format."""
-        inventory = (
-            "Healing Potions: "
-            + str(self._total_healing_potions)
-            + "\n"
-            + "Vision Potions: "
-            + str(self._total_vision_potions)
-            + "\n"
-            + "Pillars Found: "
-            + self._pillars_to_string()
-        )
-        return inventory
+        """
+        Get a string representation of the player's inventory.
 
-    def to_string(self) -> str:
-        """Turns the attributes of the player class into a readable format."""
-        string = (
-            "Name: "
-            + self._name
-            + "\n"
-            + "Hit Points: "
-            + str(self._hit_points)
-            + "\n"
-            + self.inventory_to_string()
-        )
-        return string
+        :return: A formatted string describing the inventory contents
+        """
+        if not self._inventory:
+            return "Inventory is empty"
+
+        inventory_str = "Inventory:\n"
+        for item_name, (item, quantity) in self._inventory.items():
+            inventory_str += f"  {item_name}: {quantity} (Weight: {item.weight * quantity})\n"
+        inventory_str += f"Total Weight: {self.get_inventory_weight()}/{self._inventory_weight_limit}"
+        return inventory_str
+
+    def get_inventory_weight(self) -> float:
+        """
+        Calculate the current total weight of the inventory.
+
+        :return: The total weight of all items in the inventory
+        """
+        return sum(item.weight * quantity for item, quantity in self._inventory.values())
+
+    def __str__(self) -> str:
+        """
+        Get a string representation of the player.
+
+        :return: A formatted string describing the player
+        """
+        return f"Player: {self._name}\nHP: {self._hit_points}\n{self.inventory_to_string()}"
