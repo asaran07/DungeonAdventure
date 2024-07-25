@@ -1,3 +1,4 @@
+from src.characters.player import Player
 from src.dungeon import Room
 from src.enums.room_types import Direction
 from src.game.dungeon_adventure import GameModel
@@ -15,7 +16,7 @@ class PlayerActionController:
         self.game_model = game_model
 
     def move_player(self, direction: Direction):
-        player = self.game_model.player
+        player: Player = self.game_model.player
         current_room = player.current_room
 
         if direction in dict(current_room.get_open_gates()):
