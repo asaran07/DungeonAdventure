@@ -6,31 +6,26 @@ from src.views.view import View
 
 class ConsoleViewException(Exception):
     """Base exception for ConsoleView"""
-
     pass
 
 
 class InvalidInputException(ConsoleViewException):
     """Raised when user input is invalid"""
-
     pass
 
 
 class PlayerNotExistException(ConsoleViewException):
     """Raised when player does not exist in the game model"""
-
     pass
 
 
 class RoomNotExistException(ConsoleViewException):
     """Raised when current room does not exist for the player"""
-
     pass
 
 
 class UnsupportedGameStateException(ConsoleViewException):
     """Raised when trying to display actions for an unsupported game state"""
-
     pass
 
 
@@ -66,21 +61,20 @@ class ConsoleView(View):
         if player is None:
             raise PlayerNotExistException("Player does not exist in the game model")
 
-        print(f"Player: {player.name}")
-        print(f"HP: {player.hit_points}")
+        # print(f"Player: {player.name}")
+        # print(f"HP: {player.hit_points}")
         current_room = player.current_room
         if current_room is None:
             raise RoomNotExistException("Player is not in a room")
 
-        print(f"Player is in room: {current_room.name}")
-        print(f"Current Room: {current_room.get_description()}")
+        # print(f"Current Room: {current_room.get_description()}")
 
     def display_available_actions(self, game_model):
         if game_model.game_state == GameState.EXPLORING:
-            print("Available actions:")
-            print("- move [direction]")
-            print("- use [item]")
-            print("- inventory")
+            print("Available actions: move, map")
+            # print("- move [direction]")
+            # print("- use [item]")
+            # print("- inventory")
         else:
             raise UnsupportedGameStateException(
                 f"Cannot display actions for game state: {game_model.game_state}"

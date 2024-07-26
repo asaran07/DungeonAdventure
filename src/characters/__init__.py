@@ -1,3 +1,3 @@
-from .player import Player, Pillar
+from .player import Player
 
-__all__ = ['Player', 'Pillar']
+__all__ = ['Player']

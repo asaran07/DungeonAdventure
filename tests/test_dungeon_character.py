@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch
 from src.characters.dungeon_character import DungeonCharacter
 
+
 class TestDungeonCharacter(unittest.TestCase):
 
     def setUp(self):
@@ -51,6 +52,7 @@ class TestDungeonCharacter(unittest.TestCase):
         mock_randint.return_value = 150  # Simulating a damage roll greater than current HP
         self.character.lose_health()
         self.assertEqual(self.character.hp, 0)
+
 
 if __name__ == '__main__':
     unittest.main()

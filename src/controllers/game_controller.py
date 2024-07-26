@@ -42,7 +42,10 @@ class GameController:
         player_data = self.view.get_player_creation_input()
         self.game_model.create_player(player_data)
         self.game_model.make_rooms()
-        self.game_model.player.current_room = self.game_model.dungeon.get_room("Room 1")
+        entrance_room = self.game_model.dungeon.get_room("Room 1")
+        self.game_model.player.current_room = entrance_room
+        entrance_room.explore()  # Mark the entrance room as explored
+        self.player_action_controller.initialize_map()
         self.game_model.game_state = GameState.EXPLORING
 
     def handle_exploration(self):

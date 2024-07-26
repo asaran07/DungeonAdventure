@@ -1,13 +1,7 @@
-from typing import List, Optional
+from typing import Dict, Tuple, Optional
 
 from src.dungeon.room import Room
 from src.enums.item_types import ItemType
-from src.items.pillar import Pillar
-from src.items.item import Item
-from src.items.potion import HealingPotion, VisionPotion
-
-from typing import Dict, Tuple, Optional
-from src.dungeon.room import Room
 from src.items.item import Item
 
 

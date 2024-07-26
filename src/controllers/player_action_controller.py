@@ -4,6 +4,7 @@ from src.dungeon import Room
 from src.enums.room_types import Direction
 from src.game.dungeon_adventure import GameModel
 from src.items.item import Item
+from src.views.map_visualizer import MapVisualizer
 
 
 class PlayerActionController:
@@ -13,6 +14,11 @@ class PlayerActionController:
 
     def __init__(self, game_model: GameModel):
         self.game_model = game_model
+        self.map_visualizer = MapVisualizer(game_model.dungeon)
+
+    def initialize_map(self):
+        """Initialize the map visualizer after the dungeon has been set up."""
+        self.map_visualizer.initialize()
 
     def move_player(self, direction: Direction) -> bool:
         """
@@ -31,12 +37,14 @@ class PlayerActionController:
             new_room = current_room.connections[direction]
             if new_room is not None:
                 player.current_room = new_room
+                new_room.explore()
+                self.map_visualizer.update_explored_rooms(new_room)  # Update explored rooms in map
                 return True
         return False
 
     def pick_up_item(self, item: Item) -> bool:
         """
-        Adds speficied item to the player's inventory.
+        Adds specified item to the player's inventory.
 
         :param item: The item to pick up
         :return: True if item was picked up, False otherwise
@@ -58,6 +66,12 @@ class PlayerActionController:
         if action_parts[0] == "move" and len(action_parts) > 1:
             direction_str = action_parts[1]
             self.handle_movement(direction_str)
+        elif action_parts[0] == "map":
+            self.display_map()
+
+    def display_map(self):
+        current_room = self.game_model.player.current_room
+        self.map_visualizer.display_map(current_room)
 
     def handle_movement(self, direction_str: str):
         try:

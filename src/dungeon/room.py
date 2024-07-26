@@ -13,11 +13,15 @@ class Room:
         """
         self.room_type = RoomType.NORMAL
         self.name: str = name
-        self.is_visible: bool = False  # For Fog of War if we decide to add that
+        self.is_visible: bool = False
+        self.is_explored: bool = False  # This is for fog of war
         self.items: List[Item] = []
         self.connections: Dict[Direction, Optional["Room"]] = {
             d: None for d in Direction
         }  # Creating a map in Python is goated
+
+    def explore(self):
+        self.is_explored = True
 
     def connect(self, direction: Direction, other_room: "Room") -> bool:
         """
@@ -28,8 +32,8 @@ class Room:
         :return: True if the connection was made, False otherwise
         """
         if (
-            self.connections[direction] is None
-            and other_room.connections[Room.opposite(direction)] is None
+                self.connections[direction] is None
+                and other_room.connections[Room.opposite(direction)] is None
         ):
             self.connections[direction] = other_room
             other_room.connections[Room.opposite(direction)] = self
@@ -93,10 +97,10 @@ class Room:
 
         return (
             f"Room: {self.name}\n"
-            f"Type: {self.room_type.name}\n"
-            f"Visible: {'Yes' if self.is_visible else 'No'}\n"
-            f"Connections: {connections}\n"
-            f"Items: {items}"
+            # f"Type: {self.room_type.name}\n"
+            # f"Visible: {'Yes' if self.is_visible else 'No'}\n"
+            # f"Connections: {connections}\n"
+            # f"Items: {items}"
         )
 
     @staticmethod

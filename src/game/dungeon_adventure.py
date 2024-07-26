@@ -46,7 +46,11 @@ class GameModel:
         self._dungeon.get_room("Room 1").add_item(
             Weapon("Basic Sword", "A basic sword", 1, WeaponType.SWORD, 2, 10)
         )
+        self._dungeon.add_and_connect_room("Room 3", "Room 2", Direction.EAST)
         self._dungeon.set_entrance_room("Room 1")
+
+        self._dungeon.add_and_connect_room("Room 4", "Room 3", Direction.EAST)
+        self._dungeon.add_and_connect_room("Room 5", "Room 3", Direction.NORTH)
 
     def is_game_over(self) -> bool:
         return self.game_over
