@@ -1,5 +1,8 @@
 # Ignore Python bytecode
 __pycache__/
+__pycache__
+
+.DS_Store
 
 # Ignore virtual environments
 venv/

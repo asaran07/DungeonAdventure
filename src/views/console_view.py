@@ -6,26 +6,31 @@ from src.views.view import View
 
 class ConsoleViewException(Exception):
     """Base exception for ConsoleView"""
+
     pass
 
 
 class InvalidInputException(ConsoleViewException):
     """Raised when user input is invalid"""
+
     pass
 
 
 class PlayerNotExistException(ConsoleViewException):
     """Raised when player does not exist in the game model"""
+
     pass
 
 
 class RoomNotExistException(ConsoleViewException):
     """Raised when current room does not exist for the player"""
+
     pass
 
 
 class UnsupportedGameStateException(ConsoleViewException):
     """Raised when trying to display actions for an unsupported game state"""
+
     pass
 
 

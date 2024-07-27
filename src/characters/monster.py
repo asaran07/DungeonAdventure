@@ -1,37 +1,67 @@
-import random
 from src.characters.dungeon_character import DungeonCharacter
+from src.items.item import Item
+from typing import List, Optional
+import random
 
 
 class Monster(DungeonCharacter):
-    def __init__(self, name: str = "generic monster", hp: int = 70, min_damage: int = 15,
-                 max_damage: int = 30, attack_speed: int = 2, chance_to_hit: int = 60,
-                 chance_to_heal: int = 10, min_heal_points: int = 20,
-                 max_heal_points: int = 40):
-        self.chance_to_heal = chance_to_heal
-        self.min_heal_points = min_heal_points
-        self.max_heal_points = max_heal_points
+    def __init__(self, name: str = "Generic Monster",
+                 max_hp: int = 50,
+                 base_min_damage: int = 5,
+                 base_max_damage: int = 10,
+                 attack_speed: int = 3,
+                 base_hit_chance: int = 60,
+                 heal_chance: int = 10,
+                 min_heal: int = 5,
+                 max_heal: int = 10,
+                 xp_reward: int = 50,
+                 loot: Optional[List[Item]] = None):
+        super().__init__(name, max_hp, base_min_damage, base_max_damage, attack_speed, base_hit_chance)
+        self.heal_chance: int = heal_chance
+        self.min_heal: int = min_heal
+        self.max_heal: int = max_heal
+        self.xp_reward: int = xp_reward
+        self.loot: List[Item] = loot if loot is not None else []
 
-        super().__init__(name, hp, min_damage, max_damage,
-                                  attack_speed, chance_to_hit)
+    def attempt_heal(self) -> int:
+        """
+        Attempt to heal based on heal chance.
 
-    """ a Monster has a chance to heal after any attack that causes a loss of hit points 
-    -- this should be checked after the Monster has been attacked and hit points have 
-    been lost  """
+        :return: Amount healed (0 if healing didn't occur)
+        """
+        if random.randint(1, 100) <= self.heal_chance:
+            heal_amount = random.randint(self.min_heal, self.max_heal)
+            self.heal(heal_amount)
+            return heal_amount
+        return 0
 
-    def heal(self):
-        # Note: Still need to set a condition that calls heal when a monster takes damage
-        dice_roll_to_heal = random.randint(0, 100)
+    def drop_loot(self) -> List[Item]:
+        """
+        Return the monster's loot when defeated.
 
-        if self.hp > 0 and dice_roll_to_heal <= self.chance_to_heal:  # if heal successful
-            # ex: If monster has 90% chance to heal, anything from 1 to 90 would heal
-            self.gain_health()
-        elif self.hp > 0 and dice_roll_to_heal > self.chance_to_heal:  # if heal unsuccessful
-            # ex: If monster has 90% chance to heal, anything from 91 to 100 would not heal
-            pass
-        else:  # if this monster is at 0 or less hp (aka already KOed)
-            pass
+        :return: List of Item objects
+        """
+        dropped_loot = self.loot.copy()
+        self.loot.clear()
+        return dropped_loot
 
-    def gain_health(self):
-        amount: int = random.randint(self.min_heal_points, self.max_heal_points)
+    def attempt_attack(self, target: DungeonCharacter) -> int:
+        """
+        Attempt to attack and then try to heal.
 
-        self.hp += amount
+        :param target: The character to attack
+        :return: Damage dealt
+        """
+        damage_dealt = super().attempt_attack(target)
+        self.attempt_heal()
+        return damage_dealt
+
+    @classmethod
+    def create_custom_monster(cls, **kwargs):
+        """
+        Create a custom monster with specified attributes.
+
+        :param kwargs: Key-value pairs of attributes to customize
+        :return: A new Monster instance with custom attributes
+        """
+        return cls(**kwargs)
