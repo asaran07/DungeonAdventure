@@ -1,4 +1,6 @@
 from typing import List, Dict, Optional, Tuple, Set
+
+from src.constants.R import Resources
 from src.dungeon.room import Room
 from src.enums.room_types import Direction
 
@@ -58,7 +60,7 @@ class MapVisualizer:
 
         self.update_explored_rooms(current_room)
 
-        # Theres probably ways to make all this way more efficient and consist
+        # There's probably ways to make all this way more efficient and consist
         visible_rooms = self.explored_rooms
         min_x = min(x for x, _ in visible_rooms)
         max_x = max(x for x, _ in visible_rooms)
@@ -72,14 +74,14 @@ class MapVisualizer:
                 if (x, y) in visible_rooms:
                     room = self.grid[(x, y)]
                     if room == current_room:
-                        room_char = 'X'
+                        room_char = Resources.Map.CURRENT_ROOM_MARKER
                     elif room.is_explored:
-                        room_char = 'O'
+                        room_char = Resources.Map.EXPLORED_ROOM_MARKER
                     else:
-                        room_char = ' '
+                        room_char = Resources.Map.UNEXPLORED_ROOM_MARKER
                     room_line.append(f'[{room_char}]')
                 else:
-                    room_line.append('   ')
+                    room_line.append(Resources.Map.EMPTY_SPACE)
             map_lines.append(''.join(room_line))
 
         return map_lines
