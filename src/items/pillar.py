@@ -10,7 +10,7 @@ class Pillar(Item, ABC):
                  name: str,
                  description: str,
                  pillar_type: PillarType,
-                 weight: float = 1):
+                 weight: float = 1.0):
         """Create a Pillar item
 
         :param str name: Name of the pillar
