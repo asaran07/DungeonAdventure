@@ -3,19 +3,11 @@ from .game_logic import GameLogicError
 
 class DungeonError(GameLogicError):
     """Base class for dungeon-related errors"""
-    pass
 
 
-class RoomError(DungeonError):
-    """Base class for room-related errors"""
-    pass
-
-
-class RoomNotFoundError(RoomError):
+class RoomNotFoundError(DungeonError):
     """Raised when trying to access a non-existent room"""
-    pass
 
 
 class InvalidMovementError(DungeonError):
     """Raised when attempting an invalid movement"""
-    pass
