@@ -30,7 +30,7 @@ class HealingPotion(Potion):
 
     def use(self):
         print(
-            f"You drink the {self.get_name()}, recovering {self.get_hp_recovery()} HP!"
+            f"You drink the {self.name}, recovering {self.get_hp_recovery()} HP!"
         )
 
 
@@ -42,4 +42,4 @@ class VisionPotion(Potion):
         super().__init__(name, description, weight, PotionType.VISION)
 
     def use(self):
-        print(f"You drink the {self.get_name()}, revealing nearby rooms!")
+        print(f"You drink the {self.name}, revealing nearby rooms!")
