@@ -17,14 +17,14 @@ class Room:
         self.is_visible: bool = False
         self.is_explored: bool = False  # This is for fog of war
         self.items: List[Item] = []
-        self.monsters: List[Monster] = []
+        self._monsters: List[Monster] = []
         self.connections: Dict[Direction, Optional["Room"]] = {
             d: None for d in Direction
         }  # Creating a map in Python is goated
 
     @property
     def monsters(self) -> List[Monster]:
-        return self.monsters
+        return self._monsters
 
     @monsters.setter
     def monsters(self, value):

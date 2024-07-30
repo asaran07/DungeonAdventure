@@ -1,10 +1,13 @@
 from typing import Optional
 from src.characters.player import Player
+from src.combat.combat_handler import CombatHandler
 from src.dungeon import Room
 from src.enums.room_types import Direction
 from src.game.dungeon_adventure import GameModel
 from src.items.item import Item
+from src.views import view
 from src.views.map_visualizer import MapVisualizer
+from src.views.view import View
 
 
 class PlayerActionController:
@@ -12,9 +15,11 @@ class PlayerActionController:
     Includes methods for executing player actions.
     """
 
-    def __init__(self, game_model: GameModel):
+    def __init__(self, game_model: GameModel, view2: View):
         self.game_model = game_model
         self.map_visualizer = MapVisualizer(game_model.dungeon)
+        self._view = view2
+        self.combat_handler: CombatHandler = CombatHandler(game_model, self._view)
 
     def initialize_map(self):
         """Initialize the map visualizer after the dungeon has been set up."""
@@ -39,6 +44,7 @@ class PlayerActionController:
                 player.current_room = new_room
                 new_room.explore()
                 self.map_visualizer.update_explored_rooms(new_room)  # Update explored rooms in map
+                self.enter_room()
                 return True
         return False
 
@@ -89,3 +95,13 @@ class PlayerActionController:
                 print(f"You can't move {direction.name.lower()} from here.")
         except ValueError as e:
             print(str(e))
+
+    def enter_room(self):
+        room = self.game_model.player.current_room
+        print(f"You enter {room.name}")
+        print(room.get_open_gates())
+        if room.has_monsters:
+            print(f"You encounter monsters!")
+            self.combat_handler.initiate_combat(self.game_model.current_room)
+        else:
+            print("The room appears to be empty.")

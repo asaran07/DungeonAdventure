@@ -1,5 +1,6 @@
 from typing import Dict
 from src.characters import Player
+from src.characters.monster import Monster
 from src.dungeon import Dungeon, Room
 from src.enums import Direction
 from src.enums.game_state import GameState
@@ -43,6 +44,8 @@ class GameModel:
     def make_rooms(self):
         self._dungeon.add_room("Room 1")
         self._dungeon.add_and_connect_room("Room 2", "Room 1", Direction.NORTH)
+        test_monster = Monster()
+        self._dungeon.get_room("Room 2").add_monster(test_monster)
         self._dungeon.get_room("Room 1").add_item(
             Weapon("Basic Sword", "A basic sword", 1, WeaponType.SWORD, 2, 10)
         )

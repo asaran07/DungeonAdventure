@@ -1,3 +1,4 @@
+from src.combat.combat_handler import CombatHandler
 from src.controllers.player_action_controller import PlayerActionController
 from src.game.dungeon_adventure import GameModel
 from src.views.view import View
@@ -14,20 +15,13 @@ class GameController:
     def __init__(self, game_model: GameModel, view: View):
         self.game_model = game_model
         self.view = view
-        self.player_action_controller = PlayerActionController(game_model)
+        self.player_action_controller = PlayerActionController(game_model, view)
 
     def run_game(self):
         self.game_model.game_state = GameState.TITLE_SCREEN
 
         while not self.game_model.is_game_over():
-            try:
-                self.handle_current_state()
-            except GameStateError as e:
-                self.view.display_message(f"Game State Error: {e}")
-                self.reset_to_safe_state()
-            except Exception as e:
-                self.view.display_message(f"An unexpected error occurred: {e}")
-                self.reset_to_safe_state()
+            self.handle_current_state()
 
     def handle_current_state(self):
         current_state = self.game_model.game_state

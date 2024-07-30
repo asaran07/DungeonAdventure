@@ -5,11 +5,12 @@ from src.characters.monster import Monster
 from src.characters.player import Player
 from src.enums.combat_state import CombatState
 from src.enums.game_state import GameState
+from src.game.dungeon_adventure import GameModel
 from src.views.view import View
 
 
 class CombatHandler:
-    def __init__(self, game_model, view: View):
+    def __init__(self, game_model: GameModel, view: View):
         self.game_model = game_model
         self.view = view
         self.player: Player = game_model.player
@@ -52,7 +53,7 @@ class CombatHandler:
                 raise ValueError(f"Invalid combat state: {self.combat_state}")
 
     def player_turn(self):
-        # Logic for player turn, eg. attack, use item, flee
+        # Logic for player turn, e.g. attack, use item, flee
         print(str(self.player.hero))
         print("\nPeople: ")
         print(self.turn_order)
