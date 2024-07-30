@@ -1,6 +1,8 @@
 site_name: Dungeon Adventure Developer Documentation
 theme:
   name: material
+  features:
+    - content.code.annotate
   palette:
     primary: indigo
     accent: amber
@@ -31,3 +33,4 @@ markdown_extensions:
 
 plugins:
   - search
+  - typeset
