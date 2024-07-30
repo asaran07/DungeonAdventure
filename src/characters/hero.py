@@ -30,14 +30,6 @@ class Hero(DungeonCharacter):
         self.xp_to_next_level: int = 100  # Starting XP required for level 2
         self.equipped_weapon: Optional[Weapon] = None
 
-    @property
-    def max_hp(self) -> int:
-        return self.max_hp
-
-    @property.setter
-    def max_hp(self, max_hp: int) -> int:
-        self.max_hp = max_hp
-
     def _mitigate_damage(self, damage: int) -> int:
         """Attempt to block incoming damage."""
         if random.randint(1, 100) <= self.block_chance:
@@ -93,3 +85,20 @@ class Hero(DungeonCharacter):
     def use_special_ability(self) -> None:
         """Use a special ability. To be implemented by subclasses."""
         pass
+
+    def __str__(self) -> str:
+        weapon_info = (
+            f"Equipped: {self.equipped_weapon.name}"
+            if self.equipped_weapon
+            else "No weapon equipped"
+        )
+        return (
+            f"Hero: {self.name}\n"
+            f"Level: {self.level}\n"
+            f"HP: {self.current_hp}/{self.max_hp}\n"
+            f"XP: {self.xp}/{self.xp_to_next_level}\n"
+            f"Damage: {self.base_min_damage}-{self.base_max_damage}\n"
+            f"Hit Chance: {self.base_hit_chance}%\n"
+            f"Block Chance: {self.block_chance}%\n"
+            f"{weapon_info}"
+        )

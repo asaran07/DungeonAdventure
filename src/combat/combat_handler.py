@@ -53,8 +53,9 @@ class CombatHandler:
 
     def player_turn(self):
         # Logic for player turn, eg. attack, use item, flee
-        print(self.player)
-        pass
+        print(str(self.player.hero))
+        print("\nPeople: ")
+        print(self.turn_order)
 
     def monster_turn(self):
         # Logic for monster's turn
