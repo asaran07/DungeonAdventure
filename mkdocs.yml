@@ -14,6 +14,7 @@ nav:
       - Characters: core-components/characters.md
       - Items: core-components/items.md
   - Game Flow: game-flow.md
+  - Combat: combat/combat.md
   - Controllers:
       - Game Controller: controllers/game-controller.md
       - Player Action Controller: controllers/player-action-controller.md

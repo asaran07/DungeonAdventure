@@ -1,5 +1,6 @@
 from typing import Dict, Optional, Tuple
 
+from src.characters.hero import Hero
 from src.dungeon.room import Room
 from src.enums.item_types import ItemType
 from src.exceptions.player import InventoryFullError
@@ -42,6 +43,12 @@ class Player:
         self._inventory: Dict[str, Tuple[Item, int]] = {}
         self._inventory_weight_limit: float = inventory_weight_limit
         self.current_room: Optional[Room] = None
+        self._hero: Hero
+
+    @property
+    def hero(self) -> Hero:
+        """Get the player's selected Hero character."""
+        return self._hero
 
     @property
     def name(self) -> str:

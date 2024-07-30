@@ -1,14 +1,29 @@
+import random
+from typing import Optional
+
 from src.characters.dungeon_character import DungeonCharacter
 from src.items.weapon import Weapon
-from typing import Optional
-import random
 
 
 class Hero(DungeonCharacter):
-    def __init__(self, name: str = "Hero", max_hp: int = 100, base_min_damage: int = 10,
-                 base_max_damage: int = 20, attack_speed: int = 5, base_hit_chance: int = 70,
-                 block_chance: int = 20):
-        super().__init__(name, max_hp, base_min_damage, base_max_damage, attack_speed, base_hit_chance)
+    def __init__(
+        self,
+        name: str = "Hero",
+        max_hp: int = 100,
+        base_min_damage: int = 10,
+        base_max_damage: int = 20,
+        attack_speed: int = 5,
+        base_hit_chance: int = 70,
+        block_chance: int = 20,
+    ):
+        super().__init__(
+            name,
+            max_hp,
+            base_min_damage,
+            base_max_damage,
+            attack_speed,
+            base_hit_chance,
+        )
         self.block_chance: int = block_chance
         self.level: int = 1
         self.xp: int = 0
@@ -32,14 +47,14 @@ class Hero(DungeonCharacter):
 
     def _apply_weapon_modifiers(self, weapon: Weapon) -> None:
         """Apply weapon stat modifiers."""
-        self.add_stat_modifier('min_damage', weapon.min_damage_bonus)
-        self.add_stat_modifier('max_damage', weapon.max_damage_bonus)
+        self.add_stat_modifier("min_damage", weapon.min_damage_bonus)
+        self.add_stat_modifier("max_damage", weapon.max_damage_bonus)
         # Add other weapon stat modifiers as needed
 
     def _remove_weapon_modifiers(self, weapon: Weapon) -> None:
         """Remove weapon stat modifiers."""
-        self.remove_stat_modifier('min_damage')
-        self.remove_stat_modifier('max_damage')
+        self.remove_stat_modifier("min_damage")
+        self.remove_stat_modifier("max_damage")
         # Remove other weapon stat modifiers as needed
 
     def gain_xp(self, xp: int) -> None:
@@ -62,7 +77,7 @@ class Hero(DungeonCharacter):
         """Calculate XP required for the next level using a Fibonacci-like sequence."""
         return int(self.xp_to_next_level * 1.5)
 
-    def attempt_attack(self, target: 'DungeonCharacter') -> int:
+    def attempt_attack(self, target: "DungeonCharacter") -> int:
         """Override to add any hero-specific attack logic."""
         return super().attempt_attack(target)
 
