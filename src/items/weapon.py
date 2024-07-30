@@ -5,8 +5,16 @@ from src.items.item import Item
 class Weapon(Item):
     """Represents a weapon item in the game"""
 
-    def __init__(self, name: str, description: str, weight: float, weapon_type: WeaponType, damage: int,
-                 durability: int = 100):
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        weight: float,
+        weapon_type: WeaponType,
+        min_damage: int,
+        max_damage: int,
+        durability: int = 100,
+    ):
         """
         Create a weapon item
 
@@ -19,7 +27,8 @@ class Weapon(Item):
         """
         super().__init__(name, description, weight, ItemType.WEAPON)
         self._weapon_type = weapon_type
-        self._damage = damage
+        self._min_damage = min_damage
+        self._max_damage = max_damage
         self._durability = durability
 
     @property
@@ -28,9 +37,14 @@ class Weapon(Item):
         return self._weapon_type
 
     @property
-    def damage(self) -> int:
-        """Damage points the weapon can inflict"""
-        return self._damage
+    def min_damage(self) -> int:
+        """Min damage points the weapon can inflict"""
+        return self._min_damage
+
+    @property
+    def max_damage(self) -> int:
+        """Max damage the weapon can inflict"""
+        return self._max_damage
 
     @property
     def durability(self) -> int:
@@ -39,5 +53,5 @@ class Weapon(Item):
 
     def use(self):
         """Use the weapon to inflict damage, durability decreases by 1"""
-        print(f"You swing the {self.get_name()}, dealing {self._damage} damage!")
+        print(f"You swing the {self.name}, dealing {self.min_damage} damage!")
         self._durability -= 1
