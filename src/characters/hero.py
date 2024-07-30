@@ -30,6 +30,14 @@ class Hero(DungeonCharacter):
         self.xp_to_next_level: int = 100  # Starting XP required for level 2
         self.equipped_weapon: Optional[Weapon] = None
 
+    @property
+    def max_hp(self) -> int:
+        return self.max_hp
+
+    @property.setter
+    def max_hp(self, max_hp: int) -> int:
+        self.max_hp = max_hp
+
     def _mitigate_damage(self, damage: int) -> int:
         """Attempt to block incoming damage."""
         if random.randint(1, 100) <= self.block_chance:
@@ -47,8 +55,8 @@ class Hero(DungeonCharacter):
 
     def _apply_weapon_modifiers(self, weapon: Weapon) -> None:
         """Apply weapon stat modifiers."""
-        self.add_stat_modifier("min_damage", weapon.min_damage_bonus)
-        self.add_stat_modifier("max_damage", weapon.max_damage_bonus)
+        self.add_stat_modifier("min_damage", weapon.min_damage)
+        self.add_stat_modifier("max_damage", weapon.max_damage)
         # Add other weapon stat modifiers as needed
 
     def _remove_weapon_modifiers(self, weapon: Weapon) -> None:

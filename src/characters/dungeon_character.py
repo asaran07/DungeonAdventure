@@ -52,6 +52,11 @@ class DungeonCharacter:
     def current_hp(self, value: int):
         self._current_hp = max(0, min(value, self._max_hp))
 
+    @max_hp.setter
+    def max_hp(self, value: int):
+        # TODO: Add some sort of check for invalid values
+        self._max_hp = value
+
     @property
     def base_min_damage(self) -> int:
         return self._base_min_damage
@@ -59,6 +64,24 @@ class DungeonCharacter:
     @property
     def base_max_damage(self) -> int:
         return self._base_max_damage
+
+    @base_max_damage.setter
+    def base_max_damage(self, value: int):
+        if value < self._base_min_damage:
+            raise ValueError(
+                "Base maximum damage cannot be less than base minimum damage"
+            )
+        self._base_max_damage = value
+
+    @base_min_damage.setter
+    def base_min_damage(self, value: int):
+        if value < 0:
+            raise ValueError("Base minimum damage cannot be negative")
+        if value > self._base_max_damage:
+            raise ValueError(
+                "Base minimum damage cannot be greater than base maximum damage"
+            )
+        self._base_min_damage = value
 
     @property
     def attack_speed(self) -> int:
