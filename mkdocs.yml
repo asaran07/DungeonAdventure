@@ -1,1 +1,15 @@
-site_name: My Docs
+site_name: Dungeon Adventure Game
+theme:
+  name: material
+  palette:
+    primary: indigo
+nav:
+  - Home: index.md
+  - Game Overview: overview.md
+  - Systems:
+      - Combat: systems/combat.md
+      - Inventory: systems/inventory.md
+  - Characters: characters.md
+  - Items: items.md
+  - Dungeon Generation: dungeon.md
+  - Ideas and Future Plans: ideas.md
