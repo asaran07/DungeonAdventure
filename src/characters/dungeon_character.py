@@ -85,6 +85,8 @@ class DungeonCharacter:
         :param target: The character to attack
         :return: Damage dealt (0 if missed)
         """
+        if not self.is_alive:
+            return 0
         if self._attack_hits():
             damage = self._calculate_damage()
             target.take_damage(damage)
