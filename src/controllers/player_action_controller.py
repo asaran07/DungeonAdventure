@@ -102,6 +102,6 @@ class PlayerActionController:
         print(room.get_open_gates())
         if room.has_monsters:
             print(f"You encounter monsters!")
-            self.combat_handler.initiate_combat(self.game_model.current_room)
+            self.combat_handler.initiate_combat()
         else:
             print("The room appears to be empty.")

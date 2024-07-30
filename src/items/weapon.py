@@ -22,7 +22,8 @@ class Weapon(Item):
         :param str description: Description of the weapon
         :param float weight: Weight of the weapon
         :param WeaponType weapon_type: Type of the weapon
-        :param int damage: Damage the weapon can inflict
+        :param int min_damage: Minimum damage the weapon can inflict
+        :param int max_damage: Maximum damage the weapon can inflict
         :param int durability: Durability of the weapon. Defaults to 100
         """
         super().__init__(name, description, weight, ItemType.WEAPON)

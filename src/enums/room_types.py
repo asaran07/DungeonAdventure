@@ -14,7 +14,7 @@ class RoomType(Enum):
 
 
 class Direction(Enum):
-    # TODO: Add an opposite direction method for cleaniness
+    # TODO: Add an opposite direction method for cleanliness
     NORTH = "N"
     EAST = "E"
     SOUTH = "S"
