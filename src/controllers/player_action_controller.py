@@ -68,6 +68,12 @@ class PlayerActionController:
             self.handle_movement(direction_str)
         elif action_parts[0] == "map":
             self.display_map()
+        elif action_parts[0] == "inventory":
+            self.display_inventory()
+
+    def display_inventory(self):
+        """Displays player's current inventory."""
+        print(self.game_model.player.inventory_to_string())
 
     def display_map(self):
         current_room = self.game_model.player.current_room
