@@ -1,5 +1,6 @@
 from typing import Dict, List, Optional, Tuple
 
+from src.characters.monster import Monster
 from src.enums import RoomType, Direction
 from src.items.item import Item
 
@@ -16,9 +17,28 @@ class Room:
         self.is_visible: bool = False
         self.is_explored: bool = False  # This is for fog of war
         self.items: List[Item] = []
+        self.monsters: List[Monster] = []
         self.connections: Dict[Direction, Optional["Room"]] = {
             d: None for d in Direction
         }  # Creating a map in Python is goated
+
+    @property
+    def monsters(self) -> List[Monster]:
+        return self.monsters
+
+    @monsters.setter
+    def monsters(self, value):
+        self._monsters = value
+
+    def add_monster(self, monster: Monster) -> None:
+        self.monsters.append(monster)
+
+    @property
+    def has_monsters(self) -> bool:
+        return len(self.monsters) > 0
+
+    def remove_monster(self, monster: Monster):
+        self.monsters.remove(monster)
 
     def explore(self):
         self.is_explored = True
@@ -118,3 +138,5 @@ class Room:
             Direction.WEST: Direction.EAST,
         }
         return opposites[direction]
+
+
