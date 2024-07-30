@@ -68,7 +68,7 @@ class PlayerActionController:
             self.handle_movement(direction_str)
         elif action_parts[0] == "map":
             self.display_map()
-        elif action_parts[0] == "inventory":
+        elif action_parts[0] == "inventory" or action_parts[0] == "inv":
             self.display_inventory()
 
     def display_inventory(self):
