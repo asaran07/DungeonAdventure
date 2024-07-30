@@ -36,7 +36,7 @@ Represents the player character, inherits from `DungeonCharacter`.
 - `equipped_weapon`: Optional[Weapon]
 
 ### Important Methods Hero
-
+[items.md](items.md)
 - `equip_weapon(weapon: Weapon)`: Equip a weapon and apply its stat modifiers
 - `gain_xp(xp: int)`: Gain experience points and level up if necessary
 - `level_up()`: Increase level and update stats

@@ -20,4 +20,4 @@
 4. Push to your fork
 5. Create a new Pull Request
 
-[Add any specific contribution guidelines or processes here]
+[don't need much here for now]

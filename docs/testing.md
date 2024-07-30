@@ -10,8 +10,8 @@ pytest
 
 ## Test Structure
 
-[Describe your test file structure and naming conventions here]
+[still need to add test file structure and naming conventions]
 
 ## Writing New Tests
 
-[Provide guidelines for writing new tests, including any specific practices or frameworks used]
+[don't know if we need this]
