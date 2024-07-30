@@ -25,8 +25,23 @@ class CombatHandler:
         self.start_combat()
 
     def determine_turn_order(self):
-        # Find turn order based on speeds
-        pass
+        self.turn_order = []
+        all_characters = self.monsters + [self.player]
+
+        for character in all_characters:
+            self._insert_into_turn_order(character)
+
+    def _insert_into_turn_order(self, character, index: int = 0):
+        if index >= len(self.turn_order):
+            self.turn_order.append(character)
+        elif character.attack_speed > self.turn_order[index].attack_speed:
+            self.turn_order.insert(index, character)
+        else:
+            self._insert_into_turn_order(character, index + 1)
+
+    def add_character(self, character: DungeonCharacter):
+        self._insert_into_turn_order(character)
+        self.display_turn_order()
 
     def start_combat(self):
         while self.game_model.game_state == GameState.IN_COMBAT:
@@ -38,6 +53,15 @@ class CombatHandler:
                 self.next_turn()
             else:
                 raise ValueError(f"Invalid combat state: {self.combat_state}")
+
+    def get_next_character(self) -> DungeonCharacter:
+        if not self.turn_order:
+            raise ValueError("No characters in turn order")
+        return self.turn_order[0]
+
+    def display_turn_order(self):
+        for character in self.turn_order:
+            print(f"{character.name} (Speed: {character.attack_speed})")
 
     def player_turn(self):
         # Logic for player turn, eg. attack, use item, flee
