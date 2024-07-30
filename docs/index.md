@@ -1,17 +1,21 @@
-# Welcome to MkDocs
+# Dungeon Adventure Developer Documentation
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+Welcome to the developer documentation for Dungeon Adventure. This guide provides technical details about the game's structure, components, and implementation.
 
-## Commands
+## Quick Links
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+- [Project Overview](project-overview.md)
+- [Core Components](core-components/dungeon.md)
+- [Game Flow](game-flow.md)
+- [Development Guide](development-guide.md)
 
-## Project layout
+## Getting Started
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+To begin working with the Dungeon Adventure codebase:
+
+1. Clone the repository
+2. Install dependencies: `pip install -r requirements.txt`
+3. Run tests: `pytest`
+4. Start the game: `python src/main.py`
+
+For contribution guidelines, see the [Development Guide](development-guide.md).

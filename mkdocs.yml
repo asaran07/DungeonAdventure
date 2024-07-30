@@ -1,15 +1,33 @@
-site_name: Dungeon Adventure Game
+site_name: Dungeon Adventure Developer Documentation
 theme:
   name: material
   palette:
     primary: indigo
+    accent: amber
 nav:
   - Home: index.md
-  - Game Overview: overview.md
-  - Systems:
-      - Combat: systems/combat.md
-      - Inventory: systems/inventory.md
-  - Characters: characters.md
-  - Items: items.md
-  - Dungeon Generation: dungeon.md
-  - Ideas and Future Plans: ideas.md
+  - Project Overview: project-overview.md
+  - Core Components:
+      - Dungeon: core-components/dungeon.md
+      - Characters: core-components/characters.md
+      - Items: core-components/items.md
+  - Game Flow: game-flow.md
+  - Controllers:
+      - Game Controller: controllers/game-controller.md
+      - Player Action Controller: controllers/player-action-controller.md
+  - Views:
+      - Console View: views/console-view.md
+      - Map Visualizer: views/map-visualizer.md
+  - Enums and Constants: enums-and-constants.md
+  - Utility Classes: utility-classes.md
+  - Testing: testing.md
+  - Development Guide: development-guide.md
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - toc:
+      permalink: true
+
+plugins:
+  - search
