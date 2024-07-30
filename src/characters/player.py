@@ -1,17 +1,14 @@
-from typing import Dict, Tuple, Optional
+from typing import Dict, Optional, Tuple
 
 from src.dungeon.room import Room
 from src.enums.item_types import ItemType
+from src.exceptions.player import InventoryFullError
 from src.items.item import Item
 
 
 class InvalidPlayerAttributeError(Exception):
     """Custom exception for invalid player attributes."""
-    pass
 
-
-class InventoryFullError(Exception):
-    """Custom exception for when the inventory is full."""
     pass
 
 
@@ -19,10 +16,7 @@ class Player:
     """Represents the player character in the game."""
 
     def __init__(
-            self,
-            name: str,
-            hit_points: int,
-            inventory_weight_limit: float = 50.0
+        self, name: str, hit_points: int, inventory_weight_limit: float = 50.0
     ) -> None:
         """
         Initialize a new Player instance.
@@ -39,7 +33,9 @@ class Player:
         if not name or not isinstance(name, str):
             raise InvalidPlayerAttributeError("Name must be a non-empty string")
         if not isinstance(hit_points, int) or hit_points <= 0 or hit_points > 100:
-            raise InvalidPlayerAttributeError("Hit points must be a positive integer between 1 and 100")
+            raise InvalidPlayerAttributeError(
+                "Hit points must be a positive integer between 1 and 100"
+            )
 
         self._name: str = name
         self._hit_points: int = hit_points
@@ -66,7 +62,9 @@ class Player:
         :raises InvalidPlayerAttributeError: If the value is invalid
         """
         if not isinstance(value, int) or value < 0:
-            raise InvalidPlayerAttributeError("Hit points must be a non-negative integer")
+            raise InvalidPlayerAttributeError(
+                "Hit points must be a non-negative integer"
+            )
         self._hit_points = value
 
     def add_to_inventory(self, item: Item) -> None:
@@ -76,9 +74,13 @@ class Player:
         :param item: The item to add
         :raises InventoryFullError: If adding the item would exceed the weight limit
         """
-        current_weight = sum(item.weight * quantity for item, quantity in self._inventory.values())
+        current_weight = sum(
+            item.weight * quantity for item, quantity in self._inventory.values()
+        )
         if current_weight + item.weight > self._inventory_weight_limit:
-            raise InventoryFullError("Adding this item would exceed the inventory weight limit")
+            raise InventoryFullError(
+                "Adding this item would exceed the inventory weight limit"
+            )
 
         if item.name in self._inventory:
             self._inventory[item.name] = (item, self._inventory[item.name][1] + 1)
@@ -135,7 +137,9 @@ class Player:
 
         inventory_str = "Inventory:\n"
         for item_name, (item, quantity) in self._inventory.items():
-            inventory_str += f"  {item_name}: {quantity} (Weight: {item.weight * quantity})\n"
+            inventory_str += (
+                f"  {item_name}: {quantity} (Weight: {item.weight * quantity})\n"
+            )
         inventory_str += f"Total Weight: {self.get_inventory_weight()}/{self._inventory_weight_limit}"
         return inventory_str
 
@@ -145,7 +149,9 @@ class Player:
 
         :return: The total weight of all items in the inventory
         """
-        return sum(item.weight * quantity for item, quantity in self._inventory.values())
+        return sum(
+            item.weight * quantity for item, quantity in self._inventory.values()
+        )
 
     def __str__(self) -> str:
         """

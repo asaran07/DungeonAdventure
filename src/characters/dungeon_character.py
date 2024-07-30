@@ -1,17 +1,19 @@
-from typing import Dict
 import random
+from typing import Dict
 
 
 class DungeonCharacter:
-    def __init__(self, name: str = "Generic Character",
-                 max_hp: int = 100,
-                 base_min_damage: int = 1,
-                 base_max_damage: int = 10,
-                 attack_speed: int = 5,
-                 base_hit_chance: int = 70):
+    def __init__(
+        self,
+        name: str = "Generic Character",
+        max_hp: int = 100,
+        base_min_damage: int = 1,
+        base_max_damage: int = 10,
+        attack_speed: int = 5,
+        base_hit_chance: int = 70,
+    ):
         """
         Initialize a DungeonCharacter.
-
         :param name: Character's name
         :param max_hp: Maximum hit points
         :param base_min_damage: Minimum base damage
@@ -19,24 +21,67 @@ class DungeonCharacter:
         :param attack_speed: Speed of attacks
         :param base_hit_chance: Base chance to hit (percentage)
         """
-        self.name: str = name
-        self.max_hp: int = max_hp
-        self.current_hp: int = max_hp
-        self.base_min_damage: int = base_min_damage
-        self.base_max_damage: int = base_max_damage
-        self.attack_speed: int = attack_speed
-        self.base_hit_chance: int = base_hit_chance
-        self.stat_modifiers: Dict[str, int] = {}
+        self._name: str = name
+        self._max_hp: int = max_hp
+        self._current_hp: int = max_hp
+        self._base_min_damage: int = base_min_damage
+        self._base_max_damage: int = base_max_damage
+        self._attack_speed: int = attack_speed
+        self._base_hit_chance: int = base_hit_chance
+        self._stat_modifiers: Dict[str, int] = {}
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @name.setter
+    def name(self, value: str):
+        if not value:
+            raise ValueError("Name cannot be empty")
+        self._name = value
+
+    @property
+    def max_hp(self) -> int:
+        return self._max_hp
+
+    @property
+    def current_hp(self) -> int:
+        return self._current_hp
+
+    @current_hp.setter
+    def current_hp(self, value: int):
+        self._current_hp = max(0, min(value, self._max_hp))
+
+    @property
+    def base_min_damage(self) -> int:
+        return self._base_min_damage
+
+    @property
+    def base_max_damage(self) -> int:
+        return self._base_max_damage
+
+    @property
+    def attack_speed(self) -> int:
+        return self._attack_speed
+
+    @property
+    def base_hit_chance(self) -> int:
+        return self._base_hit_chance
+
+    @property
+    def stat_modifiers(self) -> Dict[str, int]:
+        return (
+            self._stat_modifiers.copy()
+        )  # Return a copy to prevent direct modification
 
     @property
     def is_alive(self) -> bool:
         """Check if the character is still alive."""
-        return self.current_hp > 0
+        return self._current_hp > 0
 
-    def attempt_attack(self, target: 'DungeonCharacter') -> int:
+    def attempt_attack(self, target: "DungeonCharacter") -> int:
         """
         Attempt to attack a target.
-
         :param target: The character to attack
         :return: Damage dealt (0 if missed)
         """
@@ -52,27 +97,25 @@ class DungeonCharacter:
 
     def _calculate_damage(self) -> int:
         """Calculate the damage for a successful attack."""
-        min_damage = self.base_min_damage + self.stat_modifiers.get('min_damage', 0)
-        max_damage = self.base_max_damage + self.stat_modifiers.get('max_damage', 0)
+        min_damage = self._base_min_damage + self._stat_modifiers.get("min_damage", 0)
+        max_damage = self._base_max_damage + self._stat_modifiers.get("max_damage", 0)
         return random.randint(min_damage, max_damage)
 
     def get_total_hit_chance(self) -> int:
         """Calculate total hit chance including modifiers."""
-        return self.base_hit_chance + self.stat_modifiers.get('hit_chance', 0)
+        return self._base_hit_chance + self._stat_modifiers.get("hit_chance", 0)
 
     def take_damage(self, damage: int) -> None:
         """
         Apply damage to the character.
-
         :param damage: Amount of damage to take
         """
         mitigated_damage = self._mitigate_damage(damage)
-        self.current_hp = max(0, self.current_hp - mitigated_damage)
+        self.current_hp -= mitigated_damage
 
     def _mitigate_damage(self, damage: int) -> int:
         """
         Calculate mitigated damage. Can be overridden by subclasses.
-
         :param damage: Original damage
         :return: Mitigated damage
         """
@@ -81,36 +124,32 @@ class DungeonCharacter:
     def heal(self, amount: int) -> None:
         """
         Heal the character.
-
         :param amount: Amount of hit points to restore
         """
-        self.current_hp = min(self.max_hp, self.current_hp + amount)
+        self.current_hp += amount
 
     def reset_health(self) -> None:
         """Reset health to maximum."""
-        self.current_hp = self.max_hp
+        self.current_hp = self._max_hp
 
     def add_stat_modifier(self, stat: str, value: int) -> None:
         """
         Add a modifier to a stat.
-
         :param stat: Stat to modify (e.g., 'min_damage', 'hit_chance')
         :param value: Value to add to the stat
         """
-        self.stat_modifiers[stat] = self.stat_modifiers.get(stat, 0) + value
+        self._stat_modifiers[stat] = self._stat_modifiers.get(stat, 0) + value
 
     def remove_stat_modifier(self, stat: str) -> None:
         """
         Remove a stat modifier.
-
         :param stat: Stat to remove modifier from
         """
-        self.stat_modifiers.pop(stat, None)
+        self._stat_modifiers.pop(stat, None)
 
     def simulate_attack_roll(self) -> tuple[int, bool]:
         """
         Simulate a D20 roll for attack visualization.
-
         :return: Tuple of (roll result, whether the attack would hit)
         """
         roll = random.randint(1, 20)
