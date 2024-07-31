@@ -71,7 +71,7 @@ class ConsoleView(View):
 
     def display_available_actions(self, game_model):
         if game_model.game_state == GameState.EXPLORING:
-            print("Available actions: move, map, inventory, take")
+            print("Available actions: move, map, inventory, take, drop")
             # print("- move [direction]")
             # print("- use [item]")
             # print("- inventory")
