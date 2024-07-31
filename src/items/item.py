@@ -42,16 +42,6 @@ class Item(ABC):
         """Returns the item type of the item"""
         return self._item_type
 
-    def __eq__(self, other):
-        """
-        Compares items based on name
-        :param other: Is the other item to compare with
-
-        Return: whether names are equal
-        """
-        if isinstance(other, Item):
-            return self.name == other.name
-
     @abstractmethod
     def use(self):
         """

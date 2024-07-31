@@ -57,19 +57,11 @@ class PlayerActionController:
 
         if current_room is None:
             return False  # Can't pick up an item if not in a room
-        print(current_room.items)
-        print(item, "asdf")
-        # if item in current_room.items: ==> wont work
-        #     current_room.remove_item(item)
-        #     player.add_to_inventory(item)
-        #     return True
-        for index, room_item in enumerate(current_room.items):
-            print("bruh ", item.name in room_item.name, item.name, room_item.name)
-            print("a", room_item == item)
-            if room_item == item : # or item.name in room_item.name
-                current_room.remove_item(item)
-                player.add_to_inventory(item)
-                return True
+
+        if item in current_room.items:
+            current_room.remove_item(item)
+            player.add_to_inventory(item)
+            return True
         return False
 
     def handle_action(self, action: str):
@@ -107,7 +99,13 @@ class PlayerActionController:
 
     def handle_item(self, item_str: str):
         try:
-            item: Item = Weapon(item_str, "A basic sword", 1, WeaponType.SWORD, 2, 10)
+            # Make an empty item with only the name
+            item: Item = HealingPotion(item_str)
+            player: Player = self.game_model.player
+            current_room: Optional[Room] = player.current_room
+            for room_item in current_room.items:
+                if item_str in room_item.name:
+                    item: Item = room_item
             successful = self.pick_up_item(item)
             if successful:
                 print(f"You picked up {item.name.lower()}.")
