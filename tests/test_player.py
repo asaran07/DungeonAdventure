@@ -19,7 +19,7 @@ class TestPlayer:
 
     def test_to_string(self, new_player: Player):
         expected_string = ("Player: John\n"
-                           "HP: 10\n"
+                           "HP: 75\n"
                            "Inventory is empty")
         adventurer_one = new_player
         actual_string = adventurer_one.__str__()
@@ -28,7 +28,7 @@ class TestPlayer:
 
     def test_use_health_potion(self, new_player: Player):
         expected_string = ("Player: John\n"
-                           "HP: 25\n"
+                           "HP: 90\n"
                            "Inventory is empty")
         adventurer_one = new_player
 
@@ -46,7 +46,7 @@ class TestPlayer:
 
     def test_add_and_remove_item_from_inventory(self, new_player: Player):
         expected_string = ("Player: John\n"
-                           "HP: 10\n"
+                           "HP: 75\n"
                            "Inventory:\n"
                            "  Healing Potion: 1 (Weight: 0.5)\n"
                            "  Vision Potion: 2 (Weight: 1.0)\n"
@@ -79,7 +79,7 @@ class TestPlayer:
     def test_remove_non_existent_items(self, new_player: Player):
         """Testing if removing from inventory accounts for dropping non-existent items."""
         expected_string = ("Player: John\n"
-                           "HP: 10\n"
+                           "HP: 75\n"
                            "Inventory is empty")
         adventurer_one = new_player
         adventurer_one.remove_from_inventory(self.health_potion.name)
