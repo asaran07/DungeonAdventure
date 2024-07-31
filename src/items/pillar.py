@@ -29,7 +29,7 @@ class Pillar(Item, ABC):
 
 class AbstractionPillar(Pillar):
     def __init__(self,
-                 name: str = "abstraction_pillar",
+                 name: str = "Abstraction Pillar",
                  description: str = "The abstraction pillar"
                  ) -> None:
         super().__init__(name, description, PillarType.ABSTRACTION)
@@ -40,7 +40,7 @@ class AbstractionPillar(Pillar):
 
 class EncapsulationPillar(Pillar):
     def __init__(self,
-                 name: str = "encapsulation_pillar",
+                 name: str = "Encapsulation Pillar",
                  description: str = "The encapsulation pillar"
                  ) -> None:
         super().__init__(name, description, PillarType.ENCAPSULATION)
@@ -51,7 +51,7 @@ class EncapsulationPillar(Pillar):
 
 class InheritancePillar(Pillar):
     def __init__(self,
-                 name: str = "inheritance_pillar",
+                 name: str = "Inheritance Pillar",
                  description: str = "The inheritance pillar"
                  ) -> None:
         super().__init__(name, description, PillarType.INHERITANCE)
@@ -62,7 +62,7 @@ class InheritancePillar(Pillar):
 
 class PolymorphismPillar(Pillar):
     def __init__(self,
-                 name: str = "polymorphism_pillar",
+                 name: str = "Polymorphism Pillar",
                  description: str = "The polymorphism pillar"
                  ) -> None:
         super().__init__(name, description, PillarType.POLYMORPHISM)
