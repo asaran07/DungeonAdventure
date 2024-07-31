@@ -6,6 +6,7 @@ from src.dungeon import Room
 from src.enums.room_types import Direction
 from src.game.dungeon_adventure import GameModel
 from src.items.item import Item
+from src.items.potion import HealingPotion
 from src.views.map_visualizer import MapVisualizer
 from src.views.view import View
 
@@ -77,6 +78,46 @@ class PlayerActionController:
             self.display_map()
         elif action_parts[0] == "inventory" or action_parts[0] == "inv":
             self.display_inventory()
+        elif action_parts[0] == "take" or action_parts[0] == "drop":
+            item_str = ' '.join(action_parts[1:])  # get all words except the first
+            item_str = item_str.title()  # Capitalize each word
+            if action_parts[0] == "take" and len(action_parts) > 1:
+                self.handle_pickup(item_str)
+            elif len(action_parts) > 1:
+                self.handle_drop(item_str)
+
+    def handle_pickup(self, item_str: str):
+        try:
+            # Make an empty item with only the name
+            item: Item = HealingPotion(item_str)
+            player: Player = self.game_model.player
+            current_room: Optional[Room] = player.current_room
+            for room_item in current_room.items:
+                if item_str in room_item.name:
+                    item: Item = room_item
+            successful = self.pick_up_item(item)
+            if successful:
+                print(f"You picked up {item.name.lower()}.")
+            else:
+                print(f"{item.name.lower()} wasn't found in this room.")
+        except ValueError as e:
+            print(str(e))
+
+    def handle_drop(self, item_str: str):
+        try:
+            successful = False
+            player: Player = self.game_model.player
+            current_room: Optional[Room] = player.current_room
+            item = player.remove_from_inventory(item_str)
+            current_room.add_item(item)
+            if item is not None:
+                successful = True
+            if successful:
+                print(f"You dropped {item.name.lower()}.")
+            else:
+                print(f"'{item_str.lower()}' wasn't found in your inventory.")
+        except ValueError as e:
+            print(str(e))
 
     def display_inventory(self):
         """Displays player's current inventory."""
