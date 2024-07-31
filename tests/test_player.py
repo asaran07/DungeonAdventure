@@ -48,10 +48,10 @@ class TestPlayer:
         expected_string = ("Player: John\n"
                            "HP: 50\n"
                            "Inventory:\n"
-                           "  healing_potion: 1 (Weight: 0.5)\n"
-                           "  vision_potion: 2 (Weight: 1.0)\n"
-                           "  inheritance_pillar: 1 (Weight: 1.0)\n"
-                           "  polymorphism_pillar: 1 (Weight: 1.0)\n"
+                           "  Healing Potion: 1 (Weight: 0.5)\n"
+                           "  Vision Potion: 2 (Weight: 1.0)\n"
+                           "  Inheritance Pillar: 1 (Weight: 1.0)\n"
+                           "  Polymorphism Pillar: 1 (Weight: 1.0)\n"
                            "Total Weight: 3.5/50.0")
         adventurer_one = new_player
 

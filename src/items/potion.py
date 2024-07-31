@@ -17,7 +17,7 @@ class Potion(Item, ABC):
 class HealingPotion(Potion):
     def __init__(
                  self,
-                 name: str = "healing_potion",
+                 name: str = "Healing Potion",
                  description: str = "Heals the player by 15 health points.",
                  weight: float = .5,
                  hp_recovery: int = 15
@@ -36,7 +36,7 @@ class HealingPotion(Potion):
 
 class VisionPotion(Potion):
     def __init__(self,
-                 name: str = "vision_potion",
+                 name: str = "Vision Potion",
                  description: str = "Allows player to see the surrounding 8 rooms.",
                  weight: float = .5):
         super().__init__(name, description, weight, PotionType.VISION)
