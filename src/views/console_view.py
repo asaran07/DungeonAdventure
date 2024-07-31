@@ -1,4 +1,7 @@
-from typing import Dict
+from typing import Dict, List
+
+from src.characters import Player
+from src.characters.monster import Monster
 from src.enums.game_state import GameState
 from src.game.dungeon_adventure import GameModel
 from src.views.view import View
@@ -54,6 +57,35 @@ class ConsoleView(View):
             return {"name": name}
         except InvalidInputException:
             raise InvalidInputException("Player name cannot be empty")
+
+    def display_combat_status(self, player: Player, monsters: List[Monster]):
+        print("\n=== Combat Status ===")
+        print(f"Player: {player.name}")
+        print(f"HP: {player.hero.current_hp}/{player.hero.max_hp}")
+        print("\nMonsters:")
+        for i, monster in enumerate(monsters, 1):
+            print(f"{i}. {monster.name} - HP: {monster.current_hp}/{monster.max_hp}")
+        print("====================\n")
+
+    def get_combat_action(self) -> str:
+        print("Combat Actions:")
+        print("1. Attack")
+        print("2. Use Item")
+        print("3. Flee")
+        while True:
+            try:
+                choice = self.get_user_input("Choose an action (1-3): ")
+                if choice in ['1', '2', '3']:
+                    if choice == '1':
+                        return "attack"
+                    elif choice == '2':
+                        return "use_item"
+                    else:
+                        return "flee"
+                else:
+                    print("Invalid choice. Please enter 1, 2, or 3.")
+            except Exception as e:
+                print(f"Error: {e}. Please try again.")
 
     def display_player_status(self, game_model: GameModel):
         """Displays the Player's info and location, along with room details"""

@@ -21,18 +21,10 @@ class GameModel:
             raise GameModelError("Invalid player instance provided")
         if not isinstance(dungeon, Dungeon):
             raise GameModelError("Invalid dungeon instance provided")
-
         self._player: Player = player
         self._dungeon: Dungeon = dungeon
         self._game_state = GameState.TITLE_SCREEN
         self.game_over = False
-
-        # Ensure the player is in the entrance room
-        entrance_room = self._dungeon.entrance_room
-        if entrance_room is not None:
-            self._player.current_room = entrance_room
-        else:
-            raise GameModelError("Dungeon has no entrance room set")
 
     @property
     def dungeon(self) -> Dungeon:

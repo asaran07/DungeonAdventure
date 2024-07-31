@@ -41,7 +41,7 @@ class Hero(DungeonCharacter):
     def equip_weapon(self, weapon: Weapon) -> None:
         """Equip a weapon and apply its stat modifiers."""
         if self.equipped_weapon:
-            self._remove_weapon_modifiers(self.equipped_weapon)
+            self._remove_weapon_modifiers()
 
         self.equipped_weapon = weapon
         self._apply_weapon_modifiers(weapon)
@@ -52,11 +52,10 @@ class Hero(DungeonCharacter):
         self.add_stat_modifier("max_damage", weapon.max_damage)
         # Add other weapon stat modifiers as needed
 
-    def _remove_weapon_modifiers(self, weapon: Weapon) -> None:
+    def _remove_weapon_modifiers(self) -> None:
         """Remove weapon stat modifiers."""
         self.remove_stat_modifier("min_damage")
         self.remove_stat_modifier("max_damage")
-        # Remove other weapon stat modifiers as needed
 
     def gain_xp(self, xp: int) -> None:
         """Gain experience points and level up if necessary."""

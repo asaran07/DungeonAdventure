@@ -48,6 +48,10 @@ class Player:
         """Get the player's name."""
         return self._name
 
+    @name.setter
+    def name(self, value):
+        self._name = value
+
     def add_to_inventory(self, item: Item) -> None:
         """
         Add an item to the player's inventory.
@@ -140,4 +144,4 @@ class Player:
 
         :return: A formatted string describing the player
         """
-        return f"Player: {self._name}\nHP: {self.h}\n{self.inventory_to_string()}"
+        return f"Player: {self._name}\nHP: {self.hero.current_hp}\n{self.inventory_to_string()}"

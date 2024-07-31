@@ -22,6 +22,7 @@ class PillarType(Enum):
 
 
 class WeaponType(Enum):
+    DAGGER = auto()
     SWORD = auto()
     AXE = auto()
     BOW = auto()

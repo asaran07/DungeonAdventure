@@ -1,12 +1,13 @@
-from typing import List, Dict, Optional, Tuple, Set
+from typing import List, Dict, Tuple, Set
 
 from src.constants.R import Resources
+from src.dungeon import Dungeon
 from src.dungeon.room import Room
 from src.enums.room_types import Direction
 
 
 class MapVisualizer:
-    def __init__(self, dungeon):
+    def __init__(self, dungeon: Dungeon):
         self.dungeon = dungeon
         # Make a dictionary like this [[room coordinates], [room]] to store the coordinates of our rooms
         # as key and the room itself for the value.
@@ -21,32 +22,28 @@ class MapVisualizer:
     def _assign_coordinates(self):
         start_room = self.dungeon.entrance_room
         if start_room is None:
-            # hopefully we won't get to this point
             print("Warning: Dungeon has not been initialized yet. Map will be empty.")
             return
         self._assign_room_coordinates(start_room, 0, 0, set())
 
     def _assign_room_coordinates(self, current_room: Room, x: int, y: int, visited: set):
-        """depth first search baby!!"""
-        # No infinite loop on interconnected rooms
         if current_room in visited:
             return
-        # Mark the room as visited
         visited.add(current_room)
-        # Then add that room to our grid using coordinates
         self.grid[(x, y)] = current_room
-        # Go through all other connected rooms of current room
         for direction, connected_room in current_room.get_open_gates():
             if connected_room:
                 dx, dy = direction.get_coordinate_change()
                 new_x, new_y = x + dx, y + dy
                 self._assign_room_coordinates(connected_room, new_x, new_y, visited)
 
-    # I'll add more comments soon enough lol
     def update_explored_rooms(self, current_room: Room):
-        current_coords = next(coords for coords, room in self.grid.items() if room == current_room)
-        self.explored_rooms.add(current_coords)
 
+        current_coords = next((coords for coords, room in self.grid.items() if room == current_room), None)
+        if current_coords is None:
+            print("Warning: Current room not found in the map. Can't update explored rooms.")
+            return
+        self.explored_rooms.add(current_coords)
         for direction in Direction:
             if current_room.connections[direction]:
                 x, y = current_coords
@@ -62,6 +59,10 @@ class MapVisualizer:
 
         # There's probably ways to make all this way more efficient and consist
         visible_rooms = self.explored_rooms
+
+        if not visible_rooms:
+            return ["No rooms have been explored yet."]
+
         min_x = min(x for x, _ in visible_rooms)
         max_x = max(x for x, _ in visible_rooms)
         min_y = min(y for _, y in visible_rooms)

@@ -117,10 +117,10 @@ class Room:
 
         return (
             f"Room: {self.name}\n"
-            # f"Type: {self.room_type.name}\n"
-            # f"Visible: {'Yes' if self.is_visible else 'No'}\n"
-            # f"Connections: {connections}\n"
-            # f"Items: {items}"
+            f"Type: {self.room_type.name}\n"
+            f"Visible: {'Yes' if self.is_visible else 'No'}\n"
+            f"Connections: {connections}\n"
+            f"Items: {items}"
         )
 
     @staticmethod

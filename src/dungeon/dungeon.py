@@ -73,3 +73,7 @@ class Dungeon:
             self.remove_room(new_room_name)
             raise DungeonError(
                 f"Failed to connect room '{new_room_name}' to '{existing_room_name}'. Connection might already exist.")
+
+    @entrance_room.setter
+    def entrance_room(self, value):
+        self._entrance_room = value

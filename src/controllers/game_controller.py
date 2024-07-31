@@ -11,10 +11,10 @@ from src.views.view import View
 
 
 class GameController:
-    def __init__(self, game_model: GameModel, view: View):
+    def __init__(self, game_model: GameModel, player_action_controller: PlayerActionController, view: View):
         self.game_model = game_model
+        self.player_action_controller = player_action_controller
         self.view = view
-        self.player_action_controller = PlayerActionController(game_model, view)
 
     def run_game(self):
         self.game_model.game_state = GameState.TITLE_SCREEN
@@ -53,12 +53,10 @@ class GameController:
     def handle_player_creation(self):
         try:
             player_data = self.view.get_player_creation_input()
-            self.game_model.create_player(player_data)
-            self.game_model.make_rooms()
-            entrance_room = self.game_model.dungeon.get_room("Room 1")
+            self.game_model.update_player(player_data)
+            entrance_room = self.game_model.dungeon.entrance_room
             if entrance_room is None:
-                raise RoomNotFoundError("Entrance room 'Room 1' not found.")
-            self.game_model.player.current_room = entrance_room
+                raise RoomNotFoundError("Entrance room not found.")
             entrance_room.explore()
             self.player_action_controller.initialize_map()
             self.game_model.game_state = GameState.EXPLORING

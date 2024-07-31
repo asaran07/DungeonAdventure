@@ -21,19 +21,17 @@ class CombatHandler:
         self.combat_state: CombatState = CombatState.WAITING
 
     def initiate_combat(self):
-        print(self.player.current_room.monsters)
         self.monsters = self.player.current_room.monsters
         if not self.monsters:
             raise CombatError("Cannot initiate combat without monsters")
         self.game_model.game_state = GameState.IN_COMBAT
         self.determine_turn_order()
-        self.combat_state = CombatState.WAITING
+        self.combat_state = CombatState.PLAYER_TURN  # Start with player's turn
         self.start_combat()
 
     def determine_turn_order(self):
         self.turn_order = []
-        all_characters = self.monsters + [self.player]
-
+        all_characters = self.monsters + [self.player.hero]
         for character in all_characters:
             self._insert_into_turn_order(character)
 
@@ -56,6 +54,7 @@ class CombatHandler:
     def start_combat(self):
         while self.game_model.game_state == GameState.IN_COMBAT:
             try:
+                self.view.display_combat_status(self.player, self.monsters)
                 if self.combat_state == CombatState.PLAYER_TURN:
                     self.player_turn()
                 elif self.combat_state == CombatState.MONSTER_TURN:
@@ -67,7 +66,7 @@ class CombatHandler:
                 self.reset_combat()
             except InvalidPlayerActionError as e:
                 self.view.display_message(f"Invalid Player Action: {e}")
-                # TODO: Let the player retry their exception here
+                continue
             except CombatError as e:
                 self.view.display_message(f"Combat Error: {e}")
                 self.reset_combat()
@@ -78,16 +77,27 @@ class CombatHandler:
     def player_turn(self):
         if self.game_model.game_state != GameState.IN_COMBAT:
             raise GameStateError("Player turn attempted outside of combat")
-        # Logic for player turn, e.g. attack, use item, flee
-        print(str(self.player.hero))
-        print("\nPeople: ")
-        print(self.turn_order)
+        action = self.view.get_combat_action()
+        if action == "attack":
+            # Implement attack logic
+            pass
+        elif action == "use_item":
+            # Implement item use logic
+            pass
+        elif action == "flee":
+            # Implement flee logic
+            pass
+        else:
+            raise InvalidPlayerActionError(f"Invalid action: {action}")
+        self.combat_state = CombatState.MONSTER_TURN
 
     def monster_turn(self):
         if self.game_model.game_state != GameState.IN_COMBAT:
             raise GameStateError("Monster turn attempted outside of combat")
-        # Logic for monster's turn
-        pass
+        for monster in self.monsters:
+            # Monster performs action
+            pass
+        self.combat_state = CombatState.PLAYER_TURN
 
     def reset_combat(self):
         self.combat_state = CombatState.WAITING

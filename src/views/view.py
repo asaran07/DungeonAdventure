@@ -34,3 +34,9 @@ class View(ABC):
     @abstractmethod
     def display_player_status(self, game_model: GameModel):
         pass
+
+    def display_combat_status(self, player, monsters):
+        pass
+
+    def get_combat_action(self):
+        pass

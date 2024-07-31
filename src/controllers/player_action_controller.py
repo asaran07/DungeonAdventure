@@ -1,11 +1,11 @@
 from typing import Optional
+
 from src.characters.player import Player
 from src.combat.combat_handler import CombatHandler
 from src.dungeon import Room
 from src.enums.room_types import Direction
 from src.game.dungeon_adventure import GameModel
 from src.items.item import Item
-from src.views import view
 from src.views.map_visualizer import MapVisualizer
 from src.views.view import View
 
@@ -15,9 +15,9 @@ class PlayerActionController:
     Includes methods for executing player actions.
     """
 
-    def __init__(self, game_model: GameModel, view2: View):
+    def __init__(self, game_model: GameModel, map_visualizer: MapVisualizer, view2: View):
         self.game_model = game_model
-        self.map_visualizer = MapVisualizer(game_model.dungeon)
+        self.map_visualizer = map_visualizer
         self._view = view2
         self.combat_handler: CombatHandler = CombatHandler(game_model, self._view)
 
@@ -33,9 +33,10 @@ class PlayerActionController:
         :return: True if player was moved, False otherwise
         """
         player: Player = self.game_model.player
-        current_room: Optional[Room] = player.current_room
+        current_room = player.current_room
 
         if current_room is None:
+
             return False  # Can't move if not in a room
 
         if direction in dict(current_room.get_open_gates()):
@@ -59,7 +60,8 @@ class PlayerActionController:
         current_room: Optional[Room] = player.current_room
 
         if current_room is None:
-            return False  # Can't pick up an item if not in a room
+            print("Player not in a room?")
+            return False
 
         if item in current_room.items:
             current_room.remove_item(item)
