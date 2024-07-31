@@ -65,6 +65,7 @@ class GameController:
             self.reset_to_safe_state()
 
     def handle_exploration(self):
+        print(str(self.game_model.player.current_room))
         self.view.display_player_status(self.game_model)
         self.view.display_available_actions(self.game_model)
         try:

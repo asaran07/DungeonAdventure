@@ -6,7 +6,7 @@ from src.items.item import Item
 
 
 class Room:
-    def __init__(self, name: str) -> None:
+    def __init__(self, name: str, detailed_description: str = "") -> None:
         """
         Initialize a new room.
 
@@ -16,6 +16,7 @@ class Room:
         self.name: str = name
         self.is_visible: bool = False
         self.is_explored: bool = False  # This is for fog of war
+        self.detailed_description: str = detailed_description
         self.items: List[Item] = []
         self._monsters: List[Monster] = []
         self.connections: Dict[Direction, Optional["Room"]] = {
@@ -42,6 +43,12 @@ class Room:
 
     def explore(self):
         self.is_explored = True
+
+    def get_description(self) -> str:
+        """
+        Get a detailed description of the room.
+        """
+        return self.detailed_description if self.detailed_description else "You see nothing special about this room."
 
     def connect(self, direction: Direction, other_room: "Room") -> bool:
         """
@@ -116,9 +123,9 @@ class Room:
         items = ", ".join(item.name for item in self.items) if self.items else "None"
 
         return (
-            f"Room: {self.name}\n"
-            f"Type: {self.room_type.name}\n"
-            f"Visible: {'Yes' if self.is_visible else 'No'}\n"
+            # f"Room: {self.name}\n"
+            # f"Type: {self.room_type.name}\n"
+            # f"Visible: {'Yes' if self.is_visible else 'No'}\n"
             f"Connections: {connections}\n"
             f"Items: {items}"
         )

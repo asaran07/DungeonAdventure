@@ -1,11 +1,11 @@
 from src.characters import Player
 from src.controllers.game_controller import GameController
 from src.controllers.player_action_controller import PlayerActionController
-from src.dungeon import Room
 from src.dungeon.dungeon_generator import DungeonGenerator
 from src.game.dungeon_adventure import GameModel, GameModelError
 from src.views.console_view import ConsoleView
 from src.views.map_visualizer import MapVisualizer
+from src.views.rich_console_view import RichConsoleView
 
 
 def setup_game():
@@ -25,7 +25,7 @@ def setup_game():
 def main():
     game_model = setup_game()
     if game_model:
-        view = ConsoleView()
+        view = RichConsoleView()
         map_visualizer = MapVisualizer(game_model.dungeon)
         player_action_controller = PlayerActionController(game_model, map_visualizer, view)
         controller = GameController(game_model, player_action_controller, view)

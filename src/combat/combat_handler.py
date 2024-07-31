@@ -51,6 +51,7 @@ class CombatHandler:
             raise CharacterNotInCombatError(f"{character} is not a valid combat entity")
         self._insert_into_turn_order(character)
 
+    # TODO: Make this method smaller by extraction into helper methods with descriptive names
     def start_combat(self):
         while self.game_model.game_state == GameState.IN_COMBAT:
             try:
@@ -61,6 +62,7 @@ class CombatHandler:
                     self.monster_turn()
                 else:
                     raise InvalidCombatStateError(f"Invalid combat state: {self.combat_state}")
+                self.check_combat_end()
             except GameStateError as e:
                 self.view.display_message(f"Game State Error: {e}")
                 self.reset_combat()
@@ -74,16 +76,26 @@ class CombatHandler:
                 self.view.display_message(f"An unexpected error occurred: {e}")
                 self.reset_combat()
 
+    def check_combat_end(self):
+        # Remove dead monsters
+        self.monsters = [monster for monster in self.monsters if monster.is_alive]
+
+        if not self.monsters:
+            self.end_combat("All monsters defeated!")
+        elif not self.player.hero.is_alive:
+            self.end_combat("Player has been defeated!")
+
+    def end_combat(self, message):
+        self.view.display_message(message)
+        self.game_model.game_state = GameState.EXPLORING
+        self.reset_combat()
+
     def player_turn(self):
         if self.game_model.game_state != GameState.IN_COMBAT:
             raise GameStateError("Player turn attempted outside of combat")
         action = self.view.get_combat_action()
         if action == "attack":
-            target = self.view.get_combat_target(self.monsters)
-            if target is None:
-                raise InvalidPlayerActionError("Invalid target")
-            self.player.hero.attempt_attack(target)
-            pass
+            self.player_attack()
         elif action == "use_item":
             # Implement item use logic
             pass
@@ -92,14 +104,25 @@ class CombatHandler:
             pass
         else:
             raise InvalidPlayerActionError(f"Invalid action: {action}")
+        # self.combat_state = CombatState.MONSTER_TURN
+
+    def player_attack(self):
+        target = self.view.get_combat_target(self.monsters)
+        if target is None:
+            raise InvalidPlayerActionError("Invalid target")
+        damage = self.player.hero.attempt_attack(target)
+        self.view.display_message(f"You deal {damage} damage to {target.name}!")
+        if not target.is_alive:
+            self.view.display_message(f"{target.name} has been defeated!")
         self.combat_state = CombatState.MONSTER_TURN
 
     def monster_turn(self):
-        if self.game_model.game_state != GameState.IN_COMBAT:
-            raise GameStateError("Monster turn attempted outside of combat")
         for monster in self.monsters:
-            # Monster performs action
-            pass
+            if monster.is_alive:
+                damage = monster.attempt_attack(self.player.hero)
+                self.view.display_message(f"{monster.name} deals {damage} damage to you!")
+                if not self.player.hero.is_alive:
+                    return  # End the monster turn if the player is defeated
         self.combat_state = CombatState.PLAYER_TURN
 
     def reset_combat(self):
@@ -107,4 +130,4 @@ class CombatHandler:
         self.game_model.game_state = GameState.EXPLORING
         self.monsters = []
         self.turn_order = []
-        self.view.display_message("Combat has been reset due to an error.")
+        self.view.display_message("Combat has been reset.")

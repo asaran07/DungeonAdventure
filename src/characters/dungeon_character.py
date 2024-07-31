@@ -6,7 +6,7 @@ class DungeonCharacter:
     def __init__(
         self,
         name: str = "Generic Character",
-        max_hp: int = 100,
+        max_hp: int = 50,
         base_min_damage: int = 1,
         base_max_damage: int = 10,
         attack_speed: int = 5,

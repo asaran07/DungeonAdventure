@@ -9,20 +9,17 @@ class DungeonGenerator:
     @staticmethod
     def generate_default_dungeon() -> Dungeon:
         dungeon = Dungeon()
-        # entrance_room.add_item(Weapon("Rusty Dagger", "A rusty dagger", 0.5, WeaponType.DAGGER, 1, 5))
         dungeon.add_room("Room 1")
+        dungeon.get_room("Room 1").add_item(Weapon("Rusty Dagger", "A rusty dagger", 0.5, WeaponType.DAGGER, 1, 5))
         dungeon.add_and_connect_room("Room 2", "Room 1", Direction.NORTH)
         dungeon.add_and_connect_room("Room 3", "Room 2", Direction.EAST)
         dungeon.add_and_connect_room("Room 4", "Room 3", Direction.EAST)
         dungeon.add_and_connect_room("Room 5", "Room 3", Direction.NORTH)
 
-        room1 = dungeon.get_room("Room 1")
-        if room1:
-            room1.add_item(Weapon("Basic Sword", "A basic sword", 1, WeaponType.SWORD, 2, 10))
-
         room2 = dungeon.get_room("Room 2")
         if room2:
-            room2.add_monster(Monster())
+            room2.add_monster(Monster(name="Robby Goblin", base_min_damage=1, base_max_damage=4))
+            room2.add_monster(Monster(name="Bobby Goblin", base_min_damage=3, base_max_damage=7))
 
         return dungeon
 

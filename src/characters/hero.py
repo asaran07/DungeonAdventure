@@ -9,7 +9,7 @@ class Hero(DungeonCharacter):
     def __init__(
         self,
         name: str = "Hero",
-        max_hp: int = 100,
+        max_hp: int = 75,
         base_min_damage: int = 10,
         base_max_damage: int = 20,
         attack_speed: int = 5,
@@ -24,7 +24,7 @@ class Hero(DungeonCharacter):
             attack_speed,
             base_hit_chance,
         )
-        self.current_hp = 10
+        self.current_hp = max_hp
         self.block_chance: int = block_chance
         self.level: int = 1
         self.xp: int = 0

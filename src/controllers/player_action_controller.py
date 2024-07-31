@@ -36,7 +36,6 @@ class PlayerActionController:
         current_room = player.current_room
 
         if current_room is None:
-
             return False  # Can't move if not in a room
 
         if direction in dict(current_room.get_open_gates()):
@@ -101,7 +100,7 @@ class PlayerActionController:
     def enter_room(self):
         room = self.game_model.player.current_room
         print(f"You enter {room.name}")
-        print(room.get_open_gates())
+        print(room.get_description())
         if room.has_monsters:
             print(f"You encounter monsters!")
             self.combat_handler.initiate_combat()
