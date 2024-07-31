@@ -14,16 +14,15 @@ class InvalidPlayerAttributeError(Exception):
 
 
 class Player:
-    """Represents the player character in the game."""
+    """Represents the player in the game."""
 
     def __init__(
-        self, name: str, hit_points: int, inventory_weight_limit: float = 50.0
+        self, name: str, inventory_weight_limit: float = 50.0
     ) -> None:
         """
         Initialize a new Player instance.
 
         :param name: The name of the player
-        :param hit_points: The initial hit points of the player
         :param inventory_weight_limit: The maximum weight the player can carry
         :raises InvalidPlayerAttributeError: If name or hit_points are invalid
         """
@@ -33,17 +32,11 @@ class Player:
         # class, things would break further.
         if not name or not isinstance(name, str):
             raise InvalidPlayerAttributeError("Name must be a non-empty string")
-        if not isinstance(hit_points, int) or hit_points <= 0 or hit_points > 100:
-            raise InvalidPlayerAttributeError(
-                "Hit points must be a positive integer between 1 and 100"
-            )
-
         self._name: str = name
-        self._hit_points: int = hit_points
         self._inventory: Dict[str, Tuple[Item, int]] = {}
         self._inventory_weight_limit: float = inventory_weight_limit
         self.current_room: Optional[Room] = None
-        self._hero: Hero
+        self._hero: Hero = Hero()
 
     @property
     def hero(self) -> Hero:
@@ -54,25 +47,6 @@ class Player:
     def name(self) -> str:
         """Get the player's name."""
         return self._name
-
-    @property
-    def hit_points(self) -> int:
-        """Get the player's current hit points."""
-        return self._hit_points
-
-    @hit_points.setter
-    def hit_points(self, value: int) -> None:
-        """
-        Set the player's hit points.
-
-        :param value: The new hit points value
-        :raises InvalidPlayerAttributeError: If the value is invalid
-        """
-        if not isinstance(value, int) or value < 0:
-            raise InvalidPlayerAttributeError(
-                "Hit points must be a non-negative integer"
-            )
-        self._hit_points = value
 
     def add_to_inventory(self, item: Item) -> None:
         """
@@ -166,4 +140,4 @@ class Player:
 
         :return: A formatted string describing the player
         """
-        return f"Player: {self._name}\nHP: {self._hit_points}\n{self.inventory_to_string()}"
+        return f"Player: {self._name}\nHP: {self.h}\n{self.inventory_to_string()}"

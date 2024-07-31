@@ -1,7 +1,4 @@
-from src.combat.combat_handler import CombatHandler
 from src.controllers.player_action_controller import PlayerActionController
-from src.game.dungeon_adventure import GameModel
-from src.views.view import View
 from src.enums.game_state import GameState
 from src.exceptions import (
     InvalidInputError,
@@ -9,6 +6,8 @@ from src.exceptions import (
     RoomNotFoundError,
     InvalidPlayerActionError
 )
+from src.game.dungeon_adventure import GameModel
+from src.views.view import View
 
 
 class GameController:

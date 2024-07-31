@@ -1,7 +1,7 @@
-from typing import Dict, Optional
+from typing import Dict
 
 from src.dungeon.room import Room
-from src.enums.room_types import Direction, RoomType
+from src.enums.room_types import Direction
 
 
 class DungeonError(Exception):
@@ -10,24 +10,19 @@ class DungeonError(Exception):
 
 
 class Dungeon:
-    def __init__(self):
+    def __init__(self, entrance_room: Room):
         self.rooms: Dict[str, Room] = {}
-        self.entrance_room: Optional[Room] = None
-
-    def get_entrance_room(self) -> Optional[Room]:
-        return self.entrance_room
-
-    def set_entrance_room(self, room_name: str) -> None:
-        if not self.room_exists(room_name):
-            raise DungeonError(f"Room '{room_name}' does not exist in the dungeon.")
-        self.entrance_room = self.rooms[room_name]
-        self.entrance_room.set_room_type(RoomType.ENTRANCE)
+        self._entrance_room: Room = entrance_room
 
     def get_rooms(self):
         return list(self.rooms.values())
 
     def room_exists(self, room_name: str) -> bool:
         return room_name in self.rooms
+
+    @property
+    def entrance_room(self) -> Room:
+        return self._entrance_room
 
     def get_room(self, room_name: str) -> Room:
         if not self.room_exists(room_name):
@@ -49,7 +44,7 @@ class Dungeon:
         self.disconnect_rooms(room_to_remove)
         removed_room = self.rooms.pop(name)
         if self.entrance_room == removed_room:
-            self.entrance_room = None
+            self._entrance_room = None
         return removed_room
 
     def disconnect_rooms(self, room_to_disconnect: Room) -> None:

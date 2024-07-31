@@ -21,6 +21,7 @@ class CombatHandler:
         self.combat_state: CombatState = CombatState.WAITING
 
     def initiate_combat(self):
+        print(self.player.current_room.monsters)
         self.monsters = self.player.current_room.monsters
         if not self.monsters:
             raise CombatError("Cannot initiate combat without monsters")

@@ -24,6 +24,7 @@ class Hero(DungeonCharacter):
             attack_speed,
             base_hit_chance,
         )
+        self.current_hp = 10
         self.block_chance: int = block_chance
         self.level: int = 1
         self.xp: int = 0
