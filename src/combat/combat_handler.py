@@ -79,7 +79,10 @@ class CombatHandler:
             raise GameStateError("Player turn attempted outside of combat")
         action = self.view.get_combat_action()
         if action == "attack":
-            # Implement attack logic
+            target = self.view.get_combat_target(self.monsters)
+            if target is None:
+                raise InvalidPlayerActionError("Invalid target")
+            self.player.hero.attempt_attack(target)
             pass
         elif action == "use_item":
             # Implement item use logic

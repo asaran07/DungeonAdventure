@@ -54,7 +54,7 @@ class GameController:
         try:
             player_data = self.view.get_player_creation_input()
             self.game_model.update_player(player_data)
-            entrance_room = self.game_model.dungeon.entrance_room
+            entrance_room = self.game_model.dungeon.get_room("Room 1")
             if entrance_room is None:
                 raise RoomNotFoundError("Entrance room not found.")
             entrance_room.explore()

@@ -10,19 +10,14 @@ class DungeonError(Exception):
 
 
 class Dungeon:
-    def __init__(self, entrance_room: Room):
+    def __init__(self):
         self.rooms: Dict[str, Room] = {}
-        self._entrance_room: Room = entrance_room
 
     def get_rooms(self):
         return list(self.rooms.values())
 
     def room_exists(self, room_name: str) -> bool:
         return room_name in self.rooms
-
-    @property
-    def entrance_room(self) -> Room:
-        return self._entrance_room
 
     def get_room(self, room_name: str) -> Room:
         if not self.room_exists(room_name):
@@ -43,8 +38,6 @@ class Dungeon:
         room_to_remove = self.rooms[name]
         self.disconnect_rooms(room_to_remove)
         removed_room = self.rooms.pop(name)
-        if self.entrance_room == removed_room:
-            self._entrance_room = None
         return removed_room
 
     def disconnect_rooms(self, room_to_disconnect: Room) -> None:
@@ -73,7 +66,3 @@ class Dungeon:
             self.remove_room(new_room_name)
             raise DungeonError(
                 f"Failed to connect room '{new_room_name}' to '{existing_room_name}'. Connection might already exist.")
-
-    @entrance_room.setter
-    def entrance_room(self, value):
-        self._entrance_room = value

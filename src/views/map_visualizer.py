@@ -20,7 +20,7 @@ class MapVisualizer:
         self._assign_coordinates()
 
     def _assign_coordinates(self):
-        start_room = self.dungeon.entrance_room
+        start_room = self.dungeon.get_room("Room 1")
         if start_room is None:
             print("Warning: Dungeon has not been initialized yet. Map will be empty.")
             return

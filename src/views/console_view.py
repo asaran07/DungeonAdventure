@@ -111,3 +111,17 @@ class ConsoleView(View):
             raise UnsupportedGameStateException(
                 f"Cannot display actions for game state: {game_model.game_state}"
             )
+
+    def get_combat_target(self, monsters):
+        print("Choose a target:")
+        for i, monster in enumerate(monsters, 1):
+            print(f"{i}. {monster.name}")
+        while True:
+            try:
+                choice = self.get_user_input("Enter the number of the target: ")
+                if choice.isdigit() and 1 <= int(choice) <= len(monsters):
+                    return monsters[int(choice) - 1]
+                else:
+                    print("Invalid choice. Please enter a valid number.")
+            except Exception as e:
+                print(f"Error: {e}. Please try again.")

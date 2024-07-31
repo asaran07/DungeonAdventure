@@ -40,3 +40,6 @@ class View(ABC):
 
     def get_combat_action(self):
         pass
+
+    def get_combat_target(self, monsters):
+        pass
