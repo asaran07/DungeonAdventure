@@ -25,7 +25,7 @@ def setup_game():
 def main():
     game_model = setup_game()
     if game_model:
-        view = RichConsoleView()
+        view = ConsoleView()
         map_visualizer = MapVisualizer(game_model.dungeon)
         player_action_controller = PlayerActionController(game_model, map_visualizer, view)
         controller = GameController(game_model, player_action_controller, view)

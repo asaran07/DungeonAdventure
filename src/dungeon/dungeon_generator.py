@@ -1,8 +1,8 @@
-from src.dungeon import Dungeon, Room
-from src.enums import Direction, RoomType
-from src.items.weapon import Weapon
-from src.enums.item_types import WeaponType
 from src.characters.monster import Monster
+from src.dungeon import Dungeon
+from src.enums import Direction
+from src.enums.item_types import WeaponType
+from src.items.weapon import Weapon
 
 
 class DungeonGenerator:
@@ -20,6 +20,10 @@ class DungeonGenerator:
         if room2:
             room2.add_monster(Monster(name="Robby Goblin", base_min_damage=1, base_max_damage=4))
             room2.add_monster(Monster(name="Bobby Goblin", base_min_damage=3, base_max_damage=7))
+
+        room3 = dungeon.get_room("Room 3")
+        if room3:
+            room3.add_monster(Monster(name="Gobby King", base_min_damage=5, base_max_damage=10))
 
         return dungeon
 
