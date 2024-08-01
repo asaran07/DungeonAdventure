@@ -12,7 +12,7 @@ class TestHero(unittest.TestCase):
     def test_init(self):
         self.assertEqual(self.hero.name, "Test Hero")
         self.assertEqual(self.hero.max_hp, 100)
-        self.assertEqual(self.hero.current_hp, 10)
+        self.assertEqual(self.hero.current_hp, 100)
         self.assertEqual(self.hero.base_min_damage, 10)
         self.assertEqual(self.hero.base_max_damage, 20)
         self.assertEqual(self.hero.attack_speed, 5)
@@ -88,7 +88,7 @@ class TestHero(unittest.TestCase):
         str_rep = str(self.hero)
         self.assertIn("Hero: Test Hero", str_rep)
         self.assertIn("Level: 1", str_rep)
-        self.assertIn("HP: 10/100", str_rep)
+        self.assertIn("HP: 100/100", str_rep)
         self.assertIn("XP: 0/100", str_rep)
         self.assertIn("Damage: 10-20", str_rep)
         self.assertIn("Hit Chance: 70%", str_rep)
