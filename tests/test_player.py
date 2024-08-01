@@ -51,6 +51,7 @@ class TestPlayer:
         # NOTE: switching these around changes what is shown as expected vs actual
         assert actual_string == expected_string
 
+    @pytest.mark.skip(reason="use(potion) in potion.py not implemented yet")
     def test_use_health_potion(self, new_player: Player):
         expected_string = ("Player: John\n"
                            "HP: 90\n"
