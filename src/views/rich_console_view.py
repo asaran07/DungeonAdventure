@@ -33,20 +33,14 @@ class RichConsoleView(ConsoleView):
         room_panel = Panel(
             f"[bold cyan]{room.name}[/bold cyan]\n\n{room.get_description()}",
             title="Current Room",
-            expand=False
+            expand=False,
         )
         self.console.print(room_panel)
 
     def display_combat_status(self, player: Player, monsters: List[Monster]):
         layout = Layout()
-        layout.split_column(
-            Layout(name="header"),
-            Layout(name="body")
-        )
-        layout["body"].split_row(
-            Layout(name="player"),
-            Layout(name="monsters")
-        )
+        layout.split_column(Layout(name="header"), Layout(name="body"))
+        layout["body"].split_row(Layout(name="player"), Layout(name="monsters"))
 
         # Header
         layout["header"].update(Panel("Combat Status", style="bold red"))
@@ -64,7 +58,9 @@ class RichConsoleView(ConsoleView):
         monster_table.add_column("Name", style="cyan")
         monster_table.add_column("HP", style="magenta")
         for monster in monsters:
-            monster_table.add_row(monster.name, f"{monster.current_hp}/{monster.max_hp}")
+            monster_table.add_row(
+                monster.name, f"{monster.current_hp}/{monster.max_hp}"
+            )
         layout["monsters"].update(monster_table)
 
         self.console.print(layout)
@@ -78,14 +74,9 @@ class RichConsoleView(ConsoleView):
             "[cyan]map[/cyan] - Display the dungeon map",
             "[cyan]inventory[/cyan] - Check your inventory",
             "[cyan]take[/cyan] - Pick up an item",
-            "[cyan]drop[/cyan] - Drop an item"
+            "[cyan]drop[/cyan] - Drop an item",
         ]
         actions_panel = Panel(
-            "\n".join(actions),
-            title="Available Actions",
-            expand=False
+            "\n".join(actions), title="Available Actions", expand=False
         )
         self.console.print(actions_panel)
-
-
-

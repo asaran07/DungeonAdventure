@@ -1,45 +1,48 @@
-from abc import ABC
-from src.enums.item_types import ItemType, PotionType
 from src.items.item import Item
+from src.enums.item_types import ItemType, PotionType
 
 
-class Potion(Item, ABC):
+class Potion(Item):
     def __init__(
-        self, name: str, description: str, weight: float, potion_type: PotionType
+        self,
+        item_id: str,
+        name: str,
+        description: str,
+        weight: float,
+        potion_type: PotionType,
     ):
-        super().__init__(name, description, weight, ItemType.POTION)
+        super().__init__(item_id, name, description, weight, ItemType.POTION)
         self._potion_type = potion_type
 
-    def get_potion_type(self) -> PotionType:
+    @property
+    def potion_type(self) -> PotionType:
         return self._potion_type
+
+    def use(self, user):
+        # TODO: Implement general potion using logic
+        pass
 
 
 class HealingPotion(Potion):
-    def __init__(
-                 self,
-                 name: str = "Healing Potion",
-                 description: str = "Heals the player by 15 health points.",
-                 weight: float = .5,
-                 hp_recovery: int = 15
-    ) -> None:
-        super().__init__(name, description, weight, PotionType.HEALING)
-        self._hp_recovery = hp_recovery
-
-    def get_hp_recovery(self) -> int:
-        return self._hp_recovery
-
-    def use(self):
-        print(
-            f"You drink the {self.name}, recovering {self.get_hp_recovery()} HP!"
+    def __init__(self, item_id: str, name: str, heal_amount: int, weight: float):
+        super().__init__(
+            item_id, name, f"Heals for {heal_amount} HP", weight, PotionType.HEALING
         )
+        self._heal_amount = heal_amount
+
+    def use(self, user):
+        user.heal(self._heal_amount)
+        return True
 
 
 class VisionPotion(Potion):
-    def __init__(self,
-                 name: str = "Vision Potion",
-                 description: str = "Allows player to see the surrounding 8 rooms.",
-                 weight: float = .5):
+    def __init__(
+        self,
+        name: str = "Vision Potion",
+        description: str = "Allows player to see the surrounding 8 rooms.",
+        weight: float = 0.5,
+    ):
         super().__init__(name, description, weight, PotionType.VISION)
 
-    def use(self):
+    def use(self, user):
         print(f"You drink the {self.name}, revealing nearby rooms!")

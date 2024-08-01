@@ -48,7 +48,11 @@ class Room:
         """
         Get a detailed description of the room.
         """
-        return self.detailed_description if self.detailed_description else "You see nothing special about this room."
+        return (
+            self.detailed_description
+            if self.detailed_description
+            else "You see nothing special about this room."
+        )
 
     def connect(self, direction: Direction, other_room: "Room") -> bool:
         """
@@ -59,8 +63,8 @@ class Room:
         :return: True if the connection was made, False otherwise
         """
         if (
-                self.connections[direction] is None
-                and other_room.connections[Room.opposite(direction)] is None
+            self.connections[direction] is None
+            and other_room.connections[Room.opposite(direction)] is None
         ):
             self.connections[direction] = other_room
             other_room.connections[Room.opposite(direction)] = self
@@ -87,13 +91,14 @@ class Room:
         """
         self.items.append(item)
 
-    def remove_item(self, item: Item) -> None:
+    def remove_item(self, item: Item) -> Item:
         """
         Remove an item from the room.
 
         :param item: The item to remove
         """
         self.items.remove(item)
+        return item
 
     def set_room_type(self, room_type: RoomType) -> None:
         """
@@ -145,5 +150,3 @@ class Room:
             Direction.WEST: Direction.EAST,
         }
         return opposites[direction]
-
-

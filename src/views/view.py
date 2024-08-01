@@ -43,3 +43,6 @@ class View(ABC):
 
     def get_combat_target(self, monsters):
         pass
+
+    def display_xp_gained(self, xp_amount: int):
+        pass

@@ -26,7 +26,9 @@ class MapVisualizer:
             return
         self._assign_room_coordinates(start_room, 0, 0, set())
 
-    def _assign_room_coordinates(self, current_room: Room, x: int, y: int, visited: set):
+    def _assign_room_coordinates(
+        self, current_room: Room, x: int, y: int, visited: set
+    ):
         if current_room in visited:
             return
         visited.add(current_room)
@@ -39,9 +41,13 @@ class MapVisualizer:
 
     def update_explored_rooms(self, current_room: Room):
 
-        current_coords = next((coords for coords, room in self.grid.items() if room == current_room), None)
+        current_coords = next(
+            (coords for coords, room in self.grid.items() if room == current_room), None
+        )
         if current_coords is None:
-            print("Warning: Current room not found in the map. Can't update explored rooms.")
+            print(
+                "Warning: Current room not found in the map. Can't update explored rooms."
+            )
             return
         self.explored_rooms.add(current_coords)
         for direction in Direction:
@@ -80,10 +86,10 @@ class MapVisualizer:
                         room_char = Resources.Map.EXPLORED_ROOM_MARKER
                     else:
                         room_char = Resources.Map.UNEXPLORED_ROOM_MARKER
-                    room_line.append(f'[{room_char}]')
+                    room_line.append(f"[{room_char}]")
                 else:
                     room_line.append(Resources.Map.EMPTY_SPACE)
-            map_lines.append(''.join(room_line))
+            map_lines.append("".join(room_line))
 
         return map_lines
 

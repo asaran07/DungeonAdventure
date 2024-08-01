@@ -16,7 +16,9 @@ class PlayerActionController:
     Includes methods for executing player actions.
     """
 
-    def __init__(self, game_model: GameModel, map_visualizer: MapVisualizer, view2: View):
+    def __init__(
+        self, game_model: GameModel, map_visualizer: MapVisualizer, view2: View
+    ):
         self.game_model = game_model
         self.map_visualizer = map_visualizer
         self._view = view2
@@ -44,7 +46,9 @@ class PlayerActionController:
             if new_room is not None:
                 player.current_room = new_room
                 new_room.explore()
-                self.map_visualizer.update_explored_rooms(new_room)  # Update explored rooms in map
+                self.map_visualizer.update_explored_rooms(
+                    new_room
+                )  # Update explored rooms in map
                 self.enter_room()
                 return True
         return False
@@ -79,7 +83,7 @@ class PlayerActionController:
         elif action_parts[0] == "inventory" or action_parts[0] == "inv":
             self.display_inventory()
         elif action_parts[0] == "take" or action_parts[0] == "drop":
-            item_str = ' '.join(action_parts[1:])  # get all words except the first
+            item_str = " ".join(action_parts[1:])  # get all words except the first
             item_str = item_str.title()  # Capitalize each word
             if action_parts[0] == "take" and len(action_parts) > 1:
                 self.handle_pickup(item_str)
@@ -87,6 +91,7 @@ class PlayerActionController:
                 self.handle_drop(item_str)
 
     def handle_pickup(self, item_str: str):
+        # TODO: Add way to equip the weapon
         try:
             # Make an empty item with only the name
             item: Item = HealingPotion(item_str)
@@ -143,7 +148,7 @@ class PlayerActionController:
         print(f"You enter {room.name}")
         print(room.get_description())
         if room.has_monsters:
-            print(f"You encounter monsters!")
+            print("You encounter monsters!")
             self.combat_handler.initiate_combat()
         else:
             print("The room appears to be empty.")

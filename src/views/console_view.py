@@ -9,26 +9,31 @@ from src.views.view import View
 
 class ConsoleViewException(Exception):
     """Base exception for ConsoleView"""
+
     pass
 
 
 class InvalidInputException(ConsoleViewException):
     """Raised when user input is invalid"""
+
     pass
 
 
 class PlayerNotExistException(ConsoleViewException):
     """Raised when player does not exist in the game model"""
+
     pass
 
 
 class RoomNotExistException(ConsoleViewException):
     """Raised when current room does not exist for the player"""
+
     pass
 
 
 class UnsupportedGameStateException(ConsoleViewException):
     """Raised when trying to display actions for an unsupported game state"""
+
     pass
 
 
@@ -67,6 +72,10 @@ class ConsoleView(View):
             print(f"{i}. {monster.name} - HP: {monster.current_hp}/{monster.max_hp}")
         print("====================\n")
 
+    def display_xp_gained(self, xp_amount: int):
+        print("\n=== XP Gained ===")
+        print("You gained " + str(xp_amount) + "!")
+
     def get_combat_action(self) -> str:
         print("Combat Actions:")
         print("1. Attack")
@@ -75,10 +84,10 @@ class ConsoleView(View):
         while True:
             try:
                 choice = self.get_user_input("Choose an action (1-3): ")
-                if choice in ['1', '2', '3']:
-                    if choice == '1':
+                if choice in ["1", "2", "3"]:
+                    if choice == "1":
                         return "attack"
-                    elif choice == '2':
+                    elif choice == "2":
                         return "use_item"
                     else:
                         return "flee"

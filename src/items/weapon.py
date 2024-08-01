@@ -1,58 +1,61 @@
-from src.enums.item_types import ItemType, WeaponType
 from src.items.item import Item
+from src.enums.item_types import ItemType, WeaponType
 
 
 class Weapon(Item):
-    """Represents a weapon item in the game"""
-
     def __init__(
         self,
+        item_id: str,
         name: str,
         description: str,
         weight: float,
         weapon_type: WeaponType,
         min_damage: int,
         max_damage: int,
-        durability: int = 100,
     ):
-        """
-        Create a weapon item
-
-        :param str name: Name of the weapon
-        :param str description: Description of the weapon
-        :param float weight: Weight of the weapon
-        :param WeaponType weapon_type: Type of the weapon
-        :param int min_damage: Minimum damage the weapon can inflict
-        :param int max_damage: Maximum damage the weapon can inflict
-        :param int durability: Durability of the weapon. Defaults to 100
-        """
-        super().__init__(name, description, weight, ItemType.WEAPON)
+        super().__init__(item_id, name, description, weight, ItemType.WEAPON)
         self._weapon_type = weapon_type
         self._min_damage = min_damage
         self._max_damage = max_damage
-        self._durability = durability
 
     @property
     def weapon_type(self) -> WeaponType:
-        """Weapon type of the weapon, e.g. Sword, Bow"""
         return self._weapon_type
 
     @property
     def min_damage(self) -> int:
-        """Min damage points the weapon can inflict"""
         return self._min_damage
 
     @property
     def max_damage(self) -> int:
-        """Max damage the weapon can inflict"""
         return self._max_damage
 
-    @property
-    def durability(self) -> int:
-        """Durability of the weapon."""
-        return self._durability
+    def use(self, user):
+        # TODO: Implement use weapon logic
+        pass
 
-    def use(self):
-        """Use the weapon to inflict damage, durability decreases by 1"""
-        print(f"You swing the {self.name}, dealing {self.min_damage} damage!")
-        self._durability -= 1
+
+class Sword(Weapon):
+    def __init__(self, item_id: str, name: str, damage: int, weight: float):
+        super().__init__(
+            item_id,
+            name,
+            f"A sharp sword",
+            weight,
+            WeaponType.SWORD,
+            damage,
+            damage + 2,
+        )
+
+
+class Bow(Weapon):
+    def __init__(self, item_id: str, name: str, damage: int, weight: float):
+        super().__init__(
+            item_id,
+            name,
+            f"A powerful bow",
+            weight,
+            WeaponType.BOW,
+            damage - 1,
+            damage + 1,
+        )
