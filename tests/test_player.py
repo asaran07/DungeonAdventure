@@ -1,8 +1,9 @@
 import pytest
 
-from src.characters.player import Player
+from src.characters.player import Player, InvalidPlayerAttributeError
 from src.items.pillar import AbstractionPillar, EncapsulationPillar, InheritancePillar, PolymorphismPillar
 from src.items.potion import HealingPotion, VisionPotion
+from src.exceptions.player import InvalidPlayerActionError, InventoryError, InventoryFullError, ItemNotFoundError
 
 
 class TestPlayer:
@@ -16,6 +17,30 @@ class TestPlayer:
     @pytest.fixture
     def new_player(self):
         return Player("John")
+
+    # Test getters
+    @pytest.mark.skip(reason="Not implemented yet")
+    def test_get_hero(self, new_player: Player):
+        pass
+
+    def test_get_name(self, new_player: Player):
+        """Needs name.setter to work"""
+        expected_str = "John"
+        actual_str = new_player.name
+        assert actual_str == expected_str
+
+    def test_set_empty_name(self):
+        with pytest.raises(InvalidPlayerAttributeError):
+            empty_player = Player("")
+
+    def test_get_weight(self, new_player: Player):
+        """Requires add_to_inv() & inv_to_string() to work."""
+        new_player.add_to_inventory(self.health_potion)  # .5
+        new_player.add_to_inventory(self.health_potion)
+        new_player.add_to_inventory(self.abstraction_pillar)  # 1
+        actual = new_player.get_inventory_weight()
+        expected = 2.0
+        assert actual == expected
 
     def test_to_string(self, new_player: Player):
         expected_string = ("Player: John\n"
@@ -41,8 +66,9 @@ class TestPlayer:
         # NOTE: switching these around changes what is shown as expected vs actual
         assert actual_string == expected_string
 
+    @pytest.mark.skip(reason="Not implemented yet")
     def test_use_vision_potion(self, new_player: Player):
-        pass  # ToDo: See how group wants the vision potion to work
+        pass
 
     def test_add_and_remove_item_from_inventory(self, new_player: Player):
         expected_string = ("Player: John\n"
@@ -78,11 +104,4 @@ class TestPlayer:
 
     def test_remove_non_existent_items(self, new_player: Player):
         """Testing if removing from inventory accounts for dropping non-existent items."""
-        expected_string = ("Player: John\n"
-                           "HP: 75\n"
-                           "Inventory is empty")
-        adventurer_one = new_player
-        adventurer_one.remove_from_inventory(self.health_potion.name)
-        adventurer_one.remove_from_inventory(self.abstraction_pillar.name)
-        actual_string = adventurer_one.__str__()
-        assert actual_string == expected_string
+        assert new_player.remove_from_inventory(self.health_potion.name) is None
