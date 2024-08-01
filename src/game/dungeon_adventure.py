@@ -17,10 +17,7 @@ class GameModel:
     """
 
     def __init__(self, player: Player, dungeon: Dungeon):
-        if not isinstance(player, Player):
-            raise GameModelError("Invalid player instance provided")
-        if not isinstance(dungeon, Dungeon):
-            raise GameModelError("Invalid dungeon instance provided")
+        self.validate_core_instances(player, dungeon)
         self._player: Player = player
         self._dungeon: Dungeon = dungeon
         self._game_state = GameState.TITLE_SCREEN
@@ -51,6 +48,12 @@ class GameModel:
         if boolean:
             self._game_state = GameState.GAME_OVER
         self.game_over = boolean
+
+    def validate_core_instances(self, player: Player, dungeon: Dungeon) -> None:
+        if not isinstance(player, Player):
+            raise GameModelError("Invalid player instance provided")
+        if not isinstance(dungeon, Dungeon):
+            raise GameModelError("Invalid dungeon instance provided")
 
     def update_player(self, player_data: Dict):
         """

@@ -1,6 +1,13 @@
-from src.items.weapon import Weapon, Sword, Bow
-from src.items.potion import Potion, HealingPotion
-from src.enums.item_types import WeaponType, PotionType
+from src.enums.item_types import PillarType, PotionType, WeaponType
+from src.items.pillar import (
+    AbstractionPillar,
+    EncapsulationPillar,
+    InheritancePillar,
+    Pillar,
+    PolymorphismPillar,
+)
+from src.items.potion import HealingPotion, Potion
+from src.items.weapon import Bow, Sword, Weapon
 
 
 class ItemFactory:
@@ -46,3 +53,22 @@ class ItemFactory:
                 weight,
                 potion_type,
             )
+
+    def create_pillar(
+        self,
+        pillar_type: PillarType,
+        name: str,
+        description: str,
+        weight: float = 1.0,
+    ) -> Pillar:
+        item_id = self._generate_item_id()
+        if pillar_type == PillarType.ABSTRACTION:
+            return AbstractionPillar(item_id, name, description, weight)
+        elif pillar_type == PillarType.ENCAPSULATION:
+            return EncapsulationPillar(item_id, name, description, weight)
+        elif pillar_type == PillarType.INHERITANCE:
+            return InheritancePillar(item_id, name, description, weight)
+        elif pillar_type == PillarType.POLYMORPHISM:
+            return PolymorphismPillar(item_id, name, description, weight)
+        else:
+            raise ValueError(f"Unknown pillar type: {pillar_type}")
