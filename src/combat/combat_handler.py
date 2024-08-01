@@ -6,7 +6,11 @@ from src.characters.player import Player
 from src.enums.combat_state import CombatState
 from src.enums.game_state import GameState
 from src.exceptions import GameStateError, InvalidPlayerActionError
-from src.exceptions.combat import CombatError, CharacterNotInCombatError, InvalidCombatStateError
+from src.exceptions.combat import (
+    CombatError,
+    CharacterNotInCombatError,
+    InvalidCombatStateError,
+)
 from src.game.dungeon_adventure import GameModel
 from src.views.view import View
 
@@ -61,7 +65,9 @@ class CombatHandler:
                 elif self.combat_state == CombatState.MONSTER_TURN:
                     self.monster_turn()
                 else:
-                    raise InvalidCombatStateError(f"Invalid combat state: {self.combat_state}")
+                    raise InvalidCombatStateError(
+                        f"Invalid combat state: {self.combat_state}"
+                    )
             except GameStateError as e:
                 self.view.display_message(f"Game State Error: {e}")
                 self.reset_combat()
@@ -78,7 +84,6 @@ class CombatHandler:
     def check_combat_end(self, target: Monster):
         # Remove dead monsters
         # self.monsters = [monster for monster in self.monsters if monster.is_alive]
-
 
         if not target.is_alive:
             self.view.display_message(f"{target.name} has been defeated!")
@@ -129,7 +134,9 @@ class CombatHandler:
         for monster in self.monsters:
             if monster.is_alive:
                 damage = monster.attempt_attack(self.player.hero)
-                self.view.display_message(f"{monster.name} deals {damage} damage to you!")
+                self.view.display_message(
+                    f"{monster.name} deals {damage} damage to you!"
+                )
                 if not self.player.hero.is_alive:
                     return  # End the monster turn if the player is defeated
         self.combat_state = CombatState.PLAYER_TURN

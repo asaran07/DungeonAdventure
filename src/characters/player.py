@@ -16,9 +16,7 @@ class InvalidPlayerAttributeError(Exception):
 class Player:
     """Represents the player in the game."""
 
-    def __init__(
-        self, name: str, inventory_weight_limit: float = 50.0
-    ) -> None:
+    def __init__(self, name: str, inventory_weight_limit: float = 50.0) -> None:
         """
         Initialize a new Player instance.
 

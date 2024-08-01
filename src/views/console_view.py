@@ -9,26 +9,31 @@ from src.views.view import View
 
 class ConsoleViewException(Exception):
     """Base exception for ConsoleView"""
+
     pass
 
 
 class InvalidInputException(ConsoleViewException):
     """Raised when user input is invalid"""
+
     pass
 
 
 class PlayerNotExistException(ConsoleViewException):
     """Raised when player does not exist in the game model"""
+
     pass
 
 
 class RoomNotExistException(ConsoleViewException):
     """Raised when current room does not exist for the player"""
+
     pass
 
 
 class UnsupportedGameStateException(ConsoleViewException):
     """Raised when trying to display actions for an unsupported game state"""
+
     pass
 
 
@@ -79,10 +84,10 @@ class ConsoleView(View):
         while True:
             try:
                 choice = self.get_user_input("Choose an action (1-3): ")
-                if choice in ['1', '2', '3']:
-                    if choice == '1':
+                if choice in ["1", "2", "3"]:
+                    if choice == "1":
                         return "attack"
-                    elif choice == '2':
+                    elif choice == "2":
                         return "use_item"
                     else:
                         return "flee"

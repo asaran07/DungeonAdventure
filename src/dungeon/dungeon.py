@@ -6,6 +6,7 @@ from src.enums.room_types import Direction
 
 class DungeonError(Exception):
     """Custom exception for Dungeon-related errors"""
+
     pass
 
 
@@ -49,13 +50,17 @@ class Dungeon:
                 connected_room.connections[opposite_direction] = None
                 room_to_disconnect.connections[direction] = None
 
-    def connect_rooms(self, room1_name: str, direction: Direction, room2_name: str) -> bool:
+    def connect_rooms(
+        self, room1_name: str, direction: Direction, room2_name: str
+    ) -> bool:
         """Connect two rooms in the dungeon by their names"""
         room1 = self.get_room(room1_name)
         room2 = self.get_room(room2_name)
         return room1.connect(direction, room2)
 
-    def add_and_connect_room(self, new_room_name: str, existing_room_name: str, direction: Direction) -> Room:
+    def add_and_connect_room(
+        self, new_room_name: str, existing_room_name: str, direction: Direction
+    ) -> Room:
         """Add a new room to the dungeon and connect it to an existing room"""
         existing_room = self.get_room(existing_room_name)
         new_room = self.add_room(new_room_name)
@@ -65,4 +70,5 @@ class Dungeon:
         else:
             self.remove_room(new_room_name)
             raise DungeonError(
-                f"Failed to connect room '{new_room_name}' to '{existing_room_name}'. Connection might already exist.")
+                f"Failed to connect room '{new_room_name}' to '{existing_room_name}'. Connection might already exist."
+            )

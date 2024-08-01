@@ -26,7 +26,9 @@ def main():
     if game_model:
         view = ConsoleView()
         map_visualizer = MapVisualizer(game_model.dungeon)
-        player_action_controller = PlayerActionController(game_model, map_visualizer, view)
+        player_action_controller = PlayerActionController(
+            game_model, map_visualizer, view
+        )
         controller = GameController(game_model, player_action_controller, view)
         controller.run_game()
     else:

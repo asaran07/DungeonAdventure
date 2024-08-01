@@ -4,14 +4,19 @@ from src.exceptions import (
     InvalidInputError,
     GameStateError,
     RoomNotFoundError,
-    InvalidPlayerActionError
+    InvalidPlayerActionError,
 )
 from src.game.dungeon_adventure import GameModel
 from src.views.view import View
 
 
 class GameController:
-    def __init__(self, game_model: GameModel, player_action_controller: PlayerActionController, view: View):
+    def __init__(
+        self,
+        game_model: GameModel,
+        player_action_controller: PlayerActionController,
+        view: View,
+    ):
         self.game_model = game_model
         self.player_action_controller = player_action_controller
         self.view = view
@@ -38,7 +43,9 @@ class GameController:
         self.view.display_title_screen()
         while True:
             try:
-                choice = self.view.get_user_input("Please enter your choice (1 to Start, 2 to Quit): ")
+                choice = self.view.get_user_input(
+                    "Please enter your choice (1 to Start, 2 to Quit): "
+                )
                 if choice == "1":
                     self.game_model.game_state = GameState.PLAYER_CREATION
                     break

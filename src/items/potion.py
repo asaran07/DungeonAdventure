@@ -16,11 +16,11 @@ class Potion(Item, ABC):
 
 class HealingPotion(Potion):
     def __init__(
-                 self,
-                 name: str = "Healing Potion",
-                 description: str = "Heals the player by 15 health points.",
-                 weight: float = .5,
-                 hp_recovery: int = 15
+        self,
+        name: str = "Healing Potion",
+        description: str = "Heals the player by 15 health points.",
+        weight: float = 0.5,
+        hp_recovery: int = 15,
     ) -> None:
         super().__init__(name, description, weight, PotionType.HEALING)
         self._hp_recovery = hp_recovery
@@ -29,16 +29,16 @@ class HealingPotion(Potion):
         return self._hp_recovery
 
     def use(self):
-        print(
-            f"You drink the {self.name}, recovering {self.get_hp_recovery()} HP!"
-        )
+        print(f"You drink the {self.name}, recovering {self.get_hp_recovery()} HP!")
 
 
 class VisionPotion(Potion):
-    def __init__(self,
-                 name: str = "Vision Potion",
-                 description: str = "Allows player to see the surrounding 8 rooms.",
-                 weight: float = .5):
+    def __init__(
+        self,
+        name: str = "Vision Potion",
+        description: str = "Allows player to see the surrounding 8 rooms.",
+        weight: float = 0.5,
+    ):
         super().__init__(name, description, weight, PotionType.VISION)
 
     def use(self):

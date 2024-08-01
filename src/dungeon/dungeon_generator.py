@@ -10,7 +10,9 @@ class DungeonGenerator:
     def generate_default_dungeon() -> Dungeon:
         dungeon = Dungeon()
         dungeon.add_room("Room 1")
-        dungeon.get_room("Room 1").add_item(Weapon("Rusty Dagger", "A rusty dagger", 0.5, WeaponType.DAGGER, 1, 5))
+        dungeon.get_room("Room 1").add_item(
+            Weapon("Rusty Dagger", "A rusty dagger", 0.5, WeaponType.DAGGER, 1, 5)
+        )
         dungeon.add_and_connect_room("Room 2", "Room 1", Direction.NORTH)
         dungeon.add_and_connect_room("Room 3", "Room 2", Direction.EAST)
         dungeon.add_and_connect_room("Room 4", "Room 3", Direction.EAST)
@@ -23,8 +25,8 @@ class DungeonGenerator:
 
         room3 = dungeon.get_room("Room 3")
         if room3:
-            room3.add_monster(Monster(name="Gobby King", base_min_damage=5, base_max_damage=10))
+            room3.add_monster(
+                Monster(name="Gobby King", base_min_damage=5, base_max_damage=10)
+            )
 
         return dungeon
-
-

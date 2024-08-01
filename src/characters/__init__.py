@@ -1,3 +1,3 @@
 from .player import Player
 
-__all__ = ['Player']
+__all__ = ["Player"]
