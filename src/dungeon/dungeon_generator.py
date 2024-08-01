@@ -18,8 +18,8 @@ class DungeonGenerator:
 
         room2 = dungeon.get_room("Room 2")
         if room2:
-            room2.add_monster(Monster(name="Robby Goblin", base_min_damage=1, base_max_damage=4))
-            room2.add_monster(Monster(name="Bobby Goblin", base_min_damage=3, base_max_damage=7))
+            room2.add_monster(Monster(name="Robby Goblin"))
+            room2.add_monster(Monster(name="Bobby Goblin"))
 
         room3 = dungeon.get_room("Room 3")
         if room3:

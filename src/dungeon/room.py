@@ -87,13 +87,14 @@ class Room:
         """
         self.items.append(item)
 
-    def remove_item(self, item: Item) -> None:
+    def remove_item(self, item: Item) -> Item:
         """
         Remove an item from the room.
 
         :param item: The item to remove
         """
         self.items.remove(item)
+        return item
 
     def set_room_type(self, room_type: RoomType) -> None:
         """

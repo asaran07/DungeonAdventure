@@ -87,6 +87,7 @@ class PlayerActionController:
                 self.handle_drop(item_str)
 
     def handle_pickup(self, item_str: str):
+        # TODO: Add way to equip the weapon
         try:
             # Make an empty item with only the name
             item: Item = HealingPotion(item_str)
@@ -143,7 +144,7 @@ class PlayerActionController:
         print(f"You enter {room.name}")
         print(room.get_description())
         if room.has_monsters:
-            print(f"You encounter monsters!")
+            print("You encounter monsters!")
             self.combat_handler.initiate_combat()
         else:
             print("The room appears to be empty.")

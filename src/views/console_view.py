@@ -67,6 +67,10 @@ class ConsoleView(View):
             print(f"{i}. {monster.name} - HP: {monster.current_hp}/{monster.max_hp}")
         print("====================\n")
 
+    def display_xp_gained(self, xp_amount: int):
+        print("\n=== XP Gained ===")
+        print("You gained " + str(xp_amount) + "!")
+
     def get_combat_action(self) -> str:
         print("Combat Actions:")
         print("1. Attack")

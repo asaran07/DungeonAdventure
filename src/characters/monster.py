@@ -5,12 +5,13 @@ import random
 
 
 class Monster(DungeonCharacter):
+    # TODO: Add properties for get and set
     def __init__(self, name: str = "Generic Monster",
-                 max_hp: int = 50,
-                 base_min_damage: int = 5,
-                 base_max_damage: int = 10,
-                 attack_speed: int = 3,
-                 base_hit_chance: int = 60,
+                 max_hp: int = 20,
+                 base_min_damage: int = 1,
+                 base_max_damage: int = 5,
+                 attack_speed: int = 5,
+                 base_hit_chance: int = 70,
                  heal_chance: int = 10,
                  min_heal: int = 5,
                  max_heal: int = 10,
