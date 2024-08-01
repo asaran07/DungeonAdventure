@@ -1,12 +1,16 @@
 from typing import Dict, Optional, Tuple
+
+from src.items.inventory_db import InventoryDatabase
 from src.items.item import Item
 from src.exceptions.player import InventoryFullError, ItemNotFoundError
 
 
 class Inventory:
-    def __init__(self, weight_limit: float = 50.0):
+    def __init__(self, entity_id: str, weight_limit: float = 50.0):
         self._items: Dict[str, Tuple[Item, int]] = {}
         self._weight_limit: float = weight_limit
+        self._entity_id = entity_id
+        self._db = InventoryDatabase('')
 
     def add_item(self, item: Item) -> None:
         self.validate_weight(item)
