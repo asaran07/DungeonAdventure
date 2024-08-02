@@ -1,9 +1,19 @@
 import pytest
 
 from src.characters.player import Player, InvalidPlayerAttributeError
-from src.items.pillar import AbstractionPillar, EncapsulationPillar, InheritancePillar, PolymorphismPillar
+from src.items.pillar import (
+    AbstractionPillar,
+    EncapsulationPillar,
+    InheritancePillar,
+    PolymorphismPillar,
+)
 from src.items.potion import HealingPotion, VisionPotion
-from src.exceptions.player import InvalidPlayerActionError, InventoryError, InventoryFullError, ItemNotFoundError
+from src.exceptions.player import (
+    InvalidPlayerActionError,
+    InventoryError,
+    InventoryFullError,
+    ItemNotFoundError,
+)
 
 
 class TestPlayer:
@@ -43,9 +53,7 @@ class TestPlayer:
         assert actual == expected
 
     def test_to_string(self, new_player: Player):
-        expected_string = ("Player: John\n"
-                           "HP: 75\n"
-                           "Inventory is empty")
+        expected_string = "Player: John\n" "HP: 75\n" "Inventory is empty"
         adventurer_one = new_player
         actual_string = adventurer_one.__str__()
         # NOTE: switching these around changes what is shown as expected vs actual
@@ -53,9 +61,7 @@ class TestPlayer:
 
     @pytest.mark.skip(reason="use(potion) in potion.py not implemented yet")
     def test_use_health_potion(self, new_player: Player):
-        expected_string = ("Player: John\n"
-                           "HP: 90\n"
-                           "Inventory is empty")
+        expected_string = "Player: John\n" "HP: 90\n" "Inventory is empty"
         adventurer_one = new_player
 
         adventurer_one.add_to_inventory(self.health_potion)
@@ -72,14 +78,16 @@ class TestPlayer:
         pass
 
     def test_add_and_remove_item_from_inventory(self, new_player: Player):
-        expected_string = ("Player: John\n"
-                           "HP: 75\n"
-                           "Inventory:\n"
-                           "  Healing Potion: 1 (Weight: 0.5)\n"
-                           "  Vision Potion: 2 (Weight: 1.0)\n"
-                           "  Inheritance Pillar: 1 (Weight: 1.0)\n"
-                           "  Polymorphism Pillar: 1 (Weight: 1.0)\n"
-                           "Total Weight: 3.5/50.0")
+        expected_string = (
+            "Player: John\n"
+            "HP: 75\n"
+            "Inventory:\n"
+            "  Healing Potion: 1 (Weight: 0.5)\n"
+            "  Vision Potion: 2 (Weight: 1.0)\n"
+            "  Inheritance Pillar: 1 (Weight: 1.0)\n"
+            "  Polymorphism Pillar: 1 (Weight: 1.0)\n"
+            "Total Weight: 3.5/50.0"
+        )
         adventurer_one = new_player
 
         adventurer_one.add_to_inventory(self.health_potion)

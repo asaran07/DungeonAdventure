@@ -10,20 +10,25 @@ class InventoryDatabase:
         self.cursor = self.connection.cursor()
 
     def add_item(self, item: Item, quantity: int) -> int:
-        self.cursor.execute('INSERT INTO items (item_name, quantity) VALUES (?, ?)', (item.name, quantity))
+        self.cursor.execute(
+            "INSERT INTO items (item_name, quantity) VALUES (?, ?)",
+            (item.name, quantity),
+        )
         self.connection.commit()
         return self.cursor.lastrowid
 
     def get_all_items(self) -> List[Tuple[int, str, int]]:
-        self.cursor.execute('SELECT * FROM items')
+        self.cursor.execute("SELECT * FROM items")
         return self.cursor.fetchall()
 
     def get_item_by_id(self, item_id: int) -> Tuple[int, str, int]:
-        self.cursor.execute('SELECT * FROM items WHERE id = ?', (item_id,))
+        self.cursor.execute("SELECT * FROM items WHERE id = ?", (item_id,))
         return self.cursor.fetchone()
 
     def update_item_quantity(self, item_id: int, new_quantity: int) -> None:
-        self.cursor.execute('UPDATE items SET quantity = ? WHERE id = ?', (new_quantity, item_id))
+        self.cursor.execute(
+            "UPDATE items SET quantity = ? WHERE id = ?", (new_quantity, item_id)
+        )
         self.connection.commit()
 
     def close(self):

@@ -74,7 +74,7 @@ class ConsoleView(View):
 
     def display_xp_gained(self, xp_amount: int):
         print("\n=== XP Gained ===")
-        print("You gained " + str(xp_amount) + "!")
+        print("You gained " + str(xp_amount) + " XP!")
 
     def get_combat_action(self) -> str:
         print("Combat Actions:")
@@ -102,12 +102,9 @@ class ConsoleView(View):
         if player is None:
             raise PlayerNotExistException("Player does not exist in the game model")
 
-        # print(f"Player: {player.name}")
-        # print(f"HP: {player.hit_points}")
-        current_room = player.current_room
-        if current_room is None:
-            raise RoomNotExistException("Player is not in a room")
-
+        print(f"Player: {player.name}")
+        print(f"HP: {player.hero.current_hp}/{player.hero.max_hp}")
+        print(f"XP: {player.hero.xp}/{player.hero.xp_to_next_level}")
         # print(f"Current Room: {current_room.get_description()}")
 
     def display_available_actions(self, game_model):

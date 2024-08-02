@@ -20,7 +20,9 @@ def mock_game_model():
 @pytest.fixture
 def mock_room():
     room = Room("Test Room")
-    monster = Monster("Test Monster", max_hp=50, base_min_damage=5, base_max_damage=10, xp_reward=100)
+    monster = Monster(
+        "Test Monster", max_hp=50, base_min_damage=5, base_max_damage=10, xp_reward=100
+    )
     room.add_monster(monster)
     return room
 
@@ -29,4 +31,3 @@ def mock_room():
 def combat_handler(mock_game_model):
     view = ConsoleView()
     return CombatHandler(mock_game_model, view)
-

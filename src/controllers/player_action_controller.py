@@ -17,7 +17,7 @@ class PlayerActionController:
     """
 
     def __init__(
-        self, game_model: GameModel, map_visualizer: MapVisualizer, view2: View
+            self, game_model: GameModel, map_visualizer: MapVisualizer, view2: View
     ):
         self.game_model = game_model
         self.map_visualizer = map_visualizer
@@ -69,7 +69,7 @@ class PlayerActionController:
 
         if item in current_room.items:
             current_room.remove_item(item)
-            player.add_to_inventory(item)
+            player.inventory.add_item(item)
             return True
         return False
 
@@ -89,6 +89,8 @@ class PlayerActionController:
                 self.handle_pickup(item_str)
             elif len(action_parts) > 1:
                 self.handle_drop(item_str)
+        elif action_parts[0] == "stats":
+            self._view.display_player_status(self.game_model)
 
     def handle_pickup(self, item_str: str):
         # TODO: Add way to equip the weapon
@@ -113,7 +115,7 @@ class PlayerActionController:
             successful = False
             player: Player = self.game_model.player
             current_room: Optional[Room] = player.current_room
-            item = player.remove_from_inventory(item_str)
+            item = player.inventory.remove_item_by_id(item_str)
             current_room.add_item(item)
             if item is not None:
                 successful = True
@@ -126,7 +128,7 @@ class PlayerActionController:
 
     def display_inventory(self):
         """Displays player's current inventory."""
-        print(self.game_model.player.inventory_to_string())
+        print(self.game_model.player.inventory)
 
     def display_map(self):
         current_room = self.game_model.player.current_room

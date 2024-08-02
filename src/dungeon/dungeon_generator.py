@@ -10,9 +10,6 @@ class DungeonGenerator:
     def generate_default_dungeon() -> Dungeon:
         dungeon = Dungeon()
         dungeon.add_room("Room 1")
-        dungeon.get_room("Room 1").add_item(
-            Weapon("Rusty Dagger", "A rusty dagger", 0.5, WeaponType.DAGGER, 1, 5)
-        )
         dungeon.add_and_connect_room("Room 2", "Room 1", Direction.NORTH)
         dungeon.add_and_connect_room("Room 3", "Room 2", Direction.EAST)
         dungeon.add_and_connect_room("Room 4", "Room 3", Direction.EAST)

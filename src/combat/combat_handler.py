@@ -26,12 +26,15 @@ class CombatHandler:
 
     def initiate_combat(self):
         self.monsters = self.player.current_room.monsters
-        if not self.monsters:
-            raise CombatError("Cannot initiate combat without monsters")
+        self.check_empty_monsters()
         self.game_model.game_state = GameState.IN_COMBAT
         self.determine_turn_order()
         self.combat_state = CombatState.PLAYER_TURN  # Start with player's turn
         self.start_combat()
+
+    def check_empty_monsters(self):
+        if not self.monsters:
+            raise CombatError("Cannot initiate combat without monsters")
 
     def determine_turn_order(self):
         self.turn_order = []
@@ -59,15 +62,7 @@ class CombatHandler:
     def start_combat(self):
         while self.game_model.game_state == GameState.IN_COMBAT:
             try:
-                self.view.display_combat_status(self.player, self.monsters)
-                if self.combat_state == CombatState.PLAYER_TURN:
-                    self.player_turn()
-                elif self.combat_state == CombatState.MONSTER_TURN:
-                    self.monster_turn()
-                else:
-                    raise InvalidCombatStateError(
-                        f"Invalid combat state: {self.combat_state}"
-                    )
+                self.compute_combat_state()
             except GameStateError as e:
                 self.view.display_message(f"Game State Error: {e}")
                 self.reset_combat()
@@ -80,13 +75,25 @@ class CombatHandler:
             except Exception as e:
                 self.view.display_message(f"An unexpected error occurred: {e}")
                 self.reset_combat()
+                
+    def compute_combat_state(self):
+        self.view.display_combat_status(self.player, self.monsters)
+        if self.combat_state == CombatState.PLAYER_TURN:
+            self.player_turn()
+        elif self.combat_state == CombatState.MONSTER_TURN:
+            self.monster_turn()
+        else:
+            raise InvalidCombatStateError(
+                f"Invalid combat state: {self.combat_state}"
+            )
 
     def check_combat_end(self, target: Monster):
         # Remove dead monsters
-        # self.monsters = [monster for monster in self.monsters if monster.is_alive]
-
+        self.monsters = [monster for monster in self.monsters if monster.is_alive]
         if not target.is_alive:
             self.view.display_message(f"{target.name} has been defeated!")
+            self.player.hero.gain_xp(target.xp_reward)
+            self.view.display_xp_gained(target.xp_reward)
         if not self.monsters:
             self.end_combat("All monsters defeated!")
         elif not self.player.hero.is_alive:

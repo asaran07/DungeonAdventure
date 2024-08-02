@@ -6,11 +6,11 @@ from src.enums.item_types import WeaponType
 from src.items.item_factory import ItemFactory
 from src.items.weapon import Weapon
 
+
 class TestHero(unittest.TestCase):
 
     def setUp(self):
-        self.hero = Hero("Test Hero", 100, 10,
-                         20, 5, 70, 20)
+        self.hero = Hero("Test Hero", 100, 10, 20, 5, 70, 20)
         self.item_factory = ItemFactory()
 
     def test_init(self):
@@ -27,13 +27,13 @@ class TestHero(unittest.TestCase):
         self.assertEqual(self.hero.xp_to_next_level, 100)
         self.assertIsNone(self.hero.equipped_weapon)
 
-    @patch('random.randint')
+    @patch("random.randint")
     def test_mitigate_damage_block(self, mock_randint):
         mock_randint.return_value = 10  # Ensure block
         mitigated = self.hero._mitigate_damage(100)
         self.assertEqual(mitigated, 50)
 
-    @patch('random.randint')
+    @patch("random.randint")
     def test_mitigate_damage_no_block(self, mock_randint):
         mock_randint.return_value = 100  # Ensure no block
         mitigated = self.hero._mitigate_damage(100)
@@ -44,8 +44,8 @@ class TestHero(unittest.TestCase):
         weapon = self.item_factory.create_weapon("Sword", WeaponType.SWORD, 1, 10)
         self.hero.equip_weapon(weapon)
         self.assertEqual(self.hero.equipped_weapon, weapon)
-        self.assertEqual(self.hero.stat_modifiers.get('min_damage', 1), 1)
-        self.assertEqual(self.hero.stat_modifiers.get('max_damage', 3), 3)
+        self.assertEqual(self.hero.stat_modifiers.get("min_damage", 1), 1)
+        self.assertEqual(self.hero.stat_modifiers.get("max_damage", 3), 3)
 
     # @unittest.skip('still need to update loot')
     def test_equip_weapon_replace(self):
@@ -54,9 +54,9 @@ class TestHero(unittest.TestCase):
         self.hero.equip_weapon(weapon1)
         self.hero.equip_weapon(weapon2)
         self.assertEqual(self.hero.equipped_weapon, weapon2)
-        self.assertEqual(self.hero.stat_modifiers.get('min_damage', 1), 1)
+        self.assertEqual(self.hero.stat_modifiers.get("min_damage", 1), 1)
         # bow reduces set damage by 1 for min
-        self.assertEqual(self.hero.stat_modifiers.get('max_damage', 3), 3)
+        self.assertEqual(self.hero.stat_modifiers.get("max_damage", 3), 3)
         # bow increases from min damage by 2 for max
 
     def test_gain_xp_no_level_up(self):
@@ -82,7 +82,7 @@ class TestHero(unittest.TestCase):
         next_xp = self.hero._calculate_next_level_xp()
         self.assertEqual(next_xp, 150)
 
-    @patch.object(DungeonCharacter, 'attempt_attack')
+    @patch.object(DungeonCharacter, "attempt_attack")
     def test_attempt_attack(self, mock_super_attack):
         mock_super_attack.return_value = 15
         target = MagicMock(spec=DungeonCharacter)
@@ -101,5 +101,6 @@ class TestHero(unittest.TestCase):
         self.assertIn("Block Chance: 20%", str_rep)
         self.assertIn("No weapon equipped", str_rep)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

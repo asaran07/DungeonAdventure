@@ -6,8 +6,7 @@ from src.characters.dungeon_character import DungeonCharacter
 class TestDungeonCharacter(unittest.TestCase):
 
     def setUp(self):
-        self.character = DungeonCharacter("Test Character", 100, 5,
-                                          10, 5, 70)
+        self.character = DungeonCharacter("Test Character", 100, 5, 10, 5, 70)
 
     def test_init(self):
         self.assertEqual(self.character.name, "Test Character")
@@ -19,7 +18,7 @@ class TestDungeonCharacter(unittest.TestCase):
         self.assertEqual(self.character.base_hit_chance, 70)
         self.assertEqual(self.character.stat_modifiers, {})
 
-    @patch('random.randint')
+    @patch("random.randint")
     def test_simulate_attack_roll(self, mock_randint):
         mock_randint.return_value = 15
         roll, would_hit = self.character.simulate_attack_roll()
@@ -31,7 +30,7 @@ class TestDungeonCharacter(unittest.TestCase):
         self.assertEqual(roll, 5)
         self.assertFalse(would_hit)
 
-    @patch('random.randint')
+    @patch("random.randint")
     def test_attack_hit(self, mock_randint):
         mock_randint.side_effect = [50, 7]  # First for hit chance, second for damage
         target = DungeonCharacter("Target", 100, 1, 5, 5, 70)
@@ -39,7 +38,7 @@ class TestDungeonCharacter(unittest.TestCase):
         self.assertEqual(damage, 7)
         self.assertEqual(target.current_hp, 93)
 
-    @patch('random.randint')
+    @patch("random.randint")
     def test_attack_miss(self, mock_randint):
         mock_randint.return_value = 80  # Above hit chance, so it should miss
         target = DungeonCharacter("Target", 100, 1, 5, 5, 70)
@@ -70,7 +69,7 @@ class TestDungeonCharacter(unittest.TestCase):
         # Double-check that the character is still not alive
         self.assertFalse(self.character.is_alive)
 
-    @patch('random.randint')
+    @patch("random.randint")
     def test_lose_health(self, mock_randint):
         mock_randint.return_value = 8
 
@@ -87,7 +86,7 @@ class TestDungeonCharacter(unittest.TestCase):
         self.assertEqual(damage, 6)
         self.assertEqual(self.character.current_hp, 86)
 
-    @patch('random.randint')
+    @patch("random.randint")
     def test_lose_health_ko(self, mock_randint):
         self.character.current_hp = 0
 
@@ -121,13 +120,13 @@ class TestDungeonCharacter(unittest.TestCase):
         self.assertEqual(self.character.current_hp, 100)
 
     def test_add_remove_stat_modifier(self):
-        self.character.add_stat_modifier('min_damage', 2)
-        self.assertEqual(self.character.stat_modifiers['min_damage'], 2)
-        self.character.add_stat_modifier('min_damage', 3)
-        self.assertEqual(self.character.stat_modifiers['min_damage'], 5)
-        self.character.remove_stat_modifier('min_damage')
-        self.assertNotIn('min_damage', self.character.stat_modifiers)
+        self.character.add_stat_modifier("min_damage", 2)
+        self.assertEqual(self.character.stat_modifiers["min_damage"], 2)
+        self.character.add_stat_modifier("min_damage", 3)
+        self.assertEqual(self.character.stat_modifiers["min_damage"], 5)
+        self.character.remove_stat_modifier("min_damage")
+        self.assertNotIn("min_damage", self.character.stat_modifiers)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

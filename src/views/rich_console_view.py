@@ -1,18 +1,33 @@
+from typing import Dict
+
 from rich.console import Console
 from rich.panel import Panel
+from rich.prompt import Prompt
 from rich.table import Table
-from rich.text import Text
-from rich.layout import Layout
-from src.views.console_view import ConsoleView
-from src.characters import Player
-from src.characters.monster import Monster
-from typing import List
+
+from src.game.dungeon_adventure import GameModel
+from src.views.view import View
 
 
-class RichConsoleView(ConsoleView):
+class RichConsoleView(View):
+
     def __init__(self):
         super().__init__()
         self.console = Console()
+
+    def display_title_screen(self):
+        content = "Welcome to Dungeon Adventure!"
+        box = Panel(content, title="Dungeon Adventure", expand=False)
+        self.console.print(box)
+
+    def get_player_creation_input(self) -> Dict:
+        name = Prompt.ask("What's your name?")
+        self.console.print(f"Welcome to the game, [bold]{name}[/bold].")
+        return {"name": name}
+
+    def get_user_input(self, prompt: str) -> str:
+        choice = Prompt.ask(prompt)
+        return choice
 
     def display_player_status(self, game_model):
         player = game_model.player
@@ -29,54 +44,8 @@ class RichConsoleView(ConsoleView):
 
         self.console.print(Panel(hero_status, expand=False))
 
-    def display_room_details(self, room):
-        room_panel = Panel(
-            f"[bold cyan]{room.name}[/bold cyan]\n\n{room.get_description()}",
-            title="Current Room",
-            expand=False,
-        )
-        self.console.print(room_panel)
-
-    def display_combat_status(self, player: Player, monsters: List[Monster]):
-        layout = Layout()
-        layout.split_column(Layout(name="header"), Layout(name="body"))
-        layout["body"].split_row(Layout(name="player"), Layout(name="monsters"))
-
-        # Header
-        layout["header"].update(Panel("Combat Status", style="bold red"))
-
-        # Player status
-        player_table = Table(title="Player", show_header=False)
-        player_table.add_column("Attribute", style="cyan")
-        player_table.add_column("Value", style="magenta")
-        player_table.add_row("Name", player.name)
-        player_table.add_row("HP", f"{player.hero.current_hp}/{player.hero.max_hp}")
-        layout["player"].update(player_table)
-
-        # Monsters status
-        monster_table = Table(title="Monsters")
-        monster_table.add_column("Name", style="cyan")
-        monster_table.add_column("HP", style="magenta")
-        for monster in monsters:
-            monster_table.add_row(
-                monster.name, f"{monster.current_hp}/{monster.max_hp}"
-            )
-        layout["monsters"].update(monster_table)
-
-        self.console.print(layout)
+    def display_available_actions(self, game_model: GameModel):
+        pass
 
     def display_message(self, message):
-        self.console.print(Text(message, style="bold green"))
-
-    def display_available_actions(self, game_model):
-        actions = [
-            "[cyan]move[/cyan] - Move to another room",
-            "[cyan]map[/cyan] - Display the dungeon map",
-            "[cyan]inventory[/cyan] - Check your inventory",
-            "[cyan]take[/cyan] - Pick up an item",
-            "[cyan]drop[/cyan] - Drop an item",
-        ]
-        actions_panel = Panel(
-            "\n".join(actions), title="Available Actions", expand=False
-        )
-        self.console.print(actions_panel)
+        pass

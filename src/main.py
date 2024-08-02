@@ -5,6 +5,7 @@ from src.dungeon.dungeon_generator import DungeonGenerator
 from src.game.dungeon_adventure import GameModel, GameModelError
 from src.views.console_view import ConsoleView
 from src.views.map_visualizer import MapVisualizer
+from src.views.rich_console_view import RichConsoleView
 
 
 def setup_game():

@@ -24,21 +24,24 @@ class TestMonster(unittest.TestCase):
         self.assertEqual(self.monster.xp_reward, 100)
         self.assertEqual(self.monster.loot, [])
 
-    @unittest.skip('still need to update loot')
+    @unittest.skip("still need to update loot")
     def test_init_with_loot(self):
         item = Item("Test Item", "A test item")
         monster_with_loot = Monster(loot=[item])
         self.assertEqual(monster_with_loot.loot, [item])
 
-    @patch('random.randint')
+    @patch("random.randint")
     def test_attempt_heal_successful(self, mock_randint):
-        mock_randint.side_effect = [10, 10]  # First for heal chance, second for heal amount
+        mock_randint.side_effect = [
+            10,
+            10,
+        ]  # First for heal chance, second for heal amount
         self.monster.current_hp = 50  # Set HP lower to test healing
         heal_amount = self.monster.attempt_heal()
         self.assertEqual(heal_amount, 10)
         self.assertEqual(self.monster.current_hp, 60)
 
-    @patch('random.randint')
+    @patch("random.randint")
     def test_attempt_heal_unsuccessful(self, mock_randint):
         mock_randint.return_value = 100  # Higher than heal_chance
         initial_hp = self.monster.current_hp
@@ -46,7 +49,7 @@ class TestMonster(unittest.TestCase):
         self.assertEqual(heal_amount, 0)
         self.assertEqual(self.monster.current_hp, initial_hp)
 
-    @unittest.skip('still need to update loot drop')
+    @unittest.skip("still need to update loot drop")
     def test_drop_loot(self):
         item1 = Item("Sword", "A sharp sword")
         item2 = Item("Shield", "A sturdy shield")
@@ -57,8 +60,8 @@ class TestMonster(unittest.TestCase):
         self.assertEqual(dropped_loot, [item1, item2])
         self.assertEqual(self.monster.loot, [])
 
-    @patch.object(DungeonCharacter, 'attempt_attack')
-    @patch.object(Monster, 'attempt_heal')
+    @patch.object(DungeonCharacter, "attempt_attack")
+    @patch.object(Monster, "attempt_heal")
     def test_attempt_attack(self, mock_attempt_heal, mock_super_attack):
         target = MagicMock(spec=DungeonCharacter)
         mock_super_attack.return_value = 15
@@ -80,7 +83,7 @@ class TestMonster(unittest.TestCase):
             heal_chance=20,
             min_heal=10,
             max_heal=20,
-            xp_reward=150
+            xp_reward=150,
         )
 
         self.assertEqual(custom_monster.name, "Custom Monster")
@@ -95,5 +98,5 @@ class TestMonster(unittest.TestCase):
         self.assertEqual(custom_monster.xp_reward, 150)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

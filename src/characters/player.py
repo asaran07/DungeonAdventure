@@ -1,4 +1,5 @@
 from src.characters.hero import Hero
+from src.dungeon import Room
 from src.items.inventory import Inventory
 from src.items.item import Item
 
@@ -8,10 +9,15 @@ class Player:
         self._name: str = name
         self._inventory: Inventory = Inventory(inventory_weight_limit)
         self._hero: Hero = Hero()
+        self.current_room = Room
 
     @property
     def name(self) -> str:
         return self._name
+
+    @name.setter
+    def name(self, name: str):
+        self._name = name
 
     @property
     def hero(self) -> Hero:
