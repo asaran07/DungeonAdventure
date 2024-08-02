@@ -7,6 +7,7 @@ from src.enums.room_types import Direction
 from src.game.dungeon_adventure import GameModel
 from src.items.item import Item
 from src.items.potion import HealingPotion
+from src.items.weapon import Weapon
 from src.views.map_visualizer import MapVisualizer
 from src.views.view import View
 
@@ -91,12 +92,38 @@ class PlayerActionController:
                 self.handle_drop(item_str)
         elif action_parts[0] == "stats":
             self._view.display_player_status(self.game_model)
+        elif action_parts[0] == "equip" and len(action_parts) > 1:
+            weapon_name = " ".join(action_parts[1:])
+            self.handle_equip(weapon_name)
+        elif action_parts[0] == "use" and len(action_parts) > 1:
+            item_name = " ".join(action_parts[1:])
+            self.handle_use_item(item_name)
+
+    def handle_equip(self, weapon_name: str):
+        player: Player = self.game_model.player
+        weapon = player.inventory.get_item_by_name(weapon_name)
+        if weapon and isinstance(weapon, Weapon):
+            player.hero.equip_weapon(weapon)
+            self._view.display_message(f"You equipped {weapon.name}.")
+        else:
+            self._view.display_message(f"You don't have a weapon named {weapon_name}.")
+
+    def handle_use_item(self, item_name: str):
+        player: Player = self.game_model.player
+        item = player.inventory.get_item_by_name(item_name)
+        if item:
+            if player.use_item(item):
+                self._view.display_message(f"You used {item.name}.")
+            else:
+                self._view.display_message(f"You couldn't use {item.name}.")
+        else:
+            self._view.display_message(f"You don't have an item named {item_name}.")
 
     def handle_pickup(self, item_str: str):
         # TODO: Add way to equip the weapon
         try:
             # Make an empty item with only the name
-            item: Item = HealingPotion(item_str)
+            item: Item = HealingPotion(item_str, "Healing Potion", 15, 1)
             player: Player = self.game_model.player
             current_room: Optional[Room] = player.current_room
             for room_item in current_room.items:

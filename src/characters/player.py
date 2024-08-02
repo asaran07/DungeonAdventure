@@ -2,6 +2,7 @@ from src.characters.hero import Hero
 from src.dungeon import Room
 from src.items.inventory import Inventory
 from src.items.item import Item
+from src.items.weapon import Weapon
 
 
 class Player:
@@ -37,6 +38,17 @@ class Player:
         if item:
             return self.use_item(item)
         return False
+
+    def equip_weapon(self, weapon: Weapon) -> bool:
+        if self._inventory.remove_item(weapon):
+            if self._hero.equipped_weapon:
+                self._inventory.add_item(self._hero.equipped_weapon)
+            self._hero.equip_weapon(weapon)
+            return True
+        return False
+
+    def heal(self, heal_amount: int):
+        self._hero.heal(heal_amount)
 
     def __str__(self) -> str:
         return (

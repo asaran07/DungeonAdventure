@@ -57,9 +57,9 @@ class Inventory:
 
     def __str__(self) -> str:
         inventory_str = "Inventory:\n"
-        for item_name, (item, quantity) in self._items.items():
+        for item_id, (item, quantity) in self._items.items():
             inventory_str += (
-                f"  {item_name}: {quantity} (Weight: {item.weight * quantity})\n"
+                f"  {item.name}: {quantity} (Weight: {item.weight * quantity})\n"
             )
         inventory_str += f"Total Weight: {self.get_total_weight()}/{self._weight_limit}"
         return inventory_str
