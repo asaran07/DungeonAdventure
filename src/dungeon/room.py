@@ -108,7 +108,7 @@ class Room:
         """
         self.room_type = room_type
 
-    def get_description(self) -> str:
+    def get_desc(self) -> str:
         """
         Get a description of the room.
 
@@ -131,6 +131,7 @@ class Room:
             # f"Room: {self.name}\n"
             # f"Type: {self.room_type.name}\n"
             # f"Visible: {'Yes' if self.is_visible else 'No'}\n"
+            f"{self.get_description()}\n"
             f"Connections: {connections}\n"
             f"Items: {items}"
         )

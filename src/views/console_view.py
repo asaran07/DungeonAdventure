@@ -51,7 +51,7 @@ class ConsoleView(View):
         print("2. Quit")
 
     def get_user_input(self, prompt: str) -> str:
-        user_input = input(prompt).strip()
+        user_input = input(prompt + ": ").strip()
         if not user_input:
             raise InvalidInputException("Input cannot be empty")
         return user_input
@@ -62,6 +62,14 @@ class ConsoleView(View):
             return {"name": name}
         except InvalidInputException:
             raise InvalidInputException("Player name cannot be empty")
+
+    def display_current_state(self, game_model: GameModel):
+        player = game_model.player
+        if player is None:
+            raise PlayerNotExistException("Player does not exist in the game model")
+        print(f"HP: {player.hero.current_hp}/{player.hero.max_hp}")
+        print(f"XP: {player.hero.xp}/{player.hero.xp_to_next_level}")
+
 
     def display_combat_status(self, player: Player, monsters: List[Monster]):
         print("\n=== Combat Status ===")
@@ -102,14 +110,16 @@ class ConsoleView(View):
         if player is None:
             raise PlayerNotExistException("Player does not exist in the game model")
 
-        print(f"Player: {player.name}")
-        print(f"HP: {player.hero.current_hp}/{player.hero.max_hp}")
-        print(f"XP: {player.hero.xp}/{player.hero.xp_to_next_level}")
-        # print(f"Current Room: {current_room.get_description()}")
+        # print(f"Player: {player.name}")
+        # print(f"HP: {player.hero.current_hp}/{player.hero.max_hp}")
+        # print(f"XP: {player.hero.xp}/{player.hero.xp_to_next_level}")
+        # print(f"Current Room: {player.current_room.get_desc()}")
 
     def display_available_actions(self, game_model):
         if game_model.game_state == GameState.EXPLORING:
-            print("Available actions: move, map, inventory, take, drop, stats, equip, use")
+            print(
+                "Available actions: move, map, inventory, take, drop, stats, equip, use"
+            )
             # print("- move [direction]")
             # print("- use [item]")
             # print("- inventory")
@@ -131,3 +141,6 @@ class ConsoleView(View):
                     print("Invalid choice. Please enter a valid number.")
             except Exception as e:
                 print(f"Error: {e}. Please try again.")
+
+    def display_game_state(self, game_model: GameModel):
+        pass

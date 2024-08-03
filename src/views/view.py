@@ -35,6 +35,10 @@ class View(ABC):
     def display_player_status(self, game_model: GameModel):
         pass
 
+    @abstractmethod
+    def display_current_state(self, game_model: GameModel):
+        pass
+
     def display_combat_status(self, player, monsters):
         pass
 
@@ -45,4 +49,7 @@ class View(ABC):
         pass
 
     def display_xp_gained(self, xp_amount: int):
+        pass
+
+    def display_game_state(self, game_model: GameModel):
         pass

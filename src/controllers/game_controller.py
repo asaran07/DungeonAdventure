@@ -44,7 +44,7 @@ class GameController:
         self.view.display_title_screen()
         while True:
             choice = self.view.get_user_input(
-                "Please enter your choice (1 to Start, 2 to Quit): "
+                "Please enter your choice (1 to Start, 2 to Quit)"
             )
             if choice == "1":
                 self.game_model.game_state = GameState.PLAYER_CREATION
@@ -59,7 +59,7 @@ class GameController:
         try:
             player_data = self.view.get_player_creation_input()
             self.game_model.update_player(player_data)
-            entrance_room = self.game_model.dungeon.get_room("Room 1")
+            entrance_room = self.game_model.dungeon.get_room("Room 1 - Entrance Hall")
             if entrance_room is None:
                 raise RoomNotFoundError("Entrance room not found.")
             entrance_room.explore()
@@ -70,11 +70,11 @@ class GameController:
             self.reset_to_safe_state()
 
     def handle_exploration(self):
-        print(str(self.game_model.player.current_room))
-        self.view.display_player_status(self.game_model)
-        self.view.display_available_actions(self.game_model)
+        # self.view.display_player_status(self.game_model)
+        # self.view.display_available_actions(self.game_model)
+        # self.view.display_game_state(self.game_model)
         try:
-            action = self.view.get_user_input("Please enter your choice: ")
+            action = self.view.get_user_input("Please enter your choice")
             self.player_action_controller.handle_action(action)
         except (InvalidPlayerActionError, InvalidInputError) as e:
             self.view.display_message(f"Action Error: {e}. Please try again.")

@@ -18,7 +18,7 @@ class PlayerActionController:
     """
 
     def __init__(
-            self, game_model: GameModel, map_visualizer: MapVisualizer, view2: View
+        self, game_model: GameModel, map_visualizer: MapVisualizer, view2: View
     ):
         self.game_model = game_model
         self.map_visualizer = map_visualizer
@@ -165,9 +165,7 @@ class PlayerActionController:
         try:
             direction = Direction.from_string(direction_str)
             success = self.move_player(direction)
-            if success:
-                print(f"You moved {direction.name.lower()}.")
-            else:
+            if not success:
                 print(f"You can't move {direction.name.lower()} from here.")
         except ValueError as e:
             print(str(e))
@@ -175,7 +173,7 @@ class PlayerActionController:
     def enter_room(self):
         room = self.game_model.player.current_room
         print(f"You enter {room.name}")
-        print(room.get_description())
+        # print(room.get_desc())
         if room.has_monsters:
             print("You encounter monsters!")
             self.combat_handler.initiate_combat()

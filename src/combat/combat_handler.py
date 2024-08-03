@@ -75,7 +75,7 @@ class CombatHandler:
             except Exception as e:
                 self.view.display_message(f"An unexpected error occurred: {e}")
                 self.reset_combat()
-                
+
     def compute_combat_state(self):
         self.view.display_combat_status(self.player, self.monsters)
         if self.combat_state == CombatState.PLAYER_TURN:
@@ -83,9 +83,7 @@ class CombatHandler:
         elif self.combat_state == CombatState.MONSTER_TURN:
             self.monster_turn()
         else:
-            raise InvalidCombatStateError(
-                f"Invalid combat state: {self.combat_state}"
-            )
+            raise InvalidCombatStateError(f"Invalid combat state: {self.combat_state}")
 
     def check_combat_end(self, target: Monster):
         # Remove dead monsters

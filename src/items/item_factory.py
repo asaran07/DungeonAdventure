@@ -1,4 +1,5 @@
-from src.enums.item_types import PillarType, PotionType, WeaponType
+from src.enums.item_types import PillarType, PotionType, WeaponType, ItemType
+from src.items.item import Item
 from src.items.pillar import (
     AbstractionPillar,
     EncapsulationPillar,
