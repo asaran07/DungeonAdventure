@@ -95,7 +95,7 @@ class MapVisualizer:
 
     def display_map(self, current_room: Room):
         map_lines = self.generate_map(current_room)
-        print("\nDungeon Map:")
+        # print("\nDungeon Map:")
         for line in map_lines:
             print(line)
         # print("\nLegend:")

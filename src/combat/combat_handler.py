@@ -96,6 +96,7 @@ class CombatHandler:
             self.end_combat("All monsters defeated!")
         elif not self.player.hero.is_alive:
             self.end_combat("Player has been defeated!")
+            self.game_model.set_game_over(True)
         self.combat_state = CombatState.MONSTER_TURN
 
     def end_combat(self, message):

@@ -36,7 +36,7 @@ class View(ABC):
         pass
 
     @abstractmethod
-    def display_current_state(self, game_model: GameModel):
+    def display_current_status(self, game_model: GameModel):
         pass
 
     def display_combat_status(self, player, monsters):

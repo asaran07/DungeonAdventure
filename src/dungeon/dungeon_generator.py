@@ -1,3 +1,4 @@
+from src.characters.monster import Monster
 from src.dungeon import Dungeon
 from src.enums import Direction
 from src.items.item_factory import ItemFactory
@@ -68,5 +69,12 @@ class DungeonGenerator:
 
         # Room 14
         dungeon.connect_rooms("Room 14", Direction.SOUTH, "Room 15 - Exit Chamber")
+
+        room2 = dungeon.get_room("Room 2")
+        room2.add_monster(Monster("Robby Goblin"))
+        room2.add_monster(Monster("Bobby Goblin"))
+
+        room3 = dungeon.get_room("Room 3")
+        room3.add_monster(Monster("Gobby King", max_hp=50, base_min_damage=15, base_max_damage=25))
 
         return dungeon

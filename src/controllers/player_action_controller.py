@@ -3,7 +3,7 @@ from typing import Optional
 from src.characters.player import Player
 from src.combat.combat_handler import CombatHandler
 from src.dungeon import Room
-from src.enums.room_types import Direction
+from src.enums.room_types import Direction, RoomType
 from src.game.dungeon_adventure import GameModel
 from src.items.item import Item
 from src.items.potion import HealingPotion
@@ -91,7 +91,7 @@ class PlayerActionController:
             elif len(action_parts) > 1:
                 self.handle_drop(item_str)
         elif action_parts[0] == "stats":
-            self._view.display_player_status(self.game_model)
+            self._view.display_current_status(self.game_model)
         elif action_parts[0] == "equip" and len(action_parts) > 1:
             weapon_name = " ".join(action_parts[1:])
             self.handle_equip(weapon_name)
@@ -172,8 +172,22 @@ class PlayerActionController:
 
     def enter_room(self):
         room = self.game_model.player.current_room
-        print(f"You enter {room.name}")
+        player = self.game_model.player
+
+        print(f"\nYou enter {room.name}")
+        self.display_map()
         # print(room.get_desc())
+
+        if room.room_type == RoomType.PIT:
+            if room.type == RoomType.PIT:
+                player.hero.take_damage(50)
+                print(f"You fell into a pit and took {50} damage!")
+                if player.hero.is_alive:
+                    self.game_model.set_game_over(True)
+                    print("You died!")
+
+        if room.has_items:
+            room.print_items()
         if room.has_monsters:
             print("You encounter monsters!")
             self.combat_handler.initiate_combat()

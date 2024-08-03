@@ -63,7 +63,7 @@ class ConsoleView(View):
         except InvalidInputException:
             raise InvalidInputException("Player name cannot be empty")
 
-    def display_current_state(self, game_model: GameModel):
+    def display_current_status(self, game_model: GameModel):
         player = game_model.player
         if player is None:
             raise PlayerNotExistException("Player does not exist in the game model")

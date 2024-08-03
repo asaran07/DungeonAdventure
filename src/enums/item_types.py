@@ -2,6 +2,7 @@ from enum import Enum, auto
 
 
 class ItemType(Enum):
+    UTILITY = auto()
     WEAPON = auto()
     POTION = auto()
     KEY = auto()

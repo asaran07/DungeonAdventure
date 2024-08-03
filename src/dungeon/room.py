@@ -12,7 +12,7 @@ class Room:
 
         :param name: The name of room
         """
-        self.room_type = RoomType.NORMAL
+        self._room_type = RoomType.NORMAL
         self.name: str = name
         self.is_visible: bool = False
         self.is_explored: bool = False  # This is for fog of war
@@ -38,13 +38,26 @@ class Room:
     def has_monsters(self) -> bool:
         return len(self.monsters) > 0
 
+    @property
+    def has_items(self) -> bool:
+        return len(self.items) > 0
+
+    @property
+    def room_type(self) -> RoomType:
+        return self._room_type
+
+    @room_type.setter
+    def room_type(self, room_type: RoomType) -> None:
+        self._room_type = room_type
+
     def remove_monster(self, monster: Monster):
         self.monsters.remove(monster)
 
     def explore(self):
         self.is_explored = True
 
-    def get_description(self) -> str:
+    @property
+    def detailed_description(self) -> str:
         """
         Get a detailed description of the room.
         """
@@ -53,6 +66,10 @@ class Room:
             if self.detailed_description
             else "You see nothing special about this room."
         )
+
+    @detailed_description.setter
+    def detailed_description(self, desc: str) -> None:
+        self._detailed_description = desc
 
     def connect(self, direction: Direction, other_room: "Room") -> bool:
         """
@@ -100,6 +117,22 @@ class Room:
         self.items.remove(item)
         return item
 
+    def print_items(self) -> None:
+        """
+        Prints out the items in the room in a clean, organized format.
+        """
+        if not self.items:
+            print("This room is empty.")
+            return
+
+        print("Items in this room:")
+        for index, item in enumerate(self.items, 1):
+            print(f"{index}. {item.name} - {item.description}")
+            print(f"   Weight: {item.weight}")
+            if hasattr(item, 'item_type'):
+                print(f"   Type: {item.item_type.name}")
+            print()
+
     def set_room_type(self, room_type: RoomType) -> None:
         """
         Set the type of the room.
@@ -131,7 +164,7 @@ class Room:
             # f"Room: {self.name}\n"
             # f"Type: {self.room_type.name}\n"
             # f"Visible: {'Yes' if self.is_visible else 'No'}\n"
-            f"{self.get_description()}\n"
+            f"{self.get_desc()}\n"
             f"Connections: {connections}\n"
             f"Items: {items}"
         )
