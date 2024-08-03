@@ -142,7 +142,7 @@ class PlayerActionController:
             successful = False
             player: Player = self.game_model.player
             current_room: Optional[Room] = player.current_room
-            item = player.inventory.remove_item_by_name(item_str)
+            item = player.inventory.remove_item_by_id(item_str)
             current_room.add_item(item)
             if item is not None:
                 successful = True
@@ -179,12 +179,10 @@ class PlayerActionController:
         # print(room.get_desc())
 
         if room.room_type == RoomType.PIT:
-            if player.inventory.contains_item("rope"):
-                print(f"You used your rope to swing over the pit!")
-            else:
+            if room.type == RoomType.PIT:
                 player.hero.take_damage(50)
                 print(f"You fell into a pit and took {50} damage!")
-                if not player.hero.is_alive:
+                if player.hero.is_alive:
                     self.game_model.set_game_over(True)
                     print("You died!")
 
