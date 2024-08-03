@@ -1,13 +1,15 @@
 from src.characters.monster import Monster
 from src.dungeon import Dungeon
 from src.enums import Direction
+from src.enums.item_types import WeaponType
+from src.items.inventory_db import InventoryDatabase
 from src.items.item_factory import ItemFactory
 
 
 class DungeonGenerator:
     @staticmethod
-    def generate_default_dungeon() -> Dungeon:
-        item_factory = ItemFactory()
+    def generate_default_dungeon(db_path) -> Dungeon:
+        item_factory = ItemFactory(db_path)
         dungeon = Dungeon()
 
         # Create all rooms
@@ -76,5 +78,9 @@ class DungeonGenerator:
 
         room3 = dungeon.get_room("Room 3")
         room3.add_monster(Monster("Gobby King", max_hp=50, base_min_damage=15, base_max_damage=25))
+
+        inventory_db = InventoryDatabase(db_path)
+        item1 = item_factory.create_weapon("Sword", WeaponType.SWORD, 5, 5)
+        inventory_db.add_item(item1, 1)
 
         return dungeon

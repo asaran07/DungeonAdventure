@@ -1,4 +1,5 @@
 from src.enums.item_types import PillarType, PotionType, WeaponType, ItemType
+from src.items.inventory_db import InventoryDatabase
 from src.items.item import Item
 from src.items.pillar import (
     AbstractionPillar,
@@ -13,8 +14,9 @@ from src.items.weapon import Bow, Sword, Weapon
 
 
 class ItemFactory:
-    def __init__(self):
+    def __init__(self, db_path):
         self._item_counter = 0
+        self._db = InventoryDatabase(db_path)
 
     def _generate_item_id(self):
         self._item_counter += 1

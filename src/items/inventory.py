@@ -9,7 +9,7 @@ class Inventory:
     def __init__(self, weight_limit: float = 50.0):
         self._items: Dict[str, Tuple[Item, int]] = {}
         self._weight_limit: float = weight_limit
-        self._db = InventoryDatabase("")
+        self._db = InventoryDatabase("/Users/saran/DungeonAdventure/src/SQL/inventory.sqlite")
 
     def add_item(self, item: Item) -> None:
         self.validate_weight(item)

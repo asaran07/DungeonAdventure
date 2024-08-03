@@ -1,3 +1,6 @@
+import os
+
+from src.db_init import initialize_database
 from src.characters import Player
 from src.controllers.game_controller import GameController
 from src.controllers.player_action_controller import PlayerActionController
@@ -5,12 +8,15 @@ from src.dungeon.dungeon_generator import DungeonGenerator
 from src.game.dungeon_adventure import GameModel, GameModelError
 from src.views.console_view import ConsoleView
 from src.views.map_visualizer import MapVisualizer
-from src.views.rich_console_view import RichConsoleView
 
 
 def setup_game():
     try:
-        dungeon = DungeonGenerator.generate_default_dungeon()
+        db_path = os.path.join(os.path.dirname(__file__), 'SQL', 'inventory.sqlite')
+        initialize_database(db_path)
+
+        dungeon = DungeonGenerator.generate_default_dungeon(db_path)
+
         player = Player("Player 1")
         if dungeon.get_room("Room 1 - Entrance Hall") is None:
             raise ValueError("Dungeon has no entrance room")
