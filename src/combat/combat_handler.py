@@ -90,9 +90,11 @@ class CombatHandler:
         self.monsters = [monster for monster in self.monsters if monster.is_alive]
         if not target.is_alive:
             self.view.display_message(f"{target.name} has been defeated!")
+            self.player.current_room.monsters = self.monsters
             self.player.hero.gain_xp(target.xp_reward)
             self.view.display_xp_gained(target.xp_reward)
         if not self.monsters:
+            self.player.current_room.monsters = self.monsters
             self.end_combat("All monsters defeated!")
         elif not self.player.hero.is_alive:
             self.end_combat("Player has been defeated!")

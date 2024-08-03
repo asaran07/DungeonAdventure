@@ -1,6 +1,7 @@
 from src.characters.monster import Monster
 from src.dungeon import Dungeon
-from src.enums import Direction
+from src.enums import Direction, RoomType
+from src.enums.item_types import WeaponType, PotionType
 from src.items.item_factory import ItemFactory
 
 
@@ -70,11 +71,19 @@ class DungeonGenerator:
         # Room 14
         dungeon.connect_rooms("Room 14", Direction.SOUTH, "Room 15 - Exit Chamber")
 
+        room1 = dungeon.get_room("Room 1 - Entrance Hall")
+        room1.add_item(item_factory.create_weapon("Rusty Sword", WeaponType.SWORD, 10, 5.0))
+
         room2 = dungeon.get_room("Room 2")
+        room2.add_item(item_factory.create_potion("Healing Potion", PotionType.HEALING, 10, 2.0))
+        room2.add_item(item_factory.create_rope())
         room2.add_monster(Monster("Robby Goblin"))
         room2.add_monster(Monster("Bobby Goblin"))
 
         room3 = dungeon.get_room("Room 3")
         room3.add_monster(Monster("Gobby King", max_hp=50, base_min_damage=15, base_max_damage=25))
+
+        room4 = dungeon.get_room("Room 4")
+        room4.room_type = RoomType.PIT
 
         return dungeon

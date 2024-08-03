@@ -49,6 +49,29 @@ class Inventory:
                 return item
         return None
 
+    def remove_item_by_name(self, item_name: str) -> Optional[Item]:
+        """
+        Removes an item from the inventory by its name.
+        :param item_name: The name of the item to remove
+        :return: The removed Item if found and removed, None otherwise
+        """
+        for item_id, (item, quantity) in self._items.items():
+            if item.name.lower() == item_name.lower():
+                if quantity > 1:
+                    self._items[item_id] = (item, quantity - 1)
+                else:
+                    del self._items[item_id]
+                return item
+        return None
+
+    def contains_item(self, item_name: str) -> bool:
+        """
+        Check if the inventory contains an item with the given name.
+        :param item_name: The name of the item to check for
+        :return: True if the item is in the inventory, False otherwise
+        """
+        return any(item.name.lower() == item_name.lower() for item, _ in self._items.values())
+
     def get_total_weight(self) -> float:
         return sum(item.weight * quantity for item, quantity in self._items.values())
 
