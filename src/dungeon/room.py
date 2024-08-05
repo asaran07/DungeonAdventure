@@ -129,7 +129,7 @@ class Room:
         for index, item in enumerate(self.items, 1):
             print(f"{index}. {item.name} - {item.description}")
             print(f"   Weight: {item.weight}")
-            if hasattr(item, 'item_type'):
+            if hasattr(item, "item_type"):
                 print(f"   Type: {item.item_type.name}")
             print()
 

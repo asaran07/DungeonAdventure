@@ -70,7 +70,6 @@ class ConsoleView(View):
         print(f"HP: {player.hero.current_hp}/{player.hero.max_hp}")
         print(f"XP: {player.hero.xp}/{player.hero.xp_to_next_level}")
 
-
     def display_combat_status(self, player: Player, monsters: List[Monster]):
         print("\n=== Combat Status ===")
         print(f"Player: {player.name}")

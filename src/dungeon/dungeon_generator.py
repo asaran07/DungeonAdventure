@@ -75,6 +75,8 @@ class DungeonGenerator:
         room2.add_monster(Monster("Bobby Goblin"))
 
         room3 = dungeon.get_room("Room 3")
-        room3.add_monster(Monster("Gobby King", max_hp=50, base_min_damage=15, base_max_damage=25))
+        room3.add_monster(
+            Monster("Gobby King", max_hp=50, base_min_damage=15, base_max_damage=25)
+        )
 
         return dungeon

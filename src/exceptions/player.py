@@ -19,3 +19,19 @@ class ItemNotFoundError(InventoryError):
 
 class InvalidPlayerActionError(PlayerError):
     """Raised when a player attempts an invalid action"""
+
+
+class PlayerNotInRoomError(PlayerError):
+    """Raised when a player action requires being in a room, but the player is not in one"""
+
+
+class ItemNotInRoomError(PlayerError):
+    """Raised when trying to interact with an item that's not in the current room"""
+
+
+class ItemNotInInventoryError(PlayerError):
+    """Raised when trying to use or drop an item that's not in the player's inventory"""
+
+
+class InvalidDirectionError(PlayerError):
+    """Raised when trying to move in an invalid direction"""
