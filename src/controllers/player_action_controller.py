@@ -24,18 +24,24 @@ class PlayerActionController:
     """
 
     def __init__(
-        self, game_model: GameModel, map_visualizer: MapVisualizer, view2: View
+        self, game_model: GameModel, map_visualizer: MapVisualizer, view: View
     ):
         self.game_model = game_model
         self.map_visualizer = map_visualizer
-        self.view = view2
-        self.combat_handler: CombatHandler = CombatHandler(game_model, self.view)
+        self._view = view
         self.player: Player = game_model.player
         self.current_room: Optional[Room] = self.player.current_room
+        self.combat_handler: CombatHandler = CombatHandler(game_model, self._view)
 
     @property
     def view(self) -> View:
-        return self.view
+        return self._view
+
+    @view.setter
+    def view(self, new_view: View) -> None:
+        self._view = new_view
+        # Update the combat handler's view as well
+        self.combat_handler = CombatHandler(self.game_model, self._view)
 
     def _check_player_in_room(self):
         if self.current_room is None:
@@ -176,7 +182,7 @@ class PlayerActionController:
         self.view.display_inventory(self.player.inventory)
 
     def display_map(self):
-        self.view.display_map(self.current_room)
+        self.view.display_map(self.current_room, self.map_visualizer)
 
     def handle_movement(self, direction_str: str):
         try:

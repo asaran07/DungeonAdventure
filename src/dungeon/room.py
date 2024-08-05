@@ -58,18 +58,21 @@ class Room:
 
     @property
     def detailed_description(self) -> str:
-        """
-        Get a detailed description of the room.
-        """
-        return (
-            self.detailed_description
-            if self.detailed_description
-            else "You see nothing special about this room."
-        )
+        if self._detailed_description:
+            return self._detailed_description
+        else:
+            return f"You are in {self.name}. " + self.get_exits_description()
 
     @detailed_description.setter
-    def detailed_description(self, desc: str) -> None:
-        self._detailed_description = desc
+    def detailed_description(self, value: str):
+        self._detailed_description = value
+
+    def get_exits_description(self) -> str:
+        exits = [d.name for d in self.connections if self.connections[d]]
+        if exits:
+            return "Exits: " + ", ".join(exits) + "."
+        else:
+            return "There are no visible exits."
 
     def connect(self, direction: Direction, other_room: "Room") -> bool:
         """
