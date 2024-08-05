@@ -112,8 +112,6 @@ class PlayerActionController:
                 self.handle_pickup(item_str)
             elif len(action_parts) > 1:
                 self.handle_drop(item_str)
-        elif action_parts[0] == "stats":
-            self._view.display_current_status(self.game_model)
         elif action_parts[0] == "equip" and len(action_parts) > 1:
             weapon_name = " ".join(action_parts[1:])
             self.handle_equip(weapon_name)
@@ -172,11 +170,10 @@ class PlayerActionController:
 
     def display_inventory(self):
         """Displays player's current inventory."""
-        print(self.game_model.player.inventory)
+        print(self.player.inventory)
 
     def display_map(self):
-        current_room = self.game_model.player.current_room
-        self.map_visualizer.display_map(current_room)
+        self.map_visualizer.display_map(self.current_room)
 
     def handle_movement(self, direction_str: str):
         try:
@@ -193,7 +190,6 @@ class PlayerActionController:
             self.player.hero.take_damage(50)
             print(f"You fell into a pit and took {50} damage!")
             if not self.player.hero.is_alive:
-                self.game_model.set_game_over(True)
                 print("You died!")
 
         if self.current_room.has_items:
