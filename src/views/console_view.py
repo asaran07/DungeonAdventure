@@ -2,8 +2,11 @@ from typing import Dict, List
 
 from src.characters import Player
 from src.characters.monster import Monster
+from src.dungeon import Room
 from src.enums.game_state import GameState
 from src.game.dungeon_adventure import GameModel
+from src.items.inventory import Inventory
+from src.views.map_visualizer import MapVisualizer
 from src.views.view import View
 
 
@@ -41,6 +44,30 @@ class ConsoleView(View):
     """
     This class displays things to the console and gets input from the player
     """
+
+    def display_room_entrance(self, room: Room):
+        print(room.detailed_description)
+
+    def display_room_contents(self, room: Room):
+        print(room.print_items())
+
+    def display_combat_start(self):
+        print("==ENTERING COMBAT==")
+
+    def display_empty_room(self):
+        print("This room appears to be empty.")
+
+    def display_inventory(self, inventory: "Inventory"):
+        print(str(inventory))
+
+    def display_map(self, current_room: Room, map_visualizer: MapVisualizer):
+        map_visualizer.display_map(current_room)
+
+    def display_pit_damage(self, damage: int):
+        print(f"You fell into a pit! You took {damage} damage.")
+
+    def display_game_over(self):
+        print("Game Over!")
 
     def display_message(self, message):
         print(message)

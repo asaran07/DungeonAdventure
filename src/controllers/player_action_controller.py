@@ -28,10 +28,14 @@ class PlayerActionController:
     ):
         self.game_model = game_model
         self.map_visualizer = map_visualizer
-        self._view = view2
-        self.combat_handler: CombatHandler = CombatHandler(game_model, self._view)
+        self.view = view2
+        self.combat_handler: CombatHandler = CombatHandler(game_model, self.view)
         self.player: Player = game_model.player
         self.current_room: Optional[Room] = self.player.current_room
+
+    @property
+    def view(self) -> View:
+        return self.view
 
     def _check_player_in_room(self):
         if self.current_room is None:
@@ -77,7 +81,7 @@ class PlayerActionController:
             self.enter_room()
             return True
         except (PlayerNotInRoomError, InvalidDirectionError) as e:
-            self._view.display_message(str(e))
+            self.view.display_message(str(e))
             return False
 
     def pick_up_item(self, item: Item) -> bool:
@@ -93,7 +97,7 @@ class PlayerActionController:
             self.player.inventory.add_item(item)
             return True
         except (PlayerNotInRoomError, ItemNotInRoomError) as e:
-            self._view.display_message(str(e))
+            self.view.display_message(str(e))
             return False
 
     def handle_action(self, action: str):
@@ -124,21 +128,21 @@ class PlayerActionController:
             weapon = self._check_item_in_inventory(weapon_name)
             if isinstance(weapon, Weapon):
                 self.player.hero.equip_weapon(weapon)
-                self._view.display_message(f"You equipped {weapon.name}.")
+                self.view.display_message(f"You equipped {weapon.name}.")
             else:
-                self._view.display_message(f"{weapon_name} is not a weapon.")
+                self.view.display_message(f"{weapon_name} is not a weapon.")
         except ItemNotInInventoryError as e:
-            self._view.display_message(str(e))
+            self.view.display_message(str(e))
 
     def handle_use_item(self, item_name: str):
         try:
             item = self._check_item_in_inventory(item_name)
             if self.player.use_item(item):
-                self._view.display_message(f"You used {item.name}.")
+                self.view.display_message(f"You used {item.name}.")
             else:
-                self._view.display_message(f"You couldn't use {item.name}.")
+                self.view.display_message(f"You couldn't use {item.name}.")
         except ItemNotInInventoryError as e:
-            self._view.display_message(str(e))
+            self.view.display_message(str(e))
 
     def handle_pickup(self, item_str: str):
         try:
@@ -150,9 +154,9 @@ class PlayerActionController:
                 raise ItemNotInRoomError(f"{item_str} wasn't found in this room.")
 
             if self.pick_up_item(item):
-                self._view.display_message(f"You picked up {item.name.lower()}.")
+                self.view.display_message(f"You picked up {item.name.lower()}.")
         except (PlayerNotInRoomError, ItemNotInRoomError) as e:
-            self._view.display_message(str(e))
+            self.view.display_message(str(e))
 
     def handle_drop(self, item_str: str):
         try:
@@ -164,38 +168,39 @@ class PlayerActionController:
                 )
 
             self.current_room.add_item(item)
-            self._view.display_message(f"You dropped {item.name.lower()}.")
+            self.view.display_message(f"You dropped {item.name.lower()}.")
         except (PlayerNotInRoomError, ItemNotInInventoryError) as e:
-            self._view.display_message(str(e))
+            self.view.display_message(str(e))
 
     def display_inventory(self):
-        """Displays player's current inventory."""
-        print(self.player.inventory)
+        self.view.display_inventory(self.player.inventory)
 
     def display_map(self):
-        self.map_visualizer.display_map(self.current_room)
+        self.view.display_map(self.current_room)
 
     def handle_movement(self, direction_str: str):
         try:
             direction = Direction.from_string(direction_str)
             self.move_player(direction)
         except ValueError as e:
-            self._view.display_message(str(e))
+            self.view.display_message(str(e))
 
     def enter_room(self):
-        print(f"\nYou enter {self.current_room.name}")
+        self.view.display_room_entrance(self.current_room)
         self.display_map()
 
         if self.current_room.room_type == RoomType.PIT:
-            self.player.hero.take_damage(50)
-            print(f"You fell into a pit and took {50} damage!")
+            damage = 50
+            self.player.hero.take_damage(damage)
+            self.view.display_pit_damage(damage)
             if not self.player.hero.is_alive:
-                print("You died!")
+                self.game_model.set_game_over(True)
+                self.view.display_game_over()
 
         if self.current_room.has_items:
-            self.current_room.print_items()
+            self.view.display_room_contents(self.current_room)
         if self.current_room.has_monsters:
-            print("You encounter monsters!")
+            self.view.display_combat_start()
             self.combat_handler.initiate_combat()
         else:
-            print("The room appears to be empty.")
+            self.view.display_empty_room()
