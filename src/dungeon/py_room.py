@@ -20,3 +20,6 @@ class PyRoom(pygame.sprite.Sprite):
 
     def is_within_floor(self, rect) -> bool:
         return self.floor_rect.contains(rect)
+
+    def draw_floor_rect(self, surface):
+        pygame.draw.rect(surface, (0, 0, 255), self.floor_rect, 2)  # Blue rectangle

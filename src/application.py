@@ -41,14 +41,23 @@ class Application:
         self.player_sprite.rect.center = room.rect.center
         self.player.add(self.player_sprite)
 
-    # def update(self):
-    #     current_room = next(iter(self.rooms.sprites()))
-    #     self.player_sprite.update(current_room.floor_rect)
+        self.clock = pygame.time.Clock()
+
+    def update(self):
+        # Technically we don't need this but if the rooms have different things
+        # happening or different floor boundaries then this would be a good idea.
+        current_room = next(iter(self.rooms.sprites()))
+        self.player_sprite.update(current_room.floor_rect)
 
     def draw(self):
         self.game_surface.blit(self.background, (0, 0))
         self.rooms.draw(self.game_surface)
         self.player.draw(self.game_surface)
+
+        current_room = next(iter(self.rooms.sprites()))
+        current_room.draw_floor_rect(self.game_surface)
+        self.player_sprite.draw_hitbox(self.game_surface)
+
         scaled_surface = pygame.transform.scale(
             self.game_surface, (self.window_width, self.window_height)
         )
@@ -59,6 +68,7 @@ class Application:
         running = True
         while running:
             running = is_running()
+            self.update()
             self.draw()
             pygame.display.update()
             clock.tick(60)
