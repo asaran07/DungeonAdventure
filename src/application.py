@@ -1,5 +1,7 @@
 import sys
 import pygame
+
+from src.characters.pygame_player import PyPlayer
 from src.game.dungeon_adventure import GameModel
 from src.dungeon.dungeon_generator import DungeonGenerator
 from src.characters.player import Player
@@ -16,6 +18,9 @@ class Application:
 
         # Initialize game model
         self.game_model = self.setup_game()
+
+        # Create the player
+        self.player = PyPlayer(self.width // 2, self.height // 2)
 
         # Load room images
         self.room_images = {
@@ -52,28 +57,23 @@ class Application:
         return True
 
     def handle_key_press(self, key):
-        player = self.game_model.player
-        current_room = player.current_room
         if key == pygame.K_UP:
-            self.move_player(Direction.NORTH)
+            self.move_player(0, -1)
         elif key == pygame.K_DOWN:
-            self.move_player(Direction.SOUTH)
+            self.move_player(0, 1)
         elif key == pygame.K_LEFT:
-            self.move_player(Direction.WEST)
+            self.move_player(-1, 0)
         elif key == pygame.K_RIGHT:
-            self.move_player(Direction.EAST)
+            self.move_player(1, 0)
 
-    def move_player(self, direction):
-        player = self.game_model.player
-        current_room = player.current_room
-        if (
-            direction in current_room.connections
-            and current_room.connections[direction]
-        ):
-            player.current_room = current_room.connections[direction]
-            print(f"Moved to {player.current_room.name}")
-        else:
-            print("Cannot move in that direction")
+    def move_player(self, dx, dy):
+        new_x = self.player.rect.x + dx * self.player.speed
+        new_y = self.player.rect.y + dy * self.player.speed
+
+        # Check if the new position is within the screen boundaries
+        if 0 <= new_x < self.width - self.player.rect.width and 0 <= new_y < self.height - self.player.rect.height:
+            self.player.rect.x = new_x
+            self.player.rect.y = new_y
 
     def draw(self):
         current_room = self.game_model.player.current_room
@@ -83,12 +83,15 @@ class Application:
             # Draw a default background if the room image is not found
             self.screen.fill((0, 0, 0))  # Black background
 
+        self.player.draw(self.screen)
+
     def run(self):
         clock = pygame.time.Clock()
         running = True
         while running:
             running = self.handle_events()
             self.draw()
+            self.player.update()
             pygame.display.flip()
             clock.tick(60)  # Limit to 60 FPS
 
