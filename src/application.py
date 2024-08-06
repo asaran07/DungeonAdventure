@@ -3,6 +3,7 @@ import sys
 import pygame
 
 from src.characters.py_player import PyPlayer
+from src.dungeon.py_room import PyRoom
 
 
 def is_running() -> bool:
@@ -30,13 +31,23 @@ class Application:
         self.game_surface = pygame.Surface((self.width, self.height))
         pygame.display.set_caption("Dungeon Adventure")
 
+        self.rooms = pygame.sprite.Group()
+        room = PyRoom("/Users/saran/DungeonAdventure/src/resources/basic_room.png")
+        room.rect.center = (self.width // 2, self.height // 2)
+        self.rooms.add(room)
+
         self.player = pygame.sprite.GroupSingle()
         self.player_sprite = PyPlayer()
-        self.player_sprite.rect.center = (self.width // 2, self.height // 2)
+        self.player_sprite.rect.center = room.rect.center
         self.player.add(self.player_sprite)
+
+    # def update(self):
+    #     current_room = next(iter(self.rooms.sprites()))
+    #     self.player_sprite.update(current_room.floor_rect)
 
     def draw(self):
         self.game_surface.blit(self.background, (0, 0))
+        self.rooms.draw(self.game_surface)
         self.player.draw(self.game_surface)
         scaled_surface = pygame.transform.scale(
             self.game_surface, (self.window_width, self.window_height)
