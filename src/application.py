@@ -31,10 +31,13 @@ class Application:
         pygame.display.set_caption("Dungeon Adventure")
 
         self.player = pygame.sprite.GroupSingle()
-        self.player.add(PyPlayer())
+        self.player_sprite = PyPlayer()
+        self.player_sprite.rect.center = (self.width // 2, self.height // 2)
+        self.player.add(self.player_sprite)
 
     def draw(self):
         self.game_surface.blit(self.background, (0, 0))
+        self.player.draw(self.game_surface)
         scaled_surface = pygame.transform.scale(
             self.game_surface, (self.window_width, self.window_height)
         )

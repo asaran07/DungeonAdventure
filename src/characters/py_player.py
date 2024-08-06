@@ -6,5 +6,5 @@ class PyPlayer(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load(
             "/Users/saran/DungeonAdventure/src/resources/default_hero.png"
-        )
+        ).convert_alpha()
         self.rect = self.image.get_rect()
