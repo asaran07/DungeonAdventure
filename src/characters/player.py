@@ -1,3 +1,5 @@
+from typing import Optional
+
 from src.characters.hero import Hero
 from src.dungeon import Room
 from src.items.inventory import Inventory
@@ -10,7 +12,7 @@ class Player:
         self._name: str = name
         self._inventory: Inventory = Inventory(inventory_weight_limit)
         self._hero: Hero = Hero()
-        self.current_room = Room
+        self.current_room: Optional["Room"] = None
 
     @property
     def name(self) -> str:

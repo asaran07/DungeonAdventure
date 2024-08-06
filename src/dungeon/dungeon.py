@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, TYPE_CHECKING
 
 from src.dungeon.room import Room
 from src.enums.room_types import Direction
@@ -10,9 +10,13 @@ class DungeonError(Exception):
     pass
 
 
+if TYPE_CHECKING:
+    from .room import Room
+
+
 class Dungeon:
     def __init__(self):
-        self.rooms: Dict[str, Room] = {}
+        self.rooms: Dict[str, "Room"] = {}
 
     def get_rooms(self):
         return list(self.rooms.values())

@@ -1,8 +1,12 @@
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, TYPE_CHECKING
 
 from src.characters.monster import Monster
 from src.enums import RoomType, Direction
 from src.items.item import Item
+
+if TYPE_CHECKING:
+    from src.characters.monster import Monster
+    from src.items.item import Item
 
 
 class Room:
@@ -17,8 +21,8 @@ class Room:
         self.is_visible: bool = False
         self.is_explored: bool = False  # This is for fog of war
         self.detailed_description: str = detailed_description
-        self.items: List[Item] = []
-        self._monsters: List[Monster] = []
+        self.items: List["Item"] = []
+        self._monsters: List["Monster"] = []
         self.connections: Dict[Direction, Optional["Room"]] = {
             d: None for d in Direction
         }  # Creating a map in Python is goated
