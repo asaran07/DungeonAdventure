@@ -1,17 +1,20 @@
-import sys
+import os
 
 import pygame
 
+from dungeon_adventure.config import RESOURCES_DIR
 from dungeon_adventure.enums.room_types import Direction
-from dungeon_adventure.models.characters.py_player import PyPlayer
-from dungeon_adventure.models.dungeon.py_room import PyRoom
+from dungeon_adventure.game_model import GameModelError
 from dungeon_adventure.models.dungeon.room import Room
-
+from dungeon_adventure.models.player import Player
+from dungeon_adventure.services.dungeon_generator import DungeonGenerator
+from dungeon_adventure.views.pygame.room.game_room import GameRoom
+from dungeon_adventure.views.pygame.sprites.py_player import PyPlayer
+from src import GameModel
 
 class Application:
     def __init__(self, width=480, height=270):
         pygame.init()
-        self.debug_mode = False
         self.width = width
         self.height = height
         self.scale_factor = 3
@@ -25,6 +28,9 @@ class Application:
         self.game_surface = pygame.Surface((self.width, self.height))
         pygame.display.set_caption("Dungeon Adventure")
 
+        self.debug_mode = False
+
+        # Create game rooms
         self.rooms = pygame.sprite.Group()
         test_room = Room("Test Room")
         test_room2 = Room("Test Room 2")
@@ -33,31 +39,60 @@ class Application:
         test_room.connect(Direction.NORTH, test_room2)
         test_room.connect(Direction.EAST, test_room3)
         test_room.connect(Direction.WEST, test_room4)
+        room1 = GameRoom(test_room, os.path.join(RESOURCES_DIR, 'basic_room.png'))
+        room1.rect.center = (self.width // 2, self.height // 2)
+        self.rooms.add(room1)
 
-        room = PyRoom("../resources/basic_room.png", test_room)
-        room.rect.center = (self.width // 2, self.height // 2)
-        self.rooms.add(room)
-
+        # Create player
         self.player = pygame.sprite.GroupSingle()
         self.player_sprite = PyPlayer()
-        self.player_sprite.rect.center = room.rect.center
+        self.player_sprite.rect.center = room1.rect.center
         self.player.add(self.player_sprite)
 
         self.clock = pygame.time.Clock()
 
+    def _create_rooms(self):
+        test_room = Room("Room 1")
+
+        # room1.rect.center = (self.width // 2, self.height // 2)
+
+        # Add more rooms as needed
+
+    def _get_starting_room(self):
+        # Return the starting room (e.g., the entrance hall)
+        return next(iter(self.rooms.sprites()))
+
     def update(self):
         dt = self.clock.tick(60)
-        # Technically we don't need this but if the rooms have different things
-        # happening or different floor boundaries then this would be a good idea.
         current_room = next(iter(self.rooms.sprites()))
         self.player_sprite.update(dt, current_room.floor_rect)
 
+        # Check for room transitions
+        # door_direction = current_room.get_door_at_position(self.player_sprite.rect.center)
+        # if door_direction:
+        #     self._handle_room_transition(door_direction)
+
+    def _get_current_room(self):
+        # This method should return the room the player is currently in
+        # For now, we'll just return the first room
+        return next(iter(self.rooms.sprites()))
+
+    def _handle_room_transition(self, direction):
+        # Implement room transition logic here
+        # This might involve changing the current room and repositioning the player
+        pass
+
     def draw(self):
         self.game_surface.blit(self.background, (0, 0))
-        self.rooms.draw(self.game_surface)
+        for room in self.rooms:
+            room.draw(self.game_surface)
         self.player.draw(self.game_surface)
 
         if self.debug_mode:
+            # current_room = self._get_current_room()
+            # current_room.draw_hitboxes(self.game_surface)
+            # self.player_sprite.draw_hitbox(self.game_surface)
+            # self.draw_debug_info()
             current_room = next(iter(self.rooms.sprites()))
             # current_room.draw_floor_rect(self.game_surface)
             self.player_sprite.draw_hitbox(self.game_surface)
@@ -71,6 +106,14 @@ class Application:
         )
         self.screen.blit(scaled_surface, (0, 0))
 
+    def draw_debug_info(self):
+        font = pygame.font.Font(None, 20)
+        debug_surface = font.render("Debug Mode ON", True, (255, 255, 255))
+        self.game_surface.blit(debug_surface, (10, 10))
+        print(f"Room position: {self._get_starting_room().rect}")
+        print(f"Floor rect: {self._get_starting_room().floor_rect}")
+        print(f"Player position: {self.player_sprite.rect}")
+
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -80,12 +123,6 @@ class Application:
                     self.debug_mode = not self.debug_mode
                     print(f"Debug mode: {'ON' if self.debug_mode else 'OFF'}")
         return True
-
-    def draw_debug_info(self):
-        if self.debug_mode:
-            font = pygame.font.Font(None, 20)
-            debug_surface = font.render("Debug Mode ON", True, (255, 255, 255))
-            self.game_surface.blit(debug_surface, (10, 10))
 
     def run(self):
         clock = pygame.time.Clock()
@@ -97,9 +134,8 @@ class Application:
             pygame.display.update()
             clock.tick(60)
         pygame.quit()
-        sys.exit()
-
 
 if __name__ == "__main__":
     app = Application()
     app.run()
+

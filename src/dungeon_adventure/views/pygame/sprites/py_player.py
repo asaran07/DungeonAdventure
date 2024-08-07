@@ -2,6 +2,7 @@ import os
 
 import pygame
 
+from dungeon_adventure.config import RESOURCES_DIR
 from dungeon_adventure.views.pygame.animation.animation_manager import AnimationManager
 
 
@@ -20,7 +21,7 @@ class PyPlayer(pygame.sprite.Sprite):
     def load_animations(self):
         # TODO: Extract this animation functionality into its own class.
 
-        base_path = "resources/hero_animations/hero_walk/"
+        base_path = os.path.join(RESOURCES_DIR, 'hero_animations', 'hero_walk')
 
         # Load idle animation (single frame)
         idle_path = os.path.join(base_path, "hero_idle.png")
