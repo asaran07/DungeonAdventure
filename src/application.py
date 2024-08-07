@@ -38,10 +38,11 @@ class Application:
         self.clock = pygame.time.Clock()
 
     def update(self):
+        dt = self.clock.tick(60)
         # Technically we don't need this but if the rooms have different things
         # happening or different floor boundaries then this would be a good idea.
         current_room = next(iter(self.rooms.sprites()))
-        self.player_sprite.update(current_room.floor_rect)
+        self.player_sprite.update(dt, current_room.floor_rect)
 
     def draw(self):
         self.game_surface.blit(self.background, (0, 0))

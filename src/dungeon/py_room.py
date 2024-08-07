@@ -24,4 +24,6 @@ class PyRoom(pygame.sprite.Sprite):
     def draw_floor_rect(self, surface):
         pygame.draw.rect(surface, (0, 0, 255), self.floor_rect, 2)  # Blue rectangle
         # Draw a yellow line at the top of the floor rect
-        pygame.draw.line(surface, (255, 255, 0), self.floor_rect.topleft, self.floor_rect.topright, 2)
+        pygame.draw.line(
+            surface, (255, 255, 0), self.floor_rect.topleft, self.floor_rect.topright, 2
+        )
