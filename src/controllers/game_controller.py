@@ -81,8 +81,11 @@ class GameController:
             # Do something with the game model?
             print(type(proj_state))
             self.game_model = proj_state.get_game_model()
-            self.player_action_controller.map_visualizer = proj_state.get_map_visualizer()
-            self.game_model.game_state = GameState.EXPLORING
+            self.player_action_controller = PlayerActionController(proj_state.game_model,
+                                                                   proj_state.map_visualizer,
+                                                                   proj_state.view)
+            # self.view = proj_state.get_view()
+            # self.game_model.game_state = GameState.EXPLORING
         except FileNotFoundError as e:
             self.view.display_message(f"File not found: {e}")
 

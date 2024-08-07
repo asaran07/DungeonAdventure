@@ -131,7 +131,11 @@ class PlayerActionController:
             item_name = " ".join(action_parts[1:])
             self.handle_use_item(item_name)
         elif action_parts[0] == Res.Actions.SAVE:
-            proj_state = ProjectState(self.game_model, self.map_visualizer)
+            proj_state = ProjectState(self.game_model,
+                                      self.map_visualizer,
+                                      self._view,
+                                      self.player,
+                                      self.current_room)
             save_game(proj_state, "save.pkl")
 
     def handle_equip(self, weapon_name: str):
