@@ -46,20 +46,19 @@ class GameController:
         self.view.display_title_screen()
         while True:
             choice = self.view.get_user_input(
-                "Please enter your choice (1 to Start, 2 to Quit, 3 to Load)"
+                "Please enter your choice (1 to Start, 2 to Load, 3 to Quit)"
             )
             if choice == "1":
                 self.game_model.game_state = GameState.PLAYER_CREATION
                 break
             elif choice == "2":
-                self.game_model.set_game_over(True)
-                break
-            elif choice == "3":
                 self.game_model.game_state = GameState.LOAD
                 break
-                # maybe move this choice to "2" later
+            elif choice == "3":
+                self.game_model.set_game_over(True)
+                break
             else:
-                raise InvalidInputError("Invalid choice. Please enter 1 or 2.")
+                raise InvalidInputError("Invalid choice. Please enter 1, 2, or 3.")
 
     def handle_player_creation(self):
         try:
@@ -77,15 +76,11 @@ class GameController:
 
     def handle_load(self):
         try:
-            proj_state: ProjectState = load_game("save.pkl")  # load_game returns a project state
-            # Do something with the game model?
-            print(type(proj_state))
+            proj_state: ProjectState = load_game("save.pkl")
             self.game_model = proj_state.get_game_model()
             self.player_action_controller = PlayerActionController(proj_state.game_model,
                                                                    proj_state.map_visualizer,
                                                                    proj_state.view)
-            # self.view = proj_state.get_view()
-            # self.game_model.game_state = GameState.EXPLORING
         except FileNotFoundError as e:
             self.view.display_message(f"File not found: {e}")
 

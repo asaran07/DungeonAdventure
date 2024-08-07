@@ -47,7 +47,9 @@ class RichConsoleView(ConsoleView):
         )
         self.console.print(title)
         self.console.print("1. Start New Game", style=self.color_scheme["action"])
-        self.console.print("2. Quit", style=self.color_scheme["action"])
+        self.console.print("2. Load Game", style=self.color_scheme["action"])
+        self.console.print("3. Quit", style=self.color_scheme["action"])
+
 
     def get_user_input(self, prompt: str) -> str:
         return Prompt.ask(f"[{self.color_scheme['prompt']}]{prompt}[/]")
