@@ -11,6 +11,13 @@ class Inventory:
         self._weight_limit: float = weight_limit
         self._db = InventoryDatabase("")
 
+    # pickle methods to exclude database since sqlite3 not serializable
+    def __getstate__(self):
+        return self._items, self._weight_limit
+
+    def __setstate__(self, state):
+        self._items, self._weight_limit = state
+
     def add_item(self, item: Item) -> None:
         self.validate_weight(item)
         if item.id in self._items:
@@ -63,3 +70,5 @@ class Inventory:
             )
         inventory_str += f"Total Weight: {self.get_total_weight()}/{self._weight_limit}"
         return inventory_str
+
+

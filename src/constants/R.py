@@ -18,6 +18,7 @@ class Resources:
         DROP = "drop"
         EQUIP = "equip"
         USE = "use"
+        SAVE = "save"
 
     class Messages:
         EQUIP_SUCCESS = "You equipped {}."

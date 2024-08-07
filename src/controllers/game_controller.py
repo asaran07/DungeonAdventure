@@ -7,6 +7,7 @@ from src.exceptions import (
     InvalidPlayerActionError,
 )
 from src.game.dungeon_adventure import GameModel
+from src.serialization.project_state import load_game
 from src.views.view import View
 
 
@@ -30,11 +31,12 @@ class GameController:
 
     def handle_current_state(self):
         current_state = self.game_model.game_state
-
         if current_state == GameState.TITLE_SCREEN:
             self.handle_title_screen()
         elif current_state == GameState.PLAYER_CREATION:
             self.handle_player_creation()
+        elif current_state == GameState.LOAD:
+            self.handle_load()
         elif current_state == GameState.EXPLORING:
             self.handle_exploration()
         else:
@@ -44,7 +46,7 @@ class GameController:
         self.view.display_title_screen()
         while True:
             choice = self.view.get_user_input(
-                "Please enter your choice (1 to Start, 2 to Quit)"
+                "Please enter your choice (1 to Start, 2 to Quit, 3 to Load)"
             )
             if choice == "1":
                 self.game_model.game_state = GameState.PLAYER_CREATION
@@ -52,6 +54,10 @@ class GameController:
             elif choice == "2":
                 self.game_model.set_game_over(True)
                 break
+            elif choice == "3":
+                self.game_model.game_state = GameState.LOAD
+                break
+                # maybe move this choice to "2" later
             else:
                 raise InvalidInputError("Invalid choice. Please enter 1 or 2.")
 
@@ -68,6 +74,15 @@ class GameController:
         except RoomNotFoundError as e:
             self.view.display_message(f"Room Error: {e}. Resetting game...")
             self.reset_to_safe_state()
+
+    def handle_load(self):
+        try:
+            game_model = load_game("save.pkl")  # load_game returns a game model
+            # Do something with the game model?
+            self.game_model = game_model
+            # self.game_model.game_state = GameState.EXPLORING
+        except FileNotFoundError as e:
+            self.view.display_message(f"File not found: {e}")
 
     def handle_exploration(self):
         # self.view.display_player_status(self.game_model)

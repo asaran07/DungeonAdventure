@@ -14,6 +14,7 @@ from src.exceptions.player import (
 from src.game.dungeon_adventure import GameModel
 from src.items.item import Item
 from src.items.weapon import Weapon
+from src.serialization.project_state import save_game
 from src.views.map_visualizer import MapVisualizer
 from src.views.view import View
 
@@ -24,7 +25,7 @@ class PlayerActionController:
     """
 
     def __init__(
-        self, game_model: GameModel, map_visualizer: MapVisualizer, view: View
+            self, game_model: GameModel, map_visualizer: MapVisualizer, view: View
     ):
         self.game_model = game_model
         self.map_visualizer = map_visualizer
@@ -129,6 +130,8 @@ class PlayerActionController:
         elif action_parts[0] == Res.Actions.USE and len(action_parts) > 1:
             item_name = " ".join(action_parts[1:])
             self.handle_use_item(item_name)
+        elif action_parts[0] == Res.Actions.SAVE:
+            save_game(self.game_model, "save.pkl")
 
     def handle_equip(self, weapon_name: str):
         try:
