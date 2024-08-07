@@ -4,7 +4,7 @@ import pytest
 
 from src.characters import Player
 from src.characters.monster import Monster
-from src.combat.combat_handler import CombatHandler
+from src.controllers.combat_controller import CombatHandler
 from src.dungeon.room import Room
 from src.game.dungeon_adventure import GameModel
 from src.views.console_view import ConsoleView

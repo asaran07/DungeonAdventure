@@ -20,9 +20,7 @@ class PyPlayer(pygame.sprite.Sprite):
     def load_animations(self):
         # TODO: Extract this animation functionality into its own class.
 
-        base_path = (
-            "resources/hero_animations/hero_walk/"
-        )
+        base_path = "resources/hero_animations/hero_walk/"
 
         # Load idle animation (single frame)
         idle_path = os.path.join(base_path, "hero_idle.png")
@@ -73,8 +71,14 @@ class PyPlayer(pygame.sprite.Sprite):
 
     def update(self, dt, floor_rect):
         keys = pygame.key.get_pressed()
-        dx = ((keys[pygame.K_RIGHT] or keys[pygame.K_d]) - (keys[pygame.K_LEFT] or keys[pygame.K_a])) * self.speed
-        dy = ((keys[pygame.K_DOWN] or keys[pygame.K_s]) - (keys[pygame.K_UP] or keys[pygame.K_w])) * self.speed
+        dx = (
+            (keys[pygame.K_RIGHT] or keys[pygame.K_d])
+            - (keys[pygame.K_LEFT] or keys[pygame.K_a])
+        ) * self.speed
+        dy = (
+            (keys[pygame.K_DOWN] or keys[pygame.K_s])
+            - (keys[pygame.K_UP] or keys[pygame.K_w])
+        ) * self.speed
 
         # Then depending on which way we're facing, we play that certain animation group
         if dx > 0:

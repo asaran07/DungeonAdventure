@@ -1,7 +1,7 @@
 from typing import Optional
 
 from src.characters.player import Player
-from src.combat.combat_handler import CombatHandler
+from src.controllers.combat_controller import CombatHandler
 from src.constants import Resources as Res
 from src.dungeon import Room
 from src.enums.room_types import Direction, RoomType
@@ -206,7 +206,6 @@ class PlayerActionController:
                 # and self._check_item_in_inventory("Encapsulation Pillar") and self._check_item_in_inventory("Inheritance Pillar") and self._check_item_in_inventory("Polymorphism Pillar"):
                 print(f"{self.player.name} has defeated the dungeon and won the game!")
                 self._end_game()
-
 
     def _handle_room_hazards(self):
         if self.current_room.room_type == RoomType.PIT:

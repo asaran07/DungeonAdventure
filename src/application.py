@@ -3,7 +3,9 @@ import sys
 import pygame
 
 from src.characters.py_player import PyPlayer
+from src.dungeon import Room
 from src.dungeon.py_room import PyRoom
+from src.enums import Direction
 
 
 class Application:
@@ -16,9 +18,7 @@ class Application:
         self.window_width = self.width * self.scale_factor
         self.window_height = self.height * self.scale_factor
         self.screen = pygame.display.set_mode((self.window_width, self.window_height))
-        self.background = pygame.image.load(
-            "resources/default_background.png"
-        )
+        self.background = pygame.image.load("resources/default_background.png")
         self.background = pygame.transform.scale(
             self.background, (self.width, self.height)
         )
@@ -26,7 +26,15 @@ class Application:
         pygame.display.set_caption("Dungeon Adventure")
 
         self.rooms = pygame.sprite.Group()
-        room = PyRoom("resources/basic_room.png")
+        test_room = Room("Test Room")
+        test_room2 = Room("Test Room 2")
+        test_room3 = Room("Test Room 3")
+        test_room4 = Room("Test Room 4")
+        test_room.connect(Direction.NORTH, test_room2)
+        test_room.connect(Direction.EAST, test_room3)
+        test_room.connect(Direction.WEST, test_room4)
+
+        room = PyRoom("resources/basic_room.png", test_room)
         room.rect.center = (self.width // 2, self.height // 2)
         self.rooms.add(room)
 
@@ -51,9 +59,11 @@ class Application:
 
         if self.debug_mode:
             current_room = next(iter(self.rooms.sprites()))
-            current_room.draw_floor_rect(self.game_surface)
+            # current_room.draw_floor_rect(self.game_surface)
             self.player_sprite.draw_hitbox(self.game_surface)
             self.player_sprite.draw_debug_info(self.game_surface)
+            for room in self.rooms:
+                room.draw_hitboxes(self.game_surface)
             self.draw_debug_info()
 
         scaled_surface = pygame.transform.scale(
