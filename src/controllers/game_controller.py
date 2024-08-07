@@ -7,7 +7,7 @@ from src.exceptions import (
     InvalidPlayerActionError,
 )
 from src.game.dungeon_adventure import GameModel
-from src.serialization.project_state import load_game
+from src.serialization.project_state import load_game, ProjectState
 from src.views.view import View
 
 
@@ -77,10 +77,12 @@ class GameController:
 
     def handle_load(self):
         try:
-            game_model = load_game("save.pkl")  # load_game returns a game model
+            proj_state: ProjectState = load_game("save.pkl")  # load_game returns a project state
             # Do something with the game model?
-            self.game_model = game_model
-            # self.game_model.game_state = GameState.EXPLORING
+            print(type(proj_state))
+            self.game_model = proj_state.get_game_model()
+            self.player_action_controller.map_visualizer = proj_state.get_map_visualizer()
+            self.game_model.game_state = GameState.EXPLORING
         except FileNotFoundError as e:
             self.view.display_message(f"File not found: {e}")
 

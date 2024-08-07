@@ -14,7 +14,7 @@ from src.exceptions.player import (
 from src.game.dungeon_adventure import GameModel
 from src.items.item import Item
 from src.items.weapon import Weapon
-from src.serialization.project_state import save_game
+from src.serialization.project_state import save_game, ProjectState
 from src.views.map_visualizer import MapVisualizer
 from src.views.view import View
 
@@ -131,7 +131,8 @@ class PlayerActionController:
             item_name = " ".join(action_parts[1:])
             self.handle_use_item(item_name)
         elif action_parts[0] == Res.Actions.SAVE:
-            save_game(self.game_model, "save.pkl")
+            proj_state = ProjectState(self.game_model, self.map_visualizer)
+            save_game(proj_state, "save.pkl")
 
     def handle_equip(self, weapon_name: str):
         try:
