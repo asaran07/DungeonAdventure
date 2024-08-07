@@ -6,16 +6,10 @@ from src.characters.py_player import PyPlayer
 from src.dungeon.py_room import PyRoom
 
 
-def is_running() -> bool:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            return False
-    return True
-
-
 class Application:
     def __init__(self, width=480, height=270):
         pygame.init()
+        self.debug_mode = False
         self.width = width
         self.height = height
         self.scale_factor = 3
@@ -54,20 +48,38 @@ class Application:
         self.rooms.draw(self.game_surface)
         self.player.draw(self.game_surface)
 
-        current_room = next(iter(self.rooms.sprites()))
-        current_room.draw_floor_rect(self.game_surface)
-        self.player_sprite.draw_hitbox(self.game_surface)
+        if self.debug_mode:
+            current_room = next(iter(self.rooms.sprites()))
+            current_room.draw_floor_rect(self.game_surface)
+            self.player_sprite.draw_hitbox(self.game_surface)
+            self.draw_debug_info()
 
         scaled_surface = pygame.transform.scale(
             self.game_surface, (self.window_width, self.window_height)
         )
         self.screen.blit(scaled_surface, (0, 0))
 
+    def handle_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_b:
+                    self.debug_mode = not self.debug_mode
+                    print(f"Debug mode: {'ON' if self.debug_mode else 'OFF'}")
+        return True
+
+    def draw_debug_info(self):
+        if self.debug_mode:
+            font = pygame.font.Font(None, 30)
+            debug_surface = font.render("Debug Mode ON", True, (255, 255, 255))
+            self.game_surface.blit(debug_surface, (10, 10))
+
     def run(self):
         clock = pygame.time.Clock()
         running = True
         while running:
-            running = is_running()
+            running = self.handle_events()
             self.update()
             self.draw()
             pygame.display.update()
