@@ -6,6 +6,7 @@ from dungeon_adventure.exceptions.input import InvalidInputError
 from dungeon_adventure.exceptions.player import InvalidPlayerActionError
 from dungeon_adventure.views.view import View
 from src import GameModel
+from serialization.project_state import ProjectState, load_game
 
 
 class GameController:

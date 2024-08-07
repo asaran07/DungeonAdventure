@@ -2,12 +2,11 @@ import os
 import pickle
 from typing import Any, Optional
 
-from src.characters import Player
-from src.dungeon import Room
-from src.game.dungeon_adventure import GameModel
-from src.views import map_visualizer
-from src.views.map_visualizer import MapVisualizer
-from src.views.view import View
+from dungeon_adventure.models.player import Player
+from dungeon_adventure.models.dungeon.room import Room
+from src import GameModel
+from dungeon_adventure.views.console.map_visualizer import MapVisualizer
+from dungeon_adventure.views.view import View
 
 
 class ProjectState:

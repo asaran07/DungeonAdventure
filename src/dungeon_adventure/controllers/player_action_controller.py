@@ -11,6 +11,7 @@ from dungeon_adventure.views.console.map_visualizer import MapVisualizer
 from dungeon_adventure.views.view import View
 from dungeon_adventure.utils.R import Resources as Res
 from src import GameModel
+from serialization.project_state import ProjectState, save_game
 
 
 class PlayerActionController:
