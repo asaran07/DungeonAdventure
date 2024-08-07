@@ -21,7 +21,7 @@ class PyPlayer(pygame.sprite.Sprite):
         # TODO: Extract this animation functionality into its own class.
 
         base_path = (
-            "/Users/saran/DungeonAdventure/src/resources/hero_animations/hero_walk/"
+            "resources/hero_animations/hero_walk/"
         )
 
         # Load idle animation (single frame)

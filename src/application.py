@@ -17,7 +17,7 @@ class Application:
         self.window_height = self.height * self.scale_factor
         self.screen = pygame.display.set_mode((self.window_width, self.window_height))
         self.background = pygame.image.load(
-            "/Users/saran/DungeonAdventure/src/resources/default_background.png"
+            "resources/default_background.png"
         )
         self.background = pygame.transform.scale(
             self.background, (self.width, self.height)
@@ -26,7 +26,7 @@ class Application:
         pygame.display.set_caption("Dungeon Adventure")
 
         self.rooms = pygame.sprite.Group()
-        room = PyRoom("/Users/saran/DungeonAdventure/src/resources/basic_room.png")
+        room = PyRoom("resources/basic_room.png")
         room.rect.center = (self.width // 2, self.height // 2)
         self.rooms.add(room)
 
