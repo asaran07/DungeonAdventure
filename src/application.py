@@ -2,10 +2,10 @@ import sys
 
 import pygame
 
-from src.characters.py_player import PyPlayer
-from src.dungeon import Room
-from src.dungeon.py_room import PyRoom
-from src.enums import Direction
+from dungeon_adventure.enums.room_types import Direction
+from dungeon_adventure.models.characters.py_player import PyPlayer
+from dungeon_adventure.models.dungeon.py_room import PyRoom
+from dungeon_adventure.models.dungeon.room import Room
 
 
 class Application:
@@ -18,7 +18,7 @@ class Application:
         self.window_width = self.width * self.scale_factor
         self.window_height = self.height * self.scale_factor
         self.screen = pygame.display.set_mode((self.window_width, self.window_height))
-        self.background = pygame.image.load("resources/default_background.png")
+        self.background = pygame.image.load("../resources/default_background.png")
         self.background = pygame.transform.scale(
             self.background, (self.width, self.height)
         )
@@ -34,7 +34,7 @@ class Application:
         test_room.connect(Direction.EAST, test_room3)
         test_room.connect(Direction.WEST, test_room4)
 
-        room = PyRoom("resources/basic_room.png", test_room)
+        room = PyRoom("../resources/basic_room.png", test_room)
         room.rect.center = (self.width // 2, self.height // 2)
         self.rooms.add(room)
 

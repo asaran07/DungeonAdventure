@@ -1,11 +1,11 @@
-from src.characters import Player
-from src.controllers.game_controller import GameController
-from src.controllers.player_action_controller import PlayerActionController
-from src.dungeon.dungeon_generator import DungeonGenerator
-from src.game.dungeon_adventure import GameModel, GameModelError
-from src.views.console_view import ConsoleView
-from src.views.map_visualizer import MapVisualizer
-from src.views.rich_console_view import RichConsoleView
+from dungeon_adventure.controllers.game_controller import GameController
+from dungeon_adventure.controllers.player_action_controller import PlayerActionController
+from dungeon_adventure.game_model import GameModelError
+from dungeon_adventure.models.player import Player
+from dungeon_adventure.services.dungeon_generator import DungeonGenerator
+from dungeon_adventure.views.console.console_view import ConsoleView
+from dungeon_adventure.views.console.map_visualizer import MapVisualizer
+from src import GameModel
 
 
 def setup_game():

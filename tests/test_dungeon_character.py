@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import patch
-from src.characters.dungeon_character import DungeonCharacter
+
+from src.dungeon_adventure.models.characters import DungeonCharacter
 
 
 class TestDungeonCharacter(unittest.TestCase):

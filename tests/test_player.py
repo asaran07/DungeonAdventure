@@ -1,19 +1,12 @@
 import pytest
 
-from src.characters.player import Player, InvalidPlayerAttributeError
-from src.items.pillar import (
-    AbstractionPillar,
-    EncapsulationPillar,
-    InheritancePillar,
-    PolymorphismPillar,
-)
-from src.items.potion import HealingPotion, VisionPotion
-from src.exceptions.player import (
-    InvalidPlayerActionError,
-    InventoryError,
-    InventoryFullError,
-    ItemNotFoundError,
-)
+from dungeon_adventure.models import Player
+from dungeon_adventure.models.items.pillar import *
+from dungeon_adventure.models.items.potion import *
+
+
+class InvalidPlayerAttributeError:
+    pass
 
 
 class TestPlayer:

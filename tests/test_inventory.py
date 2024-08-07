@@ -1,10 +1,9 @@
 import pytest
 
-from src.characters.player import Player
-from src.dungeon.room import Room
-from src.enums.item_types import PillarType, PotionType, WeaponType
-from src.exceptions.player import InventoryFullError
-from src.items.item_factory import ItemFactory
+from dungeon_adventure.enums import PillarType, PotionType, WeaponType
+from dungeon_adventure.exceptions import InventoryFullError
+from dungeon_adventure.models import Player, Room
+from dungeon_adventure.services import ItemFactory
 
 
 @pytest.fixture
