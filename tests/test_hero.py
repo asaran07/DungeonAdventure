@@ -1,10 +1,10 @@
 import unittest
-from unittest.mock import patch, MagicMock
-from src.characters.hero import Hero
-from src.characters.dungeon_character import DungeonCharacter
-from src.enums.item_types import WeaponType
-from src.items.item_factory import ItemFactory
-from src.items.weapon import Weapon
+from unittest.mock import MagicMock, patch
+
+from dungeon_adventure.services import ItemFactory
+from src.dungeon_adventure.enums.item_types import WeaponType
+from src.dungeon_adventure.models.characters import DungeonCharacter
+from src.dungeon_adventure.models.characters.hero import Hero
 
 
 class TestHero(unittest.TestCase):

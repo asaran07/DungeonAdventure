@@ -2,12 +2,11 @@ from unittest.mock import Mock
 
 import pytest
 
-from src.characters import Player
-from src.characters.monster import Monster
-from src.combat.combat_handler import CombatHandler
-from src.dungeon.room import Room
-from src.game.dungeon_adventure import GameModel
-from src.views.console_view import ConsoleView
+from dungeon_adventure.controllers.combat_controller import CombatController
+from dungeon_adventure.models.characters.monster import Monster
+from dungeon_adventure.models.dungeon.room import Room
+from dungeon_adventure.views.console.console_view import ConsoleView
+from src import GameModel
 
 
 @pytest.fixture
@@ -30,4 +29,4 @@ def mock_room():
 @pytest.fixture
 def combat_handler(mock_game_model):
     view = ConsoleView()
-    return CombatHandler(mock_game_model, view)
+    return CombatController(mock_game_model, view)

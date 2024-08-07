@@ -1,7 +1,8 @@
 import pytest
-from src.dungeon.dungeon import Dungeon
-from src.dungeon.room import Room
-from src.enums.room_types import Direction
+
+from src.dungeon_adventure.enums.room_types import Direction
+from src.dungeon_adventure.models.dungeon import Dungeon
+from src.dungeon_adventure.models.dungeon.room import Room
 
 
 @pytest.fixture
