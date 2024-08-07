@@ -53,6 +53,7 @@ class Application:
             current_room = next(iter(self.rooms.sprites()))
             current_room.draw_floor_rect(self.game_surface)
             self.player_sprite.draw_hitbox(self.game_surface)
+            self.player_sprite.draw_debug_info(self.game_surface)
             self.draw_debug_info()
 
         scaled_surface = pygame.transform.scale(
@@ -72,7 +73,7 @@ class Application:
 
     def draw_debug_info(self):
         if self.debug_mode:
-            font = pygame.font.Font(None, 30)
+            font = pygame.font.Font(None, 20)
             debug_surface = font.render("Debug Mode ON", True, (255, 255, 255))
             self.game_surface.blit(debug_surface, (10, 10))
 

@@ -107,3 +107,14 @@ class PyPlayer(pygame.sprite.Sprite):
         pygame.draw.line(
             surface, (0, 255, 0), (self.rect.left, feet_y), (self.rect.right, feet_y), 2
         )
+
+    def draw_debug_info(self, surface: pygame.Surface) -> None:
+        font = pygame.font.Font(None, 14)
+        current_animation = self.animation_manager.current_animation
+        if current_animation:
+            debug_text = (
+                f"Animation: {current_animation.name}, Frame: {current_animation.current_frame + 1}/"
+                f"{len(current_animation.frames)}"
+            )
+            debug_surface = font.render(debug_text, True, (255, 255, 255))
+            surface.blit(debug_surface, (self.rect.x, self.rect.y - 30))
