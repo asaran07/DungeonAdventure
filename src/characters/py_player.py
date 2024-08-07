@@ -18,27 +18,32 @@ class PyPlayer(pygame.sprite.Sprite):
         self.facing_right = True
 
     def load_animations(self):
+        # TODO: Extract this animation functionality into its own class.
+
         base_path = (
-            "/Users/saran/DungeonAdventure/src/resources/hero_animations/hero_walk/"
+            "resources/hero_animations/hero_walk/"
         )
 
         # Load idle animation (single frame)
         idle_path = os.path.join(base_path, "hero_idle.png")
-        self.animation_manager.add_animation("idle_right", [idle_path], 1000)
 
-        # For idle_left we flip the image live
+        # We can just use the hero_idle image for both idling left and right for now
+        self.animation_manager.add_animation("idle_right", [idle_path], 1000)
         self.animation_manager.add_animation("idle_left", [idle_path], 1000)
 
-        # Load walking animation
+        # Create a list of all the 'hero_walk' animation types by adding the 'i' value right after 'hero_walk_'
+        # This way we get the ../hero_walk_1, ../hero_walk_2 etc
         walk_paths = [
             os.path.join(base_path, f"hero_walk_{i}.png") for i in range(1, 8)
         ]
+
+        # Then we add all those in the animation manager
         self.animation_manager.add_animation(
-            "walk_right", walk_paths, 1000 / 12
+            "walk_right", walk_paths, 1000 // 12
         )  # 12 fps
 
-        # We flip the images live for walk_left as well
-        self.animation_manager.add_animation("walk_left", walk_paths, 1000 / 12)
+        # We do the same for walk left, but we use the same assets because we can just flip the walk_right images.
+        self.animation_manager.add_animation("walk_left", walk_paths, 1000 // 12)
 
     def move(self, dx, dy, floor_rect):
         # Calculate new position
@@ -68,9 +73,10 @@ class PyPlayer(pygame.sprite.Sprite):
 
     def update(self, dt, floor_rect):
         keys = pygame.key.get_pressed()
-        dx = (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * self.speed
-        dy = (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * self.speed
+        dx = ((keys[pygame.K_RIGHT] or keys[pygame.K_d]) - (keys[pygame.K_LEFT] or keys[pygame.K_a])) * self.speed
+        dy = ((keys[pygame.K_DOWN] or keys[pygame.K_s]) - (keys[pygame.K_UP] or keys[pygame.K_w])) * self.speed
 
+        # Then depending on which way we're facing, we play that certain animation group
         if dx > 0:
             self.animation_manager.play("walk_right")
             self.facing_right = True
@@ -101,3 +107,14 @@ class PyPlayer(pygame.sprite.Sprite):
         pygame.draw.line(
             surface, (0, 255, 0), (self.rect.left, feet_y), (self.rect.right, feet_y), 2
         )
+
+    def draw_debug_info(self, surface: pygame.Surface) -> None:
+        font = pygame.font.Font(None, 14)
+        current_animation = self.animation_manager.current_animation
+        if current_animation:
+            debug_text = (
+                f"Animation: {current_animation.name}, Frame: {current_animation.current_frame + 1}/"
+                f"{len(current_animation.frames)}"
+            )
+            debug_surface = font.render(debug_text, True, (255, 255, 255))
+            surface.blit(debug_surface, (self.rect.x, self.rect.y - 30))

@@ -55,7 +55,7 @@ class ConsoleView(View):
         print("==ENTERING COMBAT==")
 
     def display_empty_room(self):
-        print("This room appears to be empty.")
+        print("This room does not appear to have any monsters.")
 
     def display_inventory(self, inventory: "Inventory"):
         print(str(inventory))
