@@ -73,8 +73,8 @@ class PyPlayer(pygame.sprite.Sprite):
 
     def update(self, dt, floor_rect):
         keys = pygame.key.get_pressed()
-        dx = (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * self.speed
-        dy = (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * self.speed
+        dx = ((keys[pygame.K_RIGHT] or keys[pygame.K_d]) - (keys[pygame.K_LEFT] or keys[pygame.K_a])) * self.speed
+        dy = ((keys[pygame.K_DOWN] or keys[pygame.K_s]) - (keys[pygame.K_UP] or keys[pygame.K_w])) * self.speed
 
         # Then depending on which way we're facing, we play that certain animation group
         if dx > 0:

@@ -201,6 +201,12 @@ class PlayerActionController:
         self._handle_room_hazards()
         self._display_room_contents()
         self._handle_room_encounters()
+        if self.current_room.room_type == RoomType.EXIT:
+            if self._check_item_in_inventory("Abstraction Pillar"):
+                # and self._check_item_in_inventory("Encapsulation Pillar") and self._check_item_in_inventory("Inheritance Pillar") and self._check_item_in_inventory("Polymorphism Pillar"):
+                print(f"{self.player.name} has defeated the dungeon and won the game!")
+                self._end_game()
+
 
     def _handle_room_hazards(self):
         if self.current_room.room_type == RoomType.PIT:

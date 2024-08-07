@@ -129,7 +129,7 @@ class Room:
         Prints out the items in the room in a clean, organized format.
         """
         if not self.items:
-            print("This room is empty.")
+            print("This room has no items.")
             return
 
         print("Items in this room:")

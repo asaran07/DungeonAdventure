@@ -1,6 +1,6 @@
 from src.characters.monster import Monster
 from src.dungeon import Dungeon
-from src.enums import Direction
+from src.enums import Direction, PillarType, RoomType
 from src.items.item_factory import ItemFactory
 
 
@@ -78,5 +78,12 @@ class DungeonGenerator:
         room3.add_monster(
             Monster("Gobby King", max_hp=50, base_min_damage=15, base_max_damage=25)
         )
+
+        room12 = dungeon.get_room("Room 12")
+        room12.add_item(item_factory.create_pillar(PillarType.ABSTRACTION, "Abstraction Pillar",
+                                                   "A pillar that is a bit abstract", 1.0))
+
+        room15 = dungeon.get_room("Room 15 - Exit Chamber")
+        room15.set_room_type(RoomType.EXIT)
 
         return dungeon
