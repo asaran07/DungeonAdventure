@@ -69,4 +69,3 @@ class CompositePlayer:
     @property
     def sprite(self):
         return self.py_player
-

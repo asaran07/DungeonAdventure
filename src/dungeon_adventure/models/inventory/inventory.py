@@ -70,5 +70,3 @@ class Inventory:
             )
         inventory_str += f"Total Weight: {self.get_total_weight()}/{self._weight_limit}"
         return inventory_str
-
-

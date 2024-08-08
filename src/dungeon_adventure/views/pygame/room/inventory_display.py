@@ -11,7 +11,7 @@ class InventoryDisplay:
             10 * scale_factor,
             screen_height - self.inventory_height - (10 * scale_factor),
             screen_width - (20 * scale_factor),
-            self.inventory_height
+            self.inventory_height,
         )
         self.inventory_font = pygame.font.Font(None, 15 * scale_factor)
 
@@ -24,13 +24,17 @@ class InventoryDisplay:
         inventory_str = str(inventory)
 
         # Render inventory text
-        lines = inventory_str.split('\n')
+        lines = inventory_str.split("\n")
         for i, line in enumerate(lines):
             text_surface = self.inventory_font.render(line, True, (255, 255, 255))
             surface.blit(
                 text_surface,
-                (self.inventory_rect.x + (5 * self.scale_factor),
-                 self.inventory_rect.y + (5 * self.scale_factor) + i * (20 * self.scale_factor))
+                (
+                    self.inventory_rect.x + (5 * self.scale_factor),
+                    self.inventory_rect.y
+                    + (5 * self.scale_factor)
+                    + i * (20 * self.scale_factor),
+                ),
             )
 
     def is_point_inside(self, point: tuple) -> bool:

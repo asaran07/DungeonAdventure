@@ -4,17 +4,17 @@ from dungeon_adventure.enums.room_types import Direction
 
 
 def _generate_door_code(open_doors: List[Direction]) -> str:
-    code = ['X', 'X', 'X', 'X']
+    code = ["X", "X", "X", "X"]
     direction_mapping = {
         Direction.NORTH: 0,
         Direction.SOUTH: 1,
         Direction.EAST: 2,
-        Direction.WEST: 3
+        Direction.WEST: 3,
     }
     for door in open_doors:
         code[direction_mapping[door]] = door.name[0]
-    print(''.join(code))
-    return ''.join(code)
+    print("".join(code))
+    return "".join(code)
 
 
 class RoomImageManager:
@@ -36,4 +36,3 @@ class RoomImageManager:
 
         self.image_cache[door_code] = image_path
         return image_path
-

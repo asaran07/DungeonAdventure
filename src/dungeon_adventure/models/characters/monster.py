@@ -78,5 +78,3 @@ class Monster(DungeonCharacter):
         :return: A new Monster instance with custom attributes
         """
         return cls(**kwargs)
-
-

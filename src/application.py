@@ -24,8 +24,12 @@ class Application:
         self.window_width = self.width * self.scale_factor
         self.window_height = self.height * self.scale_factor
         self.screen = pygame.display.set_mode((self.window_width, self.window_height))
-        self.background = pygame.image.load(f"{RESOURCES_DIR}/default_background.png").convert_alpha()
-        self.background = pygame.transform.scale(self.background, (self.width, self.height))
+        self.background = pygame.image.load(
+            f"{RESOURCES_DIR}/default_background.png"
+        ).convert_alpha()
+        self.background = pygame.transform.scale(
+            self.background, (self.width, self.height)
+        )
         self.game_surface = pygame.Surface((self.width, self.height))
 
         self.debug_mode = False
@@ -39,9 +43,15 @@ class Application:
         self.current_room = self._get_starting_room()
 
         self.minimap = MiniMap(self.window_width, self.window_height)
-        self.inventory_display = InventoryDisplay(self.window_width, self.window_height, self.scale_factor)
-        self.room_items_display = RoomItemsDisplay(self.window_width, self.window_height, self.scale_factor)
-        self.controls_display = ControlsDisplay(self.window_width, self.window_height, self.scale_factor)
+        self.inventory_display = InventoryDisplay(
+            self.window_width, self.window_height, self.scale_factor
+        )
+        self.room_items_display = RoomItemsDisplay(
+            self.window_width, self.window_height, self.scale_factor
+        )
+        self.controls_display = ControlsDisplay(
+            self.window_width, self.window_height, self.scale_factor
+        )
 
         # Create player
         self.player = CompositePlayer("Player 1")
@@ -83,7 +93,9 @@ class Application:
         player_pos = self.player.rect.center
         player_height = self.player.rect.height
 
-        door_direction = self.current_room.get_door_at_position(player_pos, player_height)
+        door_direction = self.current_room.get_door_at_position(
+            player_pos, player_height
+        )
 
         if door_direction:
             print(f"Colliding with {door_direction} door")
@@ -95,7 +107,9 @@ class Application:
         if next_dungeon_room:
             next_room_name = next_dungeon_room.name
             self.current_room = self.room_dict[next_room_name]
-            self.player.current_room = next_room_name  # update the player's location as well
+            self.player.current_room = (
+                next_room_name  # update the player's location as well
+            )
             self._reposition_player(direction)
 
     def _reposition_player(self, entry_direction: Direction):
@@ -108,7 +122,7 @@ class Application:
         # Calculate the door's position relative to the room's center
         door_relative_pos = (
             door_hitbox.centerx + room_center_offset[0],
-            door_hitbox.centery + room_center_offset[1]
+            door_hitbox.centery + room_center_offset[1],
         )
 
         # Set the player's position
@@ -170,7 +184,9 @@ class Application:
         player_pos = self.player.rect.center
         debug_info.append(f"Player Position: {player_pos}")
         debug_info.append(f"Player Name: {self.player.name}")
-        debug_info.append(f"Player HP: {self.player.hero.current_hp}/{self.player.hero.max_hp}")
+        debug_info.append(
+            f"Player HP: {self.player.hero.current_hp}/{self.player.hero.max_hp}"
+        )
 
         for i, info in enumerate(debug_info):
             debug_surface = font.render(info, True, (255, 255, 255))
@@ -200,7 +216,11 @@ class Application:
             item = self.room_items_display.get_item_at_position(pos)
         else:
             # Take the first item in the room if no position is specified
-            item = self.current_room.room.items[0] if self.current_room.room.items else None
+            item = (
+                self.current_room.room.items[0]
+                if self.current_room.room.items
+                else None
+            )
 
         if item:
             try:

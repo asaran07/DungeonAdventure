@@ -12,7 +12,9 @@ class GameRoom(pygame.sprite.Sprite):
     def __init__(self, room: Room):
         super().__init__()
         self.room = room
-        self.image_manager = RoomImageManager(os.path.join(RESOURCES_DIR, "room_images"))
+        self.image_manager = RoomImageManager(
+            os.path.join(RESOURCES_DIR, "room_images")
+        )
         self._setup_room_image()
         self.visuals = RoomVisuals(self.image_path, (480, 270))
         self.image = self.visuals.image
@@ -20,11 +22,19 @@ class GameRoom(pygame.sprite.Sprite):
         self._setup_hitboxes()
 
     def _setup_room_image(self):
-        open_doors = [direction for direction, connected_room in self.room.connections.items() if connected_room]
+        open_doors = [
+            direction
+            for direction, connected_room in self.room.connections.items()
+            if connected_room
+        ]
         self.image_path = self.image_manager.get_room_image(open_doors)
 
     def _setup_hitboxes(self):
-        open_directions = [direction for direction, connected_room in self.room.connections.items() if connected_room]
+        open_directions = [
+            direction
+            for direction, connected_room in self.room.connections.items()
+            if connected_room
+        ]
         self.visuals.create_hitboxes(open_directions)
 
     # def _setup_hitboxes(self):

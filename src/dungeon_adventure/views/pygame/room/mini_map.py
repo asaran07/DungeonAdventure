@@ -18,28 +18,34 @@ class MiniMap:
         self.room_size = (70, 70)  # Size of each room on the minimap
         self.minimap_surface = pygame.Surface(self.minimap_size)
         self.minimap_rect = pygame.Rect(
-            screen_width - self.minimap_size[0] - 10,
-            10,
-            *self.minimap_size
+            screen_width - self.minimap_size[0] - 10, 10, *self.minimap_size
         )
         self.room_images: Dict[str, pygame.Surface] = {}
         # Load and scale icon images
         icon_size = (30, 30)
         self.chest_icon = pygame.transform.scale(
-            pygame.image.load(os.path.join(RESOURCES_DIR, "icons", "chest.png")).convert_alpha(),
-            icon_size
+            pygame.image.load(
+                os.path.join(RESOURCES_DIR, "icons", "chest.png")
+            ).convert_alpha(),
+            icon_size,
         )
         self.pillar_icon = pygame.transform.scale(
-            pygame.image.load(os.path.join(RESOURCES_DIR, "icons", "pillar.png")).convert_alpha(),
-            icon_size
+            pygame.image.load(
+                os.path.join(RESOURCES_DIR, "icons", "pillar.png")
+            ).convert_alpha(),
+            icon_size,
         )
         self.exit_icon = pygame.transform.scale(
-            pygame.image.load(os.path.join(RESOURCES_DIR, "icons", "banner.png")).convert_alpha(),
-            icon_size
+            pygame.image.load(
+                os.path.join(RESOURCES_DIR, "icons", "banner.png")
+            ).convert_alpha(),
+            icon_size,
         )
         self.entrance_icon = pygame.transform.scale(
-            pygame.image.load(os.path.join(RESOURCES_DIR, "icons", "banner_green.png")).convert_alpha(),
-            icon_size
+            pygame.image.load(
+                os.path.join(RESOURCES_DIR, "icons", "banner_green.png")
+            ).convert_alpha(),
+            icon_size,
         )
 
     def update(self, current_room: GameRoom, all_rooms: Dict[str, GameRoom]):
@@ -57,7 +63,9 @@ class MiniMap:
                 pos = self._get_adjacent_position(center_pos, direction)
                 self._draw_room(room, pos)
 
-    def _get_adjacent_rooms(self, current_room: GameRoom, all_rooms: Dict[str, GameRoom]) -> Dict[Direction, GameRoom]:
+    def _get_adjacent_rooms(
+        self, current_room: GameRoom, all_rooms: Dict[str, GameRoom]
+    ) -> Dict[Direction, GameRoom]:
         adjacent_rooms = {}
         for direction in Direction:
             connected_room = current_room.room.connections.get(direction)
@@ -67,7 +75,9 @@ class MiniMap:
                 adjacent_rooms[direction] = None
         return adjacent_rooms
 
-    def _get_adjacent_position(self, center_pos: Tuple[int, int], direction: Direction) -> Tuple[int, int]:
+    def _get_adjacent_position(
+        self, center_pos: Tuple[int, int], direction: Direction
+    ) -> Tuple[int, int]:
         x, y = center_pos
         if direction == Direction.NORTH:
             return (x, y - self.room_size[1])
@@ -78,16 +88,22 @@ class MiniMap:
         elif direction == Direction.EAST:
             return (x + self.room_size[0], y)
 
-    def _draw_room(self, room: GameRoom, position: Tuple[int, int], is_current: bool = False):
+    def _draw_room(
+        self, room: GameRoom, position: Tuple[int, int], is_current: bool = False
+    ):
         if room.room.name not in self.room_images:
-            self.room_images[room.room.name] = pygame.transform.scale(room.image, self.room_size)
+            self.room_images[room.room.name] = pygame.transform.scale(
+                room.image, self.room_size
+            )
 
         room_image = self.room_images[room.room.name]
         rect = room_image.get_rect(center=position)
         self.minimap_surface.blit(room_image, rect)
 
         if is_current:
-            pygame.draw.rect(self.minimap_surface, (255, 0, 0), rect, 2)  # Red outline for current room
+            pygame.draw.rect(
+                self.minimap_surface, (255, 0, 0), rect, 2
+            )  # Red outline for current room
 
         self._draw_item_icon(room, rect)
         self._draw_pillar_icon(room, rect)
@@ -96,26 +112,34 @@ class MiniMap:
 
     def _draw_item_icon(self, room: GameRoom, room_rect: pygame.Rect):
         if room.room.items:
-            icon_pos = (room_rect.right - 5 - self.chest_icon.get_width(),
-                        room_rect.bottom - 5 - self.chest_icon.get_height())
+            icon_pos = (
+                room_rect.right - 5 - self.chest_icon.get_width(),
+                room_rect.bottom - 5 - self.chest_icon.get_height(),
+            )
             self.minimap_surface.blit(self.chest_icon, icon_pos)
 
     def _draw_pillar_icon(self, room: GameRoom, room_rect: pygame.Rect):
-        if any(item.item_type == ItemType.PILLAR for item in
-               room.room.items):
-            icon_pos = (room_rect.left + 5, room_rect.bottom - 5 - self.pillar_icon.get_height())
+        if any(item.item_type == ItemType.PILLAR for item in room.room.items):
+            icon_pos = (
+                room_rect.left + 5,
+                room_rect.bottom - 5 - self.pillar_icon.get_height(),
+            )
             self.minimap_surface.blit(self.pillar_icon, icon_pos)
 
     def _draw_exit_icon(self, room: GameRoom, room_rect: pygame.Rect):
         if room.room.room_type == RoomType.EXIT:
-            icon_pos = (room_rect.right - 5 - self.exit_icon.get_width(),
-                        room_rect.bottom - 5 - self.exit_icon.get_height())
+            icon_pos = (
+                room_rect.right - 5 - self.exit_icon.get_width(),
+                room_rect.bottom - 5 - self.exit_icon.get_height(),
+            )
             self.minimap_surface.blit(self.exit_icon, icon_pos)
 
     def _draw_entrance_icon(self, room: GameRoom, room_rect: pygame.Rect):
         if room.room.room_type == RoomType.ENTRANCE:
-            icon_pos = (room_rect.right - 5 - self.entrance_icon.get_width(),
-                        room_rect.bottom - 5 - self.entrance_icon.get_height())
+            icon_pos = (
+                room_rect.right - 5 - self.entrance_icon.get_width(),
+                room_rect.bottom - 5 - self.entrance_icon.get_height(),
+            )
             self.minimap_surface.blit(self.entrance_icon, icon_pos)
 
     def draw(self, screen: pygame.Surface):
