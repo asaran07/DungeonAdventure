@@ -8,6 +8,7 @@ from dungeon_adventure.exceptions.input import InvalidInputError
 from dungeon_adventure.exceptions.player import InvalidPlayerActionError
 from dungeon_adventure.views.view import View
 from src import GameModel
+from serialization.project_state import ProjectState, load_game
 
 
 class GameController:
@@ -35,6 +36,8 @@ class GameController:
             self.handle_title_screen()
         elif current_state == GameState.PLAYER_CREATION:
             self.handle_player_creation()
+        elif current_state == GameState.LOAD:
+            self.handle_load()
         elif current_state == GameState.EXPLORING:
             self.handle_exploration()
         else:
@@ -44,16 +47,19 @@ class GameController:
         self.view.display_title_screen()
         while True:
             choice = self.view.get_user_input(
-                "Please enter your choice (1 to Start, 2 to Quit)"
+                "Please enter your choice (1 to Start, 2 to Load, 3 to Quit)"
             )
             if choice == "1":
                 self.game_model.game_state = GameState.PLAYER_CREATION
                 break
             elif choice == "2":
+                self.game_model.game_state = GameState.LOAD
+                break
+            elif choice == "3":
                 self.game_model.set_game_over(True)
                 break
             else:
-                raise InvalidInputError("Invalid choice. Please enter 1 or 2.")
+                raise InvalidInputError("Invalid choice. Please enter 1, 2, or 3.")
 
     def handle_player_creation(self):
         try:
@@ -68,6 +74,16 @@ class GameController:
         except RoomNotFoundError as e:
             self.view.display_message(f"Room Error: {e}. Resetting game...")
             self.reset_to_safe_state()
+
+    def handle_load(self):
+        try:
+            proj_state: ProjectState = load_game("save.pkl")
+            self.game_model = proj_state.get_game_model()
+            self.player_action_controller = PlayerActionController(proj_state.game_model,
+                                                                   proj_state.map_visualizer,
+                                                                   proj_state.view)
+        except FileNotFoundError as e:
+            self.view.display_message(f"File not found: {e}")
 
     def handle_exploration(self):
         # self.view.display_player_status(self.game_model)

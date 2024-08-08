@@ -74,7 +74,8 @@ class ConsoleView(View):
     def display_title_screen(self):
         print("Welcome to Dungeon Adventure!")
         print("1. Start New Game")
-        print("2. Quit")
+        print("2. Load Game")
+        print("3. Quit")
 
     def get_user_input(self, prompt: str) -> str:
         user_input = input(prompt + ": ").strip()
