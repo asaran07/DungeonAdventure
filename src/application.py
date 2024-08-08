@@ -6,6 +6,7 @@ from dungeon_adventure.enums.room_types import Direction
 from dungeon_adventure.models.dungeon.room import Room
 from dungeon_adventure.services.dungeon_generator import DungeonGenerator
 from dungeon_adventure.views.pygame.room.game_room import GameRoom
+from dungeon_adventure.views.pygame.room.inventory_display import InventoryDisplay
 from dungeon_adventure.views.pygame.room.mini_map import MiniMap
 from dungeon_adventure.views.pygame.sprites.composite_player import CompositePlayer
 from dungeon_adventure.views.pygame.sprites.py_player import PyPlayer
@@ -36,6 +37,7 @@ class Application:
         self.current_room = self._get_starting_room()
 
         self.minimap = MiniMap(self.window_width, self.window_height)
+        self.inventory_display = InventoryDisplay(self.window_width, self.window_height, self.scale_factor)
 
         # Create player
         self.player = CompositePlayer("Player 1")
@@ -134,6 +136,8 @@ class Application:
 
         self.screen.blit(scaled_surface, (0, 0))
 
+        self.inventory_display.draw(self.screen, self.player.inventory)
+
         if not self.debug_mode:
             self.minimap.draw(self.screen)
 
@@ -174,6 +178,11 @@ class Application:
                 if event.key == pygame.K_b:
                     self.debug_mode = not self.debug_mode
                     print(f"Debug mode: {'ON' if self.debug_mode else 'OFF'}")
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                # Check if the click is inside the inventory area
+                if self.inventory_display.is_point_inside(event.pos):
+                    # Handle inventory interaction
+                    pass
         return True
 
     def run(self):
