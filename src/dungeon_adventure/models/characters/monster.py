@@ -1,4 +1,5 @@
 import random
+import sqlite3
 from typing import List, Optional
 
 from dungeon_adventure.models.characters.dungeon_character import DungeonCharacter
@@ -34,6 +35,8 @@ class Monster(DungeonCharacter):
         self.max_heal: int = max_heal
         self.xp_reward: int = xp_reward
         self.loot: List[Item] = loot if loot is not None else []
+
+
 
     def attempt_heal(self) -> int:
         """
