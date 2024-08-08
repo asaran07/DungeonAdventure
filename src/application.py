@@ -83,8 +83,29 @@ class Application:
 
     def _reposition_player(self, entry_direction: Direction):
         opposite_direction = Room.opposite(entry_direction)
-        door_position = self.current_room.visuals.door_hitboxes[opposite_direction].center
-        self.player_sprite.rect.center = door_position
+        door_hitbox = self.current_room.visuals.door_hitboxes[opposite_direction]
+
+        # Get the room's center offset
+        room_center_offset = self.current_room.visuals.get_center_offset()
+
+        # Calculate the door's position relative to the room's center
+        door_relative_pos = (
+            door_hitbox.centerx + room_center_offset[0],
+            door_hitbox.centery + room_center_offset[1]
+        )
+
+        # Set the player's position
+        self.player_sprite.rect.center = door_relative_pos
+
+        # Adjust the player's position to be just inside the room
+        if opposite_direction == Direction.NORTH:
+            self.player_sprite.rect.top = door_hitbox.bottom + room_center_offset[1]
+        elif opposite_direction == Direction.SOUTH:
+            self.player_sprite.rect.bottom = door_hitbox.top + room_center_offset[1]
+        elif opposite_direction == Direction.WEST:
+            self.player_sprite.rect.left = door_hitbox.right + room_center_offset[0]
+        elif opposite_direction == Direction.EAST:
+            self.player_sprite.rect.right = door_hitbox.left + room_center_offset[0]
 
     def draw(self):
         self.game_surface.blit(self.background, (0, 0))

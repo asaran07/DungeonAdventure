@@ -104,7 +104,7 @@ class PyPlayer(pygame.sprite.Sprite):
                 (self.rect.centerx, new_y + self.rect.height - self.foot_height // 2)
             )
 
-            print(f"Can move X: {can_move_x}, Can move Y: {can_move_y}")
+            # print(f"Can move X: {can_move_x}, Can move Y: {can_move_y}")
 
             if can_move_x:
                 self.rect.x = new_x

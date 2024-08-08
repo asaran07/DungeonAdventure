@@ -19,7 +19,7 @@ class RoomVisuals:
     # Extended floor areas relative to doors
     EXTENDED_FLOOR_OFFSETS = {
         Direction.NORTH: (0, 0, 0, 16),
-        Direction.SOUTH: (0, -14, 0, 16),
+        Direction.SOUTH: (0, -16, 0, 16),
         Direction.WEST: (0, 0, 8, 0),
         Direction.EAST: (-6, 0, 8, 0),
     }
