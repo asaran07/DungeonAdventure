@@ -10,7 +10,7 @@ class RoomVisuals:
 
     # Door positions relative to room (x, y, width, height)
     DOOR_POSITIONS = {
-        Direction.NORTH: (48, 0, 30, 2),
+        Direction.NORTH: (48, 0, 30, 4),
         Direction.SOUTH: (48, 78, 30, 2),
         Direction.WEST: (9, 29, 2, 20),
         Direction.EAST: (116, 29, 2, 20),
@@ -122,10 +122,14 @@ class RoomVisuals:
 
         return False
 
-    def get_door_at_position(self, pos):
+    def get_door_at_position(self, pos, player_height):
         center_offset = self.get_center_offset()
         adjusted_pos = (pos[0] - center_offset[0], pos[1] - center_offset[1])
+
+        # Use the bottom of the player sprite for collision
+        feet_pos = (adjusted_pos[0], adjusted_pos[1] + player_height // 2)
+
         for direction, hitbox in self.door_hitboxes.items():
-            if hitbox.collidepoint(adjusted_pos):
+            if hitbox.collidepoint(feet_pos):
                 return direction
         return None

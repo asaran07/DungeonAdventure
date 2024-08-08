@@ -67,10 +67,12 @@ class Application:
         self.player_sprite_group.update(dt, self.current_room)
         self.game_rooms.update()  # Update all rooms (if needed)
 
-        # Check for room transitions
-        door_direction = self.current_room.get_door_at_position(self.player_sprite.rect.center)
+        player_pos = self.player_sprite.rect.center
+        player_height = self.player_sprite.rect.height
+        door_direction = self.current_room.get_door_at_position(player_pos, player_height)
+
         if door_direction:
-            print(f"colliding with {door_direction}")
+            print(f"Colliding with {door_direction} door")
             self._handle_room_transition(door_direction)
 
     def _handle_room_transition(self, direction: Direction):

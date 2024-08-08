@@ -41,8 +41,8 @@ class GameRoom(pygame.sprite.Sprite):
     def draw_hitboxes(self, surface):
         self.visuals.draw_hitbox_debug_outlines(surface)
 
-    def get_door_at_position(self, pos):
-        return self.visuals.get_door_at_position(pos)
+    def get_door_at_position(self, pos, player_height):
+        return self.visuals.get_door_at_position(pos, player_height)
 
     def is_within_floor(self, point):
         return self.visuals.is_within_floor(point)
