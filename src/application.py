@@ -100,9 +100,11 @@ class Application:
             print(f"Player sprite rect: {self.player_sprite.rect}")
 
         if self.debug_mode:
+            # TODO: Add more hotkeys for different types of debug info.
             current_room: GameRoom = self._get_current_room()
             current_room.draw_hitboxes(self.game_surface)
             self.player_sprite.draw_hitbox(self.game_surface)
+            self.player_sprite.draw_debug_info(self.game_surface)
             self.draw_debug_info()
 
         scaled_surface = pygame.transform.scale(
