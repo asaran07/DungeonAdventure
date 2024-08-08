@@ -2,8 +2,8 @@ import random
 import sqlite3
 from typing import List, Optional
 
-from dungeon_adventure.models.characters.dungeon_character import DungeonCharacter
-from dungeon_adventure.models.items import Item
+from src.dungeon_adventure.models.characters.dungeon_character import DungeonCharacter
+from src.dungeon_adventure.models.items import Item
 
 
 class Monster(DungeonCharacter):
@@ -35,6 +35,11 @@ class Monster(DungeonCharacter):
         self.max_heal: int = max_heal
         self.xp_reward: int = xp_reward
         self.loot: List[Item] = loot if loot is not None else []
+
+    def monster_type(self, name: str):
+        data = self.get_SQL_monster_info(name)
+        for item in data:
+            print(item)
 
     def attempt_heal(self) -> int:
         """
@@ -78,5 +83,26 @@ class Monster(DungeonCharacter):
         :return: A new Monster instance with custom attributes
         """
         return cls(**kwargs)
+
+    def get_SQL_monster_info(self, name: str) -> List[any]:
+        try:
+            sqliteConnection = sqlite3.connect("monster_factory_new.db")
+            cursor = sqliteConnection.cursor()
+            print("Connected to SQLite")
+
+            sqlite_select_query = """select * from monster_factory_new where name = ?"""
+            cursor.execute(sqlite_select_query, (name,))
+            records = cursor.fetchall()
+            cursor.close()
+
+        except sqlite3.Error as error:
+            print("Failed to read data from sqlite", error)
+        finally:
+            if sqliteConnection:
+                sqliteConnection.close()
+                print("SQLite connection is closed")
+
+        return records
+
 
 
