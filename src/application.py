@@ -64,12 +64,13 @@ class Application:
     def update(self):
         dt = self.clock.tick(60)
         current_room: GameRoom = next(iter(self.rooms.sprites()))
-        self.player_sprite.update(dt, current_room.walkable_floor_hitbox)
+        self.player_sprite.update(dt, current_room)
 
         # Check for room transitions
-        # door_direction = current_room.get_door_at_position(self.player_sprite.rect.center)
-        # if door_direction:
-        #     self._handle_room_transition(door_direction)
+        door_direction = current_room.get_door_at_position(self.player_sprite.rect.center)
+        if door_direction:
+            print(f"colliding with {door_direction}")
+            # self._handle_room_transition(door_direction)
 
     def _get_current_room(self):
         # This method should return the room the player is currently in
@@ -99,7 +100,7 @@ class Application:
             print(f"Player sprite rect: {self.player_sprite.rect}")
 
         if self.debug_mode:
-            current_room = self._get_current_room()
+            current_room: GameRoom = self._get_current_room()
             current_room.draw_hitboxes(self.game_surface)
             self.player_sprite.draw_hitbox(self.game_surface)
             self.draw_debug_info()
@@ -113,9 +114,6 @@ class Application:
         font = pygame.font.Font(None, 20)
         debug_surface = font.render("Debug Mode ON", True, (255, 255, 255))
         self.game_surface.blit(debug_surface, (10, 10))
-        print(f"Room position: {self._get_starting_room().rect}")
-        print(f"Floor rect: {self._get_starting_room().walkable_floor_hitbox}")
-        print(f"Player position: {self.player_sprite.rect}")
 
     def handle_events(self):
         for event in pygame.event.get():

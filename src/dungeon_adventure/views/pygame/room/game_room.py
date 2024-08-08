@@ -21,23 +21,17 @@ class GameRoom(pygame.sprite.Sprite):
         ]
         self.visuals.create_hitboxes(open_directions)
 
-    @property
-    def walkable_floor_hitbox(self):
-        return self.visuals.walkable_floor_hitbox
-
     def draw(self, surface):
         surface.blit(self.image, self.rect)
 
     def draw_hitboxes(self, surface):
         self.visuals.draw_hitbox_debug_outlines(surface)
 
-    def is_within_floor(self, point):
-        relative_point = (point[0] - self.rect.x, point[1] - self.rect.y)
-        return self.visuals.is_within_floor(relative_point)
-
     def get_door_at_position(self, pos):
-        relative_pos = (pos[0] - self.rect.x, pos[1] - self.rect.y)
-        return self.visuals.get_door_at_position(relative_pos)
+        self.visuals.get_door_at_position(pos)
+
+    def is_within_floor(self, point):
+        return self.visuals.is_within_floor(point)
 
     def update(self):
         # This method can be used for any game logic updates specific to this room

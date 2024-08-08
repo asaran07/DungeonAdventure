@@ -2,6 +2,7 @@ import pygame
 import os
 from dungeon_adventure.config import RESOURCES_DIR
 from dungeon_adventure.views.pygame.animation.animation_manager import AnimationManager
+from dungeon_adventure.views.pygame.room.game_room import GameRoom
 
 
 class PyPlayer(pygame.sprite.Sprite):
@@ -33,7 +34,7 @@ class PyPlayer(pygame.sprite.Sprite):
         self.animation_manager.add_animation("walk_right", walk_paths, 1000 // 12)
         self.animation_manager.add_animation("walk_left", walk_paths, 1000 // 12)
 
-    def update(self, dt, floor_rect):
+    def update(self, dt, current_room: GameRoom):
         keys = pygame.key.get_pressed()
         dx = (keys[pygame.K_RIGHT] or keys[pygame.K_d]) - (
             keys[pygame.K_LEFT] or keys[pygame.K_a]
@@ -57,7 +58,7 @@ class PyPlayer(pygame.sprite.Sprite):
                 "idle_right" if self.facing_right else "idle_left"
             )
 
-        self.move(dx * self.speed, dy * self.speed, floor_rect)
+        self.move(dx * self.speed, dy * self.speed, current_room)
         self.animation_manager.update(dt)
 
         self.image = self.animation_manager.get_current_frame()
@@ -75,40 +76,51 @@ class PyPlayer(pygame.sprite.Sprite):
             new_rect = self.image.get_rect()
             self.rect.size = new_rect.size
 
-    def move(self, dx, dy, floor_rect):
+    def move(self, dx, dy, current_room: GameRoom):
         if self.rect is None:
             self.rect = self.image.get_rect()
 
         new_x = self.rect.x + dx
         new_y = self.rect.y + dy
 
-        temp_rect = self.rect.copy()
-        temp_rect.x = new_x
-        temp_rect.y = new_y
+        # Check if the new position is within the floor area
+        feet_position = (
+            new_x + self.rect.width // 2,
+            new_y + self.rect.height - self.foot_height // 2,
+        )
+        can_move = current_room.is_within_floor(feet_position)
 
-        if temp_rect.left < floor_rect.left:
-            new_x = floor_rect.left
-        elif temp_rect.right > floor_rect.right:
-            new_x = floor_rect.right - self.rect.width
+        # print(f"Attempting to move to {feet_position}. Can move: {can_move}")
 
-        if temp_rect.bottom > floor_rect.bottom:
-            new_y = floor_rect.bottom - self.rect.height
-        elif temp_rect.bottom - self.foot_height < floor_rect.top:
-            new_y = floor_rect.top - self.rect.height + self.foot_height
+        if can_move:
+            self.rect.x = new_x
+            self.rect.y = new_y
+        else:
+            # If not, try to move in x and y directions separately
+            can_move_x = current_room.is_within_floor(
+                (new_x + self.rect.width // 2, self.rect.centery)
+            )
+            can_move_y = current_room.is_within_floor(
+                (self.rect.centerx, new_y + self.rect.height - self.foot_height // 2)
+            )
 
-        self.rect.x = new_x
-        self.rect.y = new_y
+            print(f"Can move X: {can_move_x}, Can move Y: {can_move_y}")
+
+            if can_move_x:
+                self.rect.x = new_x
+            if can_move_y:
+                self.rect.y = new_y
 
     def draw_hitbox(self, surface):
         if self.rect is not None:
-            pygame.draw.rect(surface, (255, 0, 0), self.rect, 2)
+            pygame.draw.rect(surface, (255, 0, 0), self.rect, 1)
             feet_y = self.rect.bottom - self.foot_height
             pygame.draw.line(
                 surface,
                 (0, 255, 0),
                 (self.rect.left, feet_y),
                 (self.rect.right, feet_y),
-                2,
+                1,
             )
 
     def draw_debug_info(self, surface: pygame.Surface) -> None:

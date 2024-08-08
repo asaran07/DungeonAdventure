@@ -35,7 +35,8 @@ class RoomVisuals:
         self.extended_floor_areas = {}
 
         # Debug colors
-        self.floor_color = (128, 0, 128)  # Purple
+        self.extended_color = (128, 0, 128)  # Purple
+        self.floor_color = (0, 255, 0)  # Green
         self.door_color = (255, 250, 0)  # Yellow
         self.extended_floor_color = (0, 0, 255)  # Blue
 
@@ -82,7 +83,10 @@ class RoomVisuals:
         center_offset = self.get_center_offset()
 
         # Draw main floor
-        pygame.draw.rect(surface, self.floor_color, self.walkable_floor_hitbox, 2)
+        pygame.draw.rect(surface, self.floor_color, self.walkable_floor_hitbox, 1)
+
+        # Draw extended floor
+        # pygame.draw.rect(surface, self.extended_color, self.get_full_floor_area(), 1)
 
         # Draw doors and extended floor areas
         for hitbox in self.door_hitboxes.values():
@@ -90,22 +94,38 @@ class RoomVisuals:
 
         for extended_area in self.extended_floor_areas.values():
             pygame.draw.rect(
-                surface, self.extended_floor_color, extended_area.move(center_offset), 2
+                surface, self.extended_floor_color, extended_area.move(center_offset), 1
             )
 
-    def get_full_floor_rect(self):
-        full_rect = self.walkable_floor_hitbox.copy()
+    def get_full_floor_area(self):
+        """Returns a list of rectangles representing the full floor area."""
         center_offset = self.get_center_offset()
+        areas = [self._walkable_floor_hitbox.move(center_offset)]
         for extended_area in self.extended_floor_areas.values():
-            full_rect.union_ip(extended_area.move(center_offset))
-        return full_rect
+            areas.append(extended_area.move(center_offset))
+        return areas
 
     def is_within_floor(self, point):
-        return self.get_full_floor_rect().collidepoint(point)
+        """Check if a point is within any part of the floor area."""
+        # Adjust the point based on the room's position on the screen
+        center_offset = self.get_center_offset()
+        adjusted_point = (point[0] - center_offset[0], point[1] - center_offset[1])
+
+        # Check main floor area
+        if self._walkable_floor_hitbox.collidepoint(adjusted_point):
+            return True
+
+        # Check extended floor areas
+        for extended_area in self.extended_floor_areas.values():
+            if extended_area.collidepoint(adjusted_point):
+                return True
+
+        return False
 
     def get_door_at_position(self, pos):
         center_offset = self.get_center_offset()
+        adjusted_pos = (pos[0] - center_offset[0], pos[1] - center_offset[1])
         for direction, hitbox in self.door_hitboxes.items():
-            if hitbox.move(center_offset).collidepoint(pos):
+            if hitbox.collidepoint(adjusted_pos):
                 return direction
         return None
