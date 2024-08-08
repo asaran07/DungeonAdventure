@@ -6,6 +6,7 @@ from dungeon_adventure.enums.room_types import Direction
 from dungeon_adventure.models.dungeon.room import Room
 from dungeon_adventure.services.dungeon_generator import DungeonGenerator
 from dungeon_adventure.views.pygame.room.game_room import GameRoom
+from dungeon_adventure.views.pygame.room.mini_map import MiniMap
 from dungeon_adventure.views.pygame.sprites.py_player import PyPlayer
 
 
@@ -32,6 +33,8 @@ class Application:
         self.game_rooms = pygame.sprite.Group()
         self.room_dict: Dict[str, GameRoom] = self._create_game_rooms()
         self.current_room = self._get_starting_room()
+
+        self.minimap = MiniMap(self.window_width, self.window_height)
 
         # Create player
         self.player_sprite_group = pygame.sprite.GroupSingle()
@@ -66,6 +69,8 @@ class Application:
 
         self.player_sprite_group.update(dt, self.current_room)
         self.game_rooms.update()  # Update all rooms (if needed)
+
+        self.minimap.update(self.current_room, self.room_dict)
 
         player_pos = self.player_sprite.rect.center
         player_height = self.player_sprite.rect.height
@@ -123,7 +128,12 @@ class Application:
         scaled_surface = pygame.transform.scale(
             self.game_surface, (self.window_width, self.window_height)
         )
+
         self.screen.blit(scaled_surface, (0, 0))
+
+        if not self.debug_mode:
+            self.minimap.draw(self.screen)
+
 
     def draw_debug_info(self):
         font = pygame.font.Font(None, 15)
