@@ -7,6 +7,7 @@ from dungeon_adventure.models.dungeon.room import Room
 from dungeon_adventure.services.dungeon_generator import DungeonGenerator
 from dungeon_adventure.views.pygame.room.game_room import GameRoom
 from dungeon_adventure.views.pygame.room.mini_map import MiniMap
+from dungeon_adventure.views.pygame.sprites.composite_player import CompositePlayer
 from dungeon_adventure.views.pygame.sprites.py_player import PyPlayer
 
 
@@ -37,12 +38,12 @@ class Application:
         self.minimap = MiniMap(self.window_width, self.window_height)
 
         # Create player
-        self.player_sprite_group = pygame.sprite.GroupSingle()
-        self.player_sprite = PyPlayer()
-        self.player_sprite.rect.center = self.current_room.rect.center
+        self.player = CompositePlayer("Player 1")
+        self.player.py_player.rect.center = self.current_room.rect.center
+        self.player_sprite_group = pygame.sprite.GroupSingle(self.player.sprite)
         # if self.player_sprite.rect is None:
         #     self.player_sprite.rect = self.player_sprite.image.get_rect()
-        self.player_sprite_group.add(self.player_sprite)
+        self.player_sprite_group.add(self.player.py_player)
 
         self.scaled_surface = pygame.Surface((self.window_width, self.window_height))
 
@@ -67,13 +68,14 @@ class Application:
             self.fps = self.clock.get_fps()
             self.fps_update_time = current_time
 
-        self.player_sprite_group.update(dt, self.current_room)
+        self.player.update(dt, self.current_room)
         self.game_rooms.update()  # Update all rooms (if needed)
 
         self.minimap.update(self.current_room, self.room_dict)
 
-        player_pos = self.player_sprite.rect.center
-        player_height = self.player_sprite.rect.height
+        player_pos = self.player.rect.center
+        player_height = self.player.rect.height
+
         door_direction = self.current_room.get_door_at_position(player_pos, player_height)
 
         if door_direction:
@@ -86,6 +88,7 @@ class Application:
         if next_dungeon_room:
             next_room_name = next_dungeon_room.name
             self.current_room = self.room_dict[next_room_name]
+            self.player.current_room = next_room_name  # update the player's location as well
             self._reposition_player(direction)
 
     def _reposition_player(self, entry_direction: Direction):
@@ -102,17 +105,17 @@ class Application:
         )
 
         # Set the player's position
-        self.player_sprite.rect.center = door_relative_pos
+        self.player.rect.center = door_relative_pos
 
         # Adjust the player's position to be just inside the room
         if opposite_direction == Direction.NORTH:
-            self.player_sprite.rect.top = door_hitbox.bottom + room_center_offset[1]
+            self.player.rect.top = door_hitbox.bottom + room_center_offset[1]
         elif opposite_direction == Direction.SOUTH:
-            self.player_sprite.rect.bottom = door_hitbox.top + room_center_offset[1]
+            self.player.rect.bottom = door_hitbox.top + room_center_offset[1]
         elif opposite_direction == Direction.WEST:
-            self.player_sprite.rect.left = door_hitbox.right + room_center_offset[0]
+            self.player.rect.left = door_hitbox.right + room_center_offset[0]
         elif opposite_direction == Direction.EAST:
-            self.player_sprite.rect.right = door_hitbox.left + room_center_offset[0]
+            self.player.rect.right = door_hitbox.left + room_center_offset[0]
 
     def draw(self):
         self.game_surface.blit(self.background, (0, 0))
@@ -121,8 +124,8 @@ class Application:
 
         if self.debug_mode:
             self.current_room.draw_hitboxes(self.game_surface)
-            self.player_sprite.draw_hitbox(self.game_surface)
-            self.player_sprite.draw_debug_info(self.game_surface)
+            self.player.draw_hitbox(self.game_surface)
+            self.player.draw_debug_info(self.game_surface)
             self.draw_debug_info()
 
         scaled_surface = pygame.transform.scale(
@@ -133,7 +136,6 @@ class Application:
 
         if not self.debug_mode:
             self.minimap.draw(self.screen)
-
 
     def draw_debug_info(self):
         font = pygame.font.Font(None, 15)
@@ -155,8 +157,10 @@ class Application:
                 debug_info.append(f"  {direction.name}: {connected_room.name}")
 
         # Add player position
-        player_pos = self.player_sprite.rect.center
+        player_pos = self.player.rect.center
         debug_info.append(f"Player Position: {player_pos}")
+        debug_info.append(f"Player Name: {self.player.name}")
+        debug_info.append(f"Player HP: {self.player.hero.current_hp}/{self.player.hero.max_hp}")
 
         for i, info in enumerate(debug_info):
             debug_surface = font.render(info, True, (255, 255, 255))
