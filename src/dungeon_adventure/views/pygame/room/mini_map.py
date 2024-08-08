@@ -1,8 +1,12 @@
+import os
 from typing import Dict, Tuple
 
 import pygame
 
-from dungeon_adventure.enums.room_types import Direction
+from dungeon_adventure.config import RESOURCES_DIR
+from dungeon_adventure.enums.item_types import ItemType
+from dungeon_adventure.enums.room_types import Direction, RoomType
+from dungeon_adventure.models.dungeon.room import Room
 from dungeon_adventure.views.pygame.room.game_room import GameRoom
 
 
@@ -11,7 +15,7 @@ class MiniMap:
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.minimap_size = (250, 250)  # Adjust as needed
-        self.room_size = (60, 60)  # Size of each room on the minimap
+        self.room_size = (70, 70)  # Size of each room on the minimap
         self.minimap_surface = pygame.Surface(self.minimap_size)
         self.minimap_rect = pygame.Rect(
             screen_width - self.minimap_size[0] - 10,
@@ -19,6 +23,24 @@ class MiniMap:
             *self.minimap_size
         )
         self.room_images: Dict[str, pygame.Surface] = {}
+        # Load and scale icon images
+        icon_size = (30, 30)
+        self.chest_icon = pygame.transform.scale(
+            pygame.image.load(os.path.join(RESOURCES_DIR, "icons", "chest.png")).convert_alpha(),
+            icon_size
+        )
+        self.pillar_icon = pygame.transform.scale(
+            pygame.image.load(os.path.join(RESOURCES_DIR, "icons", "pillar.png")).convert_alpha(),
+            icon_size
+        )
+        self.exit_icon = pygame.transform.scale(
+            pygame.image.load(os.path.join(RESOURCES_DIR, "icons", "banner.png")).convert_alpha(),
+            icon_size
+        )
+        self.entrance_icon = pygame.transform.scale(
+            pygame.image.load(os.path.join(RESOURCES_DIR, "icons", "banner_green.png")).convert_alpha(),
+            icon_size
+        )
 
     def update(self, current_room: GameRoom, all_rooms: Dict[str, GameRoom]):
         self.minimap_surface.fill((50, 50, 50))  # Dark gray background
@@ -66,6 +88,35 @@ class MiniMap:
 
         if is_current:
             pygame.draw.rect(self.minimap_surface, (255, 0, 0), rect, 2)  # Red outline for current room
+
+        self._draw_item_icon(room, rect)
+        self._draw_pillar_icon(room, rect)
+        self._draw_exit_icon(room, rect)
+        self._draw_entrance_icon(room, rect)
+
+    def _draw_item_icon(self, room: GameRoom, room_rect: pygame.Rect):
+        if room.room.items:
+            icon_pos = (room_rect.right - 5 - self.chest_icon.get_width(),
+                        room_rect.bottom - 5 - self.chest_icon.get_height())
+            self.minimap_surface.blit(self.chest_icon, icon_pos)
+
+    def _draw_pillar_icon(self, room: GameRoom, room_rect: pygame.Rect):
+        if any(item.item_type == ItemType.PILLAR for item in
+               room.room.items):
+            icon_pos = (room_rect.left + 5, room_rect.bottom - 5 - self.pillar_icon.get_height())
+            self.minimap_surface.blit(self.pillar_icon, icon_pos)
+
+    def _draw_exit_icon(self, room: GameRoom, room_rect: pygame.Rect):
+        if room.room.room_type == RoomType.EXIT:
+            icon_pos = (room_rect.right - 5 - self.exit_icon.get_width(),
+                        room_rect.bottom - 5 - self.exit_icon.get_height())
+            self.minimap_surface.blit(self.exit_icon, icon_pos)
+
+    def _draw_entrance_icon(self, room: GameRoom, room_rect: pygame.Rect):
+        if room.room.room_type == RoomType.ENTRANCE:
+            icon_pos = (room_rect.right - 5 - self.entrance_icon.get_width(),
+                        room_rect.bottom - 5 - self.entrance_icon.get_height())
+            self.minimap_surface.blit(self.entrance_icon, icon_pos)
 
     def draw(self, screen: pygame.Surface):
         screen.blit(self.minimap_surface, self.minimap_rect)

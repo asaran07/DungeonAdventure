@@ -144,6 +144,7 @@ class Application:
             f"Debug Mode: ON",
             f"FPS: {self.fps:.2f}",
             f"Current Room: {self.current_room.room.name}",
+            f"Room Type: {self.current_room.room.room_type}",
             f"Room Image: {self.current_room.image_path.split('/')[-1]}",
             "Open Doors:",
         ]
