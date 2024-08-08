@@ -1,6 +1,6 @@
 import pygame
 
-from dungeon_adventure.models.inventory.inventory import Inventory
+from src.dungeon_adventure.models.inventory.inventory import Inventory
 
 
 class InventoryDisplay:

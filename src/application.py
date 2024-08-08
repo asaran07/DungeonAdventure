@@ -11,6 +11,7 @@ from dungeon_adventure.views.pygame.room.mini_map import MiniMap
 from dungeon_adventure.views.pygame.room.room_items_display import RoomItemsDisplay
 from dungeon_adventure.views.pygame.sprites.composite_player import CompositePlayer
 from dungeon_adventure.views.pygame.sprites.py_player import PyPlayer
+from src.dungeon_adventure.views.pygame.room.controls_display import ControlsDisplay
 
 
 class Application:
@@ -40,6 +41,7 @@ class Application:
         self.minimap = MiniMap(self.window_width, self.window_height)
         self.inventory_display = InventoryDisplay(self.window_width, self.window_height, self.scale_factor)
         self.room_items_display = RoomItemsDisplay(self.window_width, self.window_height, self.scale_factor)
+        self.controls_display = ControlsDisplay(self.window_width, self.window_height, self.scale_factor)
 
         # Create player
         self.player = CompositePlayer("Player 1")
@@ -143,6 +145,7 @@ class Application:
             self.minimap.draw(self.screen)
             self.inventory_display.draw(self.screen, self.player.inventory)
             self.room_items_display.draw(self.screen)
+            self.controls_display.draw(self.screen)
 
     def draw_debug_info(self):
         font = pygame.font.Font(None, 15)

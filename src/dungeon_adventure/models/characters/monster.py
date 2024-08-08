@@ -36,8 +36,6 @@ class Monster(DungeonCharacter):
         self.xp_reward: int = xp_reward
         self.loot: List[Item] = loot if loot is not None else []
 
-
-
     def attempt_heal(self) -> int:
         """
         Attempt to heal based on heal chance.
@@ -80,3 +78,5 @@ class Monster(DungeonCharacter):
         :return: A new Monster instance with custom attributes
         """
         return cls(**kwargs)
+
+
