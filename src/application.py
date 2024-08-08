@@ -8,6 +8,7 @@ from dungeon_adventure.services.dungeon_generator import DungeonGenerator
 from dungeon_adventure.views.pygame.room.game_room import GameRoom
 from dungeon_adventure.views.pygame.room.inventory_display import InventoryDisplay
 from dungeon_adventure.views.pygame.room.mini_map import MiniMap
+from dungeon_adventure.views.pygame.room.room_items_display import RoomItemsDisplay
 from dungeon_adventure.views.pygame.sprites.composite_player import CompositePlayer
 from dungeon_adventure.views.pygame.sprites.py_player import PyPlayer
 
@@ -38,6 +39,7 @@ class Application:
 
         self.minimap = MiniMap(self.window_width, self.window_height)
         self.inventory_display = InventoryDisplay(self.window_width, self.window_height, self.scale_factor)
+        self.room_items_display = RoomItemsDisplay(self.window_width, self.window_height, self.scale_factor)
 
         # Create player
         self.player = CompositePlayer("Player 1")
@@ -74,6 +76,7 @@ class Application:
         self.game_rooms.update()  # Update all rooms (if needed)
 
         self.minimap.update(self.current_room, self.room_dict)
+        self.room_items_display.update(self.current_room.room)
 
         player_pos = self.player.rect.center
         player_height = self.player.rect.height
@@ -136,10 +139,10 @@ class Application:
 
         self.screen.blit(scaled_surface, (0, 0))
 
-        self.inventory_display.draw(self.screen, self.player.inventory)
-
         if not self.debug_mode:
             self.minimap.draw(self.screen)
+            self.inventory_display.draw(self.screen, self.player.inventory)
+            self.room_items_display.draw(self.screen)
 
     def draw_debug_info(self):
         font = pygame.font.Font(None, 15)
@@ -178,12 +181,40 @@ class Application:
                 if event.key == pygame.K_b:
                     self.debug_mode = not self.debug_mode
                     print(f"Debug mode: {'ON' if self.debug_mode else 'OFF'}")
+                elif event.key == pygame.K_t:  # 'T' for Take
+                    self.handle_take_item()
+                elif event.key == pygame.K_x:  # 'D' for Drop
+                    self.handle_drop_item()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 # Check if the click is inside the inventory area
                 if self.inventory_display.is_point_inside(event.pos):
                     # Handle inventory interaction
                     pass
         return True
+
+    def handle_take_item(self, pos=None):
+        if pos:
+            item = self.room_items_display.get_item_at_position(pos)
+        else:
+            # Take the first item in the room if no position is specified
+            item = self.current_room.room.items[0] if self.current_room.room.items else None
+
+        if item:
+            try:
+                self.player.inventory.add_item(item)
+                self.current_room.room.remove_item(item)
+                print(f"Took {item.name}")
+            except Exception as e:
+                print(f"Couldn't take {item.name}: {str(e)}")
+
+    def handle_drop_item(self):
+        # For simplicity, drop the last item in the inventory
+        if self.player.inventory._items:
+            item_id, (item, quantity) = self.player.inventory._items.popitem()
+            self.current_room.room.add_item(item)
+            print(f"Dropped {item.name}")
+        else:
+            print("No items to drop")
 
     def run(self):
         running = True

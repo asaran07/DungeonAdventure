@@ -36,7 +36,7 @@ class InventoryDisplay:
     def is_point_inside(self, point: tuple) -> bool:
         return self.inventory_rect.collidepoint(point)
 
-    # We can add more methods here for interactivity, like:
+    # We can add more methods here for interactivity like
     # def handle_click(self, point: tuple, inventory: Inventory):
     #     # Handle clicking on inventory items
     #     pass
