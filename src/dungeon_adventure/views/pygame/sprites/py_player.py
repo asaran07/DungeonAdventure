@@ -11,7 +11,7 @@ class PyPlayer(pygame.sprite.Sprite):
         self.animation_manager = AnimationManager()
         self.load_animations()
         self.animation_manager.play("idle_right")
-        self.image = self.animation_manager.get_current_frame()
+        self.image = self.animation_manager.get_current_frame().convert_alpha()
         if self.image is None:
             raise ValueError("Player image is None. Check animation loading.")
         self.rect = self.image.get_rect()

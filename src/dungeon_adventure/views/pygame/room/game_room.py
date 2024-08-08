@@ -9,12 +9,12 @@ from dungeon_adventure.views.pygame.room.room_visuals import RoomVisuals
 
 
 class GameRoom(pygame.sprite.Sprite):
-    def __init__(self, room: Room, image_path: str):
+    def __init__(self, room: Room):
         super().__init__()
         self.room = room
         self.image_manager = RoomImageManager(os.path.join(RESOURCES_DIR, "room_images"))
         self._setup_room_image()
-        self.visuals = RoomVisuals(image_path, (480, 270))
+        self.visuals = RoomVisuals(self.image_path, (480, 270))
         self.image = self.visuals.image
         self.rect = self.image.get_rect()
         self._setup_hitboxes()
