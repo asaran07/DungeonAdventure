@@ -1,6 +1,7 @@
 import pygame
 from dungeon_adventure.enums.room_types import Direction
 
+
 class RoomVisuals:
     # Constants
     DEFAULT_ROOM_DIMENSIONS = (128, 80)
@@ -12,7 +13,7 @@ class RoomVisuals:
         Direction.NORTH: (48, 0, 30, 2),
         Direction.SOUTH: (48, 78, 30, 2),
         Direction.WEST: (9, 29, 2, 20),
-        Direction.EAST: (116, 29, 2, 20)
+        Direction.EAST: (116, 29, 2, 20),
     }
 
     # Extended floor areas relative to doors
@@ -20,7 +21,7 @@ class RoomVisuals:
         Direction.NORTH: (0, 0, 0, 16),
         Direction.SOUTH: (0, -14, 0, 16),
         Direction.WEST: (0, 0, 8, 0),
-        Direction.EAST: (-6, 0, 8, 0)
+        Direction.EAST: (-6, 0, 8, 0),
     }
 
     def __init__(self, image_path: str, screen_size: tuple):
@@ -28,8 +29,7 @@ class RoomVisuals:
         self.screen_size = screen_size
         self.rect = self.image.get_rect()
         self._walkable_floor_hitbox = pygame.Rect(
-            *self.FLOOR_RECT_POSITION,
-            *self.DEFAULT_FLOOR_DIMENSIONS
+            *self.FLOOR_RECT_POSITION, *self.DEFAULT_FLOOR_DIMENSIONS
         )
         self.door_hitboxes = {}
         self.extended_floor_areas = {}
@@ -46,7 +46,7 @@ class RoomVisuals:
     def get_center_offset(self):
         x = (self.screen_size[0] - self.DEFAULT_ROOM_DIMENSIONS[0]) // 2
         y = (self.screen_size[1] - self.DEFAULT_ROOM_DIMENSIONS[1]) // 2
-        return (x, y)
+        return x, y
 
     def create_hitboxes(self, open_directions):
         self.door_hitboxes.clear()
@@ -55,25 +55,30 @@ class RoomVisuals:
         # For each direction in open_directions we create a hitbox and extend the floor area.
         for direction in open_directions:
             self._create_door_hitbox(direction)
-            self._extend_floor_area(direction)
+            self._create_extended_floor_area(direction)
 
-    def _create_door_hitbox(self, direction: Direction):
-        # Creates a pygame rectangle of a specific size and position according to self.DOOR_POSITIONS
+    def _create_door_hitbox(self, direction: Direction) -> None:
+        # Creates a pygame rectangle (door hitbox) of a specific size and position according to self.DOOR_POSITIONS
         # and sets the specified direction in self.door_hitboxes to the newly created hitbox.
         self.door_hitboxes[direction] = pygame.Rect(self.DOOR_POSITIONS[direction])
 
-    def _extend_floor_area(self, direction):
-        door_rect = self.door_hitboxes[direction]
+    def _create_extended_floor_area(self, direction: Direction) -> None:
+        # Get the door_hitbox of a specified direction
+        door_hitbox = self.door_hitboxes[direction]
+        # Since the extended area will be right next to the door hitboxes, we can add a certain offset to the
+        # door hitboxes to create our extended walkable area.
         offset = self.EXTENDED_FLOOR_OFFSETS[direction]
         extended_rect = pygame.Rect(
-            door_rect.x + offset[0],
-            door_rect.y + offset[1],
-            door_rect.width + offset[2],
-            door_rect.height + offset[3]
+            # Add the offset to each element of the door hitbox to create our extended door hitbox element
+            door_hitbox.x + offset[0],
+            door_hitbox.y + offset[1],
+            door_hitbox.width + offset[2],
+            door_hitbox.height + offset[3],
         )
+        # Then save that inside extended floor areas
         self.extended_floor_areas[direction] = extended_rect
 
-    def draw_hitboxes(self, surface):
+    def draw_hitbox_debug_outlines(self, surface):
         center_offset = self.get_center_offset()
 
         # Draw main floor
@@ -84,7 +89,9 @@ class RoomVisuals:
             pygame.draw.rect(surface, self.door_color, hitbox.move(center_offset))
 
         for extended_area in self.extended_floor_areas.values():
-            pygame.draw.rect(surface, self.extended_floor_color, extended_area.move(center_offset), 2)
+            pygame.draw.rect(
+                surface, self.extended_floor_color, extended_area.move(center_offset), 2
+            )
 
     def get_full_floor_rect(self):
         full_rect = self.walkable_floor_hitbox.copy()

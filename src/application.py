@@ -4,13 +4,10 @@ import pygame
 
 from dungeon_adventure.config import RESOURCES_DIR
 from dungeon_adventure.enums.room_types import Direction
-from dungeon_adventure.game_model import GameModelError
 from dungeon_adventure.models.dungeon.room import Room
-from dungeon_adventure.models.player import Player
-from dungeon_adventure.services.dungeon_generator import DungeonGenerator
 from dungeon_adventure.views.pygame.room.game_room import GameRoom
 from dungeon_adventure.views.pygame.sprites.py_player import PyPlayer
-from src import GameModel
+
 
 class Application:
     def __init__(self, width=480, height=270):
@@ -39,7 +36,7 @@ class Application:
         test_room.connect(Direction.NORTH, test_room2)
         test_room.connect(Direction.EAST, test_room3)
         test_room.connect(Direction.WEST, test_room4)
-        room1 = GameRoom(test_room, os.path.join(RESOURCES_DIR, 'basic_room.png'))
+        room1 = GameRoom(test_room, os.path.join(RESOURCES_DIR, "basic_room.png"))
         room1.rect.center = (self.width // 2, self.height // 2)
         self.rooms.add(room1)
 
@@ -47,6 +44,8 @@ class Application:
         self.player = pygame.sprite.GroupSingle()
         self.player_sprite = PyPlayer()
         self.player_sprite.rect.center = room1.rect.center
+        if self.player_sprite.rect is None:
+            self.player_sprite.rect = self.player_sprite.image.get_rect()
         self.player.add(self.player_sprite)
 
         self.clock = pygame.time.Clock()
@@ -64,8 +63,8 @@ class Application:
 
     def update(self):
         dt = self.clock.tick(60)
-        current_room = next(iter(self.rooms.sprites()))
-        self.player_sprite.update(dt, current_room.floor_rect)
+        current_room: GameRoom = next(iter(self.rooms.sprites()))
+        self.player_sprite.update(dt, current_room.walkable_floor_hitbox)
 
         # Check for room transitions
         # door_direction = current_room.get_door_at_position(self.player_sprite.rect.center)
@@ -86,19 +85,23 @@ class Application:
         self.game_surface.blit(self.background, (0, 0))
         for room in self.rooms:
             room.draw(self.game_surface)
-        self.player.draw(self.game_surface)
+
+        try:
+            if self.player_sprite.image is None:
+                raise ValueError("Player sprite image is None")
+            if self.player_sprite.rect is None:
+                raise ValueError("Player sprite rect is None")
+
+            self.player.draw(self.game_surface)
+        except Exception as e:
+            print(f"Error drawing player: {e}")
+            print(f"Player sprite image: {self.player_sprite.image}")
+            print(f"Player sprite rect: {self.player_sprite.rect}")
 
         if self.debug_mode:
-            # current_room = self._get_current_room()
-            # current_room.draw_hitboxes(self.game_surface)
-            # self.player_sprite.draw_hitbox(self.game_surface)
-            # self.draw_debug_info()
-            current_room = next(iter(self.rooms.sprites()))
-            # current_room.draw_floor_rect(self.game_surface)
+            current_room = self._get_current_room()
+            current_room.draw_hitboxes(self.game_surface)
             self.player_sprite.draw_hitbox(self.game_surface)
-            self.player_sprite.draw_debug_info(self.game_surface)
-            for room in self.rooms:
-                room.draw_hitboxes(self.game_surface)
             self.draw_debug_info()
 
         scaled_surface = pygame.transform.scale(
@@ -111,7 +114,7 @@ class Application:
         debug_surface = font.render("Debug Mode ON", True, (255, 255, 255))
         self.game_surface.blit(debug_surface, (10, 10))
         print(f"Room position: {self._get_starting_room().rect}")
-        print(f"Floor rect: {self._get_starting_room().floor_rect}")
+        print(f"Floor rect: {self._get_starting_room().walkable_floor_hitbox}")
         print(f"Player position: {self.player_sprite.rect}")
 
     def handle_events(self):
@@ -135,7 +138,7 @@ class Application:
             clock.tick(60)
         pygame.quit()
 
+
 if __name__ == "__main__":
     app = Application()
     app.run()
-

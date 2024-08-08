@@ -1,7 +1,17 @@
 from dungeon_adventure.enums.item_types import PillarType, PotionType, WeaponType
-from dungeon_adventure.models.items import AbstractionPillar, Bow, EncapsulationPillar, HealingPotion, \
-    InheritancePillar, Pillar, PolymorphismPillar, Potion, \
-    Sword, UtilityItem, Weapon
+from dungeon_adventure.models.items import (
+    AbstractionPillar,
+    Bow,
+    EncapsulationPillar,
+    HealingPotion,
+    InheritancePillar,
+    Pillar,
+    PolymorphismPillar,
+    Potion,
+    Sword,
+    UtilityItem,
+    Weapon,
+)
 
 
 class ItemFactory:

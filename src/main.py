@@ -1,5 +1,7 @@
 from dungeon_adventure.controllers.game_controller import GameController
-from dungeon_adventure.controllers.player_action_controller import PlayerActionController
+from dungeon_adventure.controllers.player_action_controller import (
+    PlayerActionController,
+)
 from dungeon_adventure.game_model import GameModelError
 from dungeon_adventure.models.player import Player
 from dungeon_adventure.services.dungeon_generator import DungeonGenerator

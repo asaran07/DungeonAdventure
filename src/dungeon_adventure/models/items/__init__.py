@@ -1,5 +1,11 @@
 from .item import Item
-from .pillar import (AbstractionPillar, EncapsulationPillar, InheritancePillar, Pillar, PolymorphismPillar)
+from .pillar import (
+    AbstractionPillar,
+    EncapsulationPillar,
+    InheritancePillar,
+    Pillar,
+    PolymorphismPillar,
+)
 from .potion import HealingPotion, Potion, VisionPotion
 from .utility_item import UtilityItem
 from .weapon import Bow, Sword, Weapon

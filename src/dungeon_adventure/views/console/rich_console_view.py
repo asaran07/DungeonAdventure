@@ -11,7 +11,8 @@ from dungeon_adventure.enums.game_state import GameState
 from dungeon_adventure.models.characters.monster import Monster
 from dungeon_adventure.models.player import Player
 from dungeon_adventure.views.console.console_view import (
-    ConsoleView, PlayerNotExistException,
+    ConsoleView,
+    PlayerNotExistException,
     UnsupportedGameStateException,
 )
 from src import GameModel

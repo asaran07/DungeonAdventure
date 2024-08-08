@@ -14,7 +14,11 @@ class GameRoom(pygame.sprite.Sprite):
         self._setup_hitboxes()
 
     def _setup_hitboxes(self):
-        open_directions = [direction for direction, connected_room in self.room.connections.items() if connected_room]
+        open_directions = [
+            direction
+            for direction, connected_room in self.room.connections.items()
+            if connected_room
+        ]
         self.visuals.create_hitboxes(open_directions)
 
     @property
@@ -25,7 +29,7 @@ class GameRoom(pygame.sprite.Sprite):
         surface.blit(self.image, self.rect)
 
     def draw_hitboxes(self, surface):
-        self.visuals.draw_hitboxes(surface)
+        self.visuals.draw_hitbox_debug_outlines(surface)
 
     def is_within_floor(self, point):
         relative_point = (point[0] - self.rect.x, point[1] - self.rect.y)
