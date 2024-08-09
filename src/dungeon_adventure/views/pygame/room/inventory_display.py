@@ -13,11 +13,11 @@ class InventoryDisplay:
             screen_width - (20 * scale_factor),
             self.inventory_height,
         )
-        self.inventory_font = pygame.font.Font(None, 15 * scale_factor)
+        self.inventory_font = pygame.font.Font("/Users/saran/DungeonAdventure/resources/CourierPrime-Regular.ttf", 15 * scale_factor)
 
     def draw(self, surface: pygame.Surface, inventory: Inventory):
         # Draw inventory background
-        pygame.draw.rect(surface, (50, 50, 50), self.inventory_rect)
+        pygame.draw.rect(surface, (0, 0, 0), self.inventory_rect)
         pygame.draw.rect(surface, (200, 200, 200), self.inventory_rect, 2)
 
         # Get inventory string

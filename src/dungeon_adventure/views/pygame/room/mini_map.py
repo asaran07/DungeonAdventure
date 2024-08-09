@@ -49,7 +49,7 @@ class MiniMap:
         )
 
     def update(self, current_room: GameRoom, all_rooms: Dict[str, GameRoom]):
-        self.minimap_surface.fill((50, 50, 50))  # Dark gray background
+        self.minimap_surface.fill((26, 12, 17))  # Dark gray background
 
         # Get adjacent rooms
         adjacent_rooms = self._get_adjacent_rooms(current_room, all_rooms)
