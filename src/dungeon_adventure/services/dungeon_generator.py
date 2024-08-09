@@ -89,6 +89,14 @@ class DungeonGenerator:
                 PillarType.ABSTRACTION, "Abstraction Pillar", "A abstract pillar", 5
             )
         )
+        room12.add_item(
+            item_factory.create_pillar(
+                PillarType.ENCAPSULATION,
+                "Encapsulation Pillar",
+                "A encapsulated pillar",
+                10,
+            )
+        )
 
         room15 = dungeon.get_room("Room 15 - Exit Chamber")
         room15.set_room_type(RoomType.EXIT)

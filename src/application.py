@@ -209,17 +209,8 @@ class Application:
                     pass
         return True
 
-    def handle_take_item(self, pos=None):
-        if pos:
-            item = self.room_items_display.get_item_at_position(pos)
-        else:
-            # Take the first item in the room if no position is specified
-            item = (
-                self.current_room.room.items[0]
-                if self.current_room.room.items
-                else None
-            )
-
+    def handle_take_item(self):
+        item = self.current_room.room.items[0] if self.current_room.room.items else None
         if item:
             try:
                 self.player.inventory.add_item(item)
