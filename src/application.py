@@ -46,9 +46,7 @@ class Application:
         self.inventory_display = InventoryDisplay(
             self.window_width, self.window_height, self.scale_factor
         )
-        self.room_items_display = RoomItemsDisplay(
-            self.window_width, self.window_height, self.scale_factor
-        )
+        self.room_items_display = RoomItemsDisplay(self.window_width)
         self.controls_display = ControlsDisplay(
             self.window_width, self.window_height, self.scale_factor
         )

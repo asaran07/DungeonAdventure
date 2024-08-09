@@ -1,5 +1,6 @@
 import pygame
 
+from dungeon_adventure.config import FONT_PATH
 from src.dungeon_adventure.models.inventory.inventory import Inventory
 
 
@@ -13,7 +14,10 @@ class InventoryDisplay:
             screen_width - (20 * scale_factor),
             self.inventory_height,
         )
-        self.inventory_font = pygame.font.Font("/Users/saran/DungeonAdventure/resources/CourierPrime-Regular.ttf", 15 * scale_factor)
+        self.inventory_font = pygame.font.Font(
+            FONT_PATH + "courier_prime.ttf",
+            15 * scale_factor,
+        )
 
     def draw(self, surface: pygame.Surface, inventory: Inventory):
         # Draw inventory background
