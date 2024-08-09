@@ -15,7 +15,7 @@ class InventoryDisplay:
             self.inventory_height,
         )
         self.inventory_font = pygame.font.Font(
-            FONT_PATH + "courier_prime.ttf",
+            None,
             15 * scale_factor,
         )
 

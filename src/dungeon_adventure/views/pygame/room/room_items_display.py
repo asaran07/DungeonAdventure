@@ -1,10 +1,8 @@
-import os
 from collections import namedtuple
-
-import pygame
 from typing import List, Optional, Tuple
 
-from dungeon_adventure.config import FONT_PATH, RESOURCES_DIR
+import pygame
+
 from dungeon_adventure.models.dungeon.room import Room
 from dungeon_adventure.models.items import Item
 
@@ -38,7 +36,7 @@ class RoomItemsDisplay:
         self.display_rect = self.create_main_display_rect(scale_factor)
 
         self.title_font: pygame.font.Font = pygame.font.Font(
-            FONT_PATH + "foldit.ttf", self.TITLE_FONT_SIZE * scale_factor
+            None, self.TITLE_FONT_SIZE * scale_factor
         )
         self.list_font: pygame.font.Font = pygame.font.Font(
             None, self.LIST_FONT_SIZE * scale_factor
@@ -139,11 +137,3 @@ class RoomItemsDisplay:
             if item_rect.collidepoint(pos):
                 return item
         return None
-
-    def debug_rect(self, rect, name="Rectangle"):
-        print(f"{name}:")
-        print(f"  Position: ({rect.x}, {rect.y})")
-        print(f"  Size: {rect.size}")
-        print(f"  Width: {rect.width}, Height: {rect.height}")
-        print(f"  Top-left: {rect.topleft}, Bottom-right: {rect.bottomright}")
-        print(f"  Center: {rect.center}")

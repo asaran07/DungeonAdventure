@@ -1,5 +1,6 @@
-import pygame
 from typing import Dict
+
+import pygame
 
 from dungeon_adventure.config import RESOURCES_DIR
 from dungeon_adventure.enums.room_types import Direction
@@ -10,7 +11,6 @@ from dungeon_adventure.views.pygame.room.inventory_display import InventoryDispl
 from dungeon_adventure.views.pygame.room.mini_map import MiniMap
 from dungeon_adventure.views.pygame.room.room_items_display import RoomItemsDisplay
 from dungeon_adventure.views.pygame.sprites.composite_player import CompositePlayer
-from dungeon_adventure.views.pygame.sprites.py_player import PyPlayer
 from src.dungeon_adventure.views.pygame.room.controls_display import ControlsDisplay
 
 
@@ -46,7 +46,7 @@ class Application:
         self.inventory_display = InventoryDisplay(
             self.window_width, self.window_height, self.scale_factor
         )
-        self.room_items_display = RoomItemsDisplay(self.window_width)
+        self.room_items_display = RoomItemsDisplay(self.scale_factor)
         self.controls_display = ControlsDisplay(
             self.window_width, self.window_height, self.scale_factor
         )
