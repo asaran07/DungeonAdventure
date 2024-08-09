@@ -1,6 +1,6 @@
-from typing import Dict, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
-from src.dungeon_adventure.exceptions.player import InventoryFullError
+from src.dungeon_adventure.exceptions.player import InventoryFullError, ItemNotFoundError
 from src.dungeon_adventure.models.inventory.inventory_db import InventoryDatabase
 from src.dungeon_adventure.models.items.item import Item
 
@@ -18,6 +18,9 @@ class Inventory:
     def __setstate__(self, state):
         self._items, self._weight_limit = state
 
+    def get_all_items(self) -> List[Tuple[Item, int]]:
+        return [(item, quantity) for item, quantity in self._items.values()]
+
     def add_item(self, item: Item) -> None:
         self.validate_weight(item)
         if item.id in self._items:
@@ -32,7 +35,7 @@ class Inventory:
                 "Adding this item would exceed the inventory weight limit"
             )
 
-    def remove_item_by_id(self, item_id: str) -> Optional[Item]:
+    def remove_item_by_id(self, item_id: str) -> Item:
         if item_id in self._items:
             item, quantity = self._items[item_id]
             if quantity > 1:
@@ -40,7 +43,7 @@ class Inventory:
             else:
                 del self._items[item_id]
             return item
-        return None
+        raise ItemNotFoundError(f"Item with id {item_id} not found in inventory")
 
     def remove_item(self, item: Item) -> bool:
         return self.remove_item_by_id(item.id) is not None
@@ -62,11 +65,13 @@ class Inventory:
     def get_item_quantity(self, item_id: str) -> int:
         return self._items[item_id][1] if item_id in self._items else 0
 
+    @property
+    def weight_limit(self) -> float:
+        return self._weight_limit
+
     def __str__(self) -> str:
         inventory_str = "Inventory:\n"
-        for item_id, (item, quantity) in self._items.items():
-            inventory_str += (
-                f"  {item.name}: {quantity} (Weight: {item.weight * quantity})\n"
-            )
+        for item, quantity in self._items.values():
+            inventory_str += f"  {item.name}: {quantity} (Weight: {item.weight * quantity})\n"
         inventory_str += f"Total Weight: {self.get_total_weight()}/{self._weight_limit}"
         return inventory_str

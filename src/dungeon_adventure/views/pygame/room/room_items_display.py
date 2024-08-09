@@ -121,6 +121,6 @@ class RoomItemsDisplay:
                 item_text_surface,
                 (
                     item_background_rect.x + 5,
-                    item_background_rect.y + 0,
+                    item_background_rect.y + 2,
                 ),
             )
