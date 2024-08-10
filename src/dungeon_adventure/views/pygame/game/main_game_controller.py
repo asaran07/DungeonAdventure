@@ -1,3 +1,5 @@
+import logging
+
 import pygame
 
 from dungeon_adventure.enums.game_state import GameState
@@ -32,6 +34,7 @@ class MainGameController:
         self.key_bind_manager = KeyBindManager()
         self.combat_manager = CombatManager(self.game_world)
         self.game_world.on_combat_initiated = self.initiate_combat
+        self.logger = logging.getLogger(__name__)
 
     def initiate_combat(self):
         self.combat_manager.initiate_combat()
@@ -44,6 +47,7 @@ class MainGameController:
 
     def run(self):
         """Main Game Loop"""
+        self.logger.info("Starting game loop")
         self.initialize()
         running = True
         while running:
@@ -51,6 +55,7 @@ class MainGameController:
             self.update()
             self.draw()
             self.game_screen.flip()
+        self.logger.info("Game loop ended")
         pygame.quit()
 
     def handle_events(self) -> bool:
@@ -61,6 +66,7 @@ class MainGameController:
         """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                self.logger.info("Quit event received")
                 return False
             elif event.type == pygame.KEYDOWN:
                 if self.key_bind_manager.is_inventory_key(event):

@@ -51,7 +51,7 @@ class CombatManager:
         self.monsters = self.game_world.current_room.room.monsters
         self.logger.debug(f"Monsters: {[f'{m.name} (HP: {m.current_hp}/{m.max_hp})' for m in self.monsters]}")
         if not self.monsters:
-            print("Current Room has no monsters.")
+            self.logger.warning("No monsters found in current room.")
             return
 
         self.game_world.game_model.game_state = GameState.IN_COMBAT
@@ -65,8 +65,10 @@ class CombatManager:
 
     def determine_turn_order(self) -> None:
         """Set the turn order based on attack speed of combatants."""
+        self.logger.debug("Determining turn order")
         self.turn_order = [self.player.hero] + self.monsters
         self.turn_order.sort(key=lambda x: x.attack_speed, reverse=True)
+        self.logger.debug(f"Turn order: {self.turn_order}")
 
     def update(self) -> None:
         """Update the combat state each frame."""
