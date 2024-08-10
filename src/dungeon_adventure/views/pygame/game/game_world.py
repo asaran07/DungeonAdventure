@@ -66,6 +66,25 @@ class GameWorld:
         # Draw room hitboxes
         self.current_room.draw_hitboxes(surface)
 
+    def handle_take_item(self):
+        item = self.current_room.room.items[0] if self.current_room.room.items else None
+        if item:
+            try:
+                self.composite_player.inventory.add_item(item)
+                self.current_room.room.remove_item(item)
+                print(f"Took {item.name}")
+            except Exception as e:
+                print(f"Couldn't take {item.name}: {str(e)}")
+
+    def handle_drop_item(self):
+        # For simplicity, drop the last item in the inventory
+        if self.composite_player.inventory._items:
+            item_id, (item, quantity) = self.composite_player.inventory._items.popitem()
+            self.current_room.room.add_item(item)
+            print(f"Dropped {item.name}")
+        else:
+            print("No items to drop")
+
     def _check_room_transition(self):
         player_pos = self.composite_player.rect.center
         player_height = self.composite_player.rect.height

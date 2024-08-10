@@ -14,18 +14,18 @@ class InventoryDisplay:
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.scale_factor = scale_factor
-        self.width = int(screen_width * 1)
-        self.height = int(screen_height * 1)
-        self.x = (screen_width - self.width) // 2
-        self.y = (screen_height - self.height) // 2
+        self.width = int(screen_width + 100)
+        self.height = int(screen_height)
+        self.x = ((screen_width * 2) - self.width)
+        self.y = ((screen_height * 3) - self.height)
         self.columns = 3
-        self.padding = 10 * scale_factor
+        self.padding = 1
         self.item_size = (
             (self.width // self.columns - self.padding * 2),
             50 * scale_factor,
         )
         self.title_font = pygame.font.Font(
-            FONT_PATH + "Foldit-Medium.ttf", 24 * scale_factor
+            FONT_PATH + "Foldit-Medium.ttf", 24
         )
         self.item_font = pygame.font.Font(FONT_PATH + "barlow.ttf", 16 * scale_factor)
         self.selected_item: Optional[Item] = None

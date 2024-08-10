@@ -60,6 +60,10 @@ class MainGameController:
                     self.pygame_view.toggle_inventory()
                 elif event.key == pygame.K_b:
                     self.debug_manager.toggle_debug_mode()
+                elif event.key == pygame.K_t:  # 'T' for Take
+                    self.game_world.handle_take_item()
+                elif event.key == pygame.K_x:  # 'D' for Drop
+                    self.game_world.handle_drop_item()
 
             # Handle inventory events if inventory is visible
             if self.pygame_view.inventory_display.visible:
