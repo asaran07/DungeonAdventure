@@ -1,7 +1,6 @@
 import pygame
 
 from dungeon_adventure.enums.game_state import GameState
-from dungeon_adventure.views.pygame.combat.combat_screen import CombatScreen
 from dungeon_adventure.views.pygame.game.combat_manager import CombatManager
 from dungeon_adventure.views.pygame.game.game_screen import GameScreen
 from dungeon_adventure.views.pygame.game.game_world import GameWorld
@@ -31,9 +30,7 @@ class MainGameController:
         self.pygame_view: PyGameView = pygame_view
         self.debug_manager: DebugManager = debug_manager
         self.key_bind_manager = KeyBindManager()
-
-        self.combat_screen = CombatScreen()
-        self.combat_manager = CombatManager(self.game_world, self.combat_screen)
+        self.combat_manager = CombatManager(self.game_world)
 
     def initialize(self):
         pygame.init()
@@ -72,15 +69,14 @@ class MainGameController:
                     self.game_world.handle_drop_item()
                 elif event.key == pygame.K_g:
                     self.pygame_view.room_items_display.toggle_visibility()
+                if self.game_world.game_model.game_state == GameState.IN_COMBAT:
+                    self.combat_manager.handle_event(event)
 
             # Handle inventory events if inventory is visible
             if self.pygame_view.inventory_display.is_visible:
                 self.pygame_view.handle_event(
                     event, self.game_world.composite_player.inventory
                 )
-
-            if self.game_world.game_model.game_state == GameState.IN_COMBAT:
-                self.combat_manager.handle_combat_input(event)
 
         return True
 
@@ -93,8 +89,6 @@ class MainGameController:
 
         if self.game_world.game_model.game_state == GameState.IN_COMBAT:
             self.combat_manager.update()
-            if self.combat_manager.is_combat_over():
-                self.combat_manager.end_combat()
 
     def draw(self) -> None:
         """Draw the game world, GUI, and debug info if enabled."""

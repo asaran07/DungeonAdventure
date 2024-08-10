@@ -1,51 +1,88 @@
-from dungeon_adventure.controllers.combat_controller import CombatController
-from dungeon_adventure.enums.game_state import GameState
+from typing import List
+import pygame
 from dungeon_adventure.enums.combat_state import CombatState
+from dungeon_adventure.enums.game_state import GameState
+from dungeon_adventure.models.characters.monster import Monster
+from dungeon_adventure.views.pygame.game.game_world import GameWorld
 
 
 class CombatManager:
-    def __init__(self, game_world, combat_screen):
+    def __init__(self, game_world: GameWorld):
         self.game_world = game_world
-        self.combat_screen = combat_screen
-        self.combat_controller = None  # Will be initialized when combat starts
         self.player = game_world.composite_player
-        self.monsters = []
+        self.monsters: List[Monster] = []
+        self.combat_state = CombatState.WAITING
+        self.current_turn = 0
+        self.turn_order = []
 
-    def initiate_combat(self, monsters):
-        self.monsters = monsters
+    def initiate_combat(self):
+        self.monsters = self.game_world.current_room.room.monsters
+        if not self.monsters:
+            return
+
         self.game_world.game_model.game_state = GameState.IN_COMBAT
-        self.combat_controller = CombatController(
-            self.game_world.game_model, self.combat_screen
-        )
-        self.combat_controller.initiate_combat()
+        self.determine_turn_order()
+        self.combat_state = CombatState.PLAYER_TURN
+        self.current_turn = 0
 
-    def handle_combat_input(self, event):
-        action = self.combat_screen.get_combat_input(event)
-        if action:
-            self.process_combat_action(action)
-
-    def process_combat_action(self, action):
-        if action == "attack":
-            self.combat_controller.player_attack()
-        elif action == "use_item":
-            self.combat_controller.use_item()
-        elif action == "flee":
-            self.combat_controller.attempt_flee()
+    def determine_turn_order(self):
+        self.turn_order = [self.player.hero] + self.monsters
+        self.turn_order.sort(key=lambda x: x.attack_speed, reverse=True)
 
     def update(self):
-        if (
-            self.combat_controller
-            and self.combat_controller.combat_state == CombatState.MONSTER_TURN
-        ):
-            self.combat_controller.monster_turn()
+        if self.game_world.game_model.game_state != GameState.IN_COMBAT:
+            return
 
-    def draw(self, surface):
-        self.combat_screen.draw(surface, self.player, self.monsters)
+        current_character = self.turn_order[self.current_turn]
 
-    def is_combat_over(self):
-        return self.game_world.game_model.game_state != GameState.IN_COMBAT
+        if isinstance(current_character, Monster):
+            self.handle_monster_turn(current_character)
+        else:
+            self.handle_player_turn()
 
-    def end_combat(self):
+    def handle_player_turn(self):
+        pass
+
+    def handle_monster_turn(self, monster: Monster):
+        damage = monster.attempt_attack(self.player.hero)
+        print(f"{monster.name} deals {damage} damage to you!")
+        self.next_turn()
+
+    def player_attack(self, target: Monster):
+        damage = self.player.hero.attempt_attack(target)
+        print(f"You deal {damage} damage to {target.name}!")
+        self.check_combat_end(target)
+        self.next_turn()
+
+    def next_turn(self):
+        self.current_turn = (self.current_turn + 1) % len(self.turn_order)
+        if self.current_turn == 0:
+            self.combat_state = CombatState.PLAYER_TURN
+        else:
+            self.combat_state = CombatState.MONSTER_TURN
+
+    def check_combat_end(self, target: Monster):
+        if not target.is_alive:
+            self.monsters.remove(target)
+            self.turn_order.remove(target)
+            self.player.hero.gain_xp(target.xp_reward)
+            print(f"{target.name} has been defeated! You gained {target.xp_reward} XP.")
+
+        if not self.monsters:
+            self.end_combat("All monsters defeated!")
+        elif not self.player.hero.is_alive:
+            self.end_combat("Player has been defeated!")
+            self.game_world.game_model.set_game_over(True)
+
+    def end_combat(self, message: str):
+        print(message)
         self.game_world.game_model.game_state = GameState.EXPLORING
+        self.combat_state = CombatState.WAITING
         self.monsters = []
-        self.combat_controller = None
+        self.turn_order = []
+
+    def draw(self, surface: pygame.Surface):
+        pass
+
+    def handle_event(self, event: pygame.event.Event):
+        pass

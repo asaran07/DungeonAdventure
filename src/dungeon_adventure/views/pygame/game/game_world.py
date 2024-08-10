@@ -119,6 +119,7 @@ class GameWorld:
     def _handle_room_encounters(self):
         if self.current_room.room.has_monsters:
             self.game_model.game_state = GameState.IN_COMBAT
+
             # The MainGameController will handle initiating combat in its update method
         else:
             # Handle empty room
