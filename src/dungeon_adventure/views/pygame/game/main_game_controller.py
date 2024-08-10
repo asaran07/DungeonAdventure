@@ -1,5 +1,8 @@
 import pygame
 
+from dungeon_adventure.enums.game_state import GameState
+from dungeon_adventure.views.pygame.combat.combat_screen import CombatScreen
+from dungeon_adventure.views.pygame.game.CombatManager import CombatManager
 from dungeon_adventure.views.pygame.game.game_screen import GameScreen
 from dungeon_adventure.views.pygame.game.game_world import GameWorld
 from dungeon_adventure.views.pygame.game.py_game_view import PyGameView
@@ -28,6 +31,9 @@ class MainGameController:
         self.pygame_view: PyGameView = pygame_view
         self.debug_manager: DebugManager = debug_manager
         self.key_bind_manager = KeyBindManager()
+
+        self.combat_screen = CombatScreen()
+        self.combat_manager = CombatManager(self.game_world, self.combat_screen)
 
     def initialize(self):
         pygame.init()
@@ -69,7 +75,12 @@ class MainGameController:
 
             # Handle inventory events if inventory is visible
             if self.pygame_view.inventory_display.is_visible:
-                self.pygame_view.handle_event(event, self.game_world.composite_player.inventory)
+                self.pygame_view.handle_event(
+                    event, self.game_world.composite_player.inventory
+                )
+
+            if self.game_world.game_model.game_state == GameState.IN_COMBAT:
+                self.combat_manager.handle_combat_input(event)
 
         return True
 
@@ -80,6 +91,11 @@ class MainGameController:
         self.pygame_view.update(self.game_world.current_room, self.game_world.room_dict)
         self.debug_manager.update_fps(self.game_screen.clock)
 
+        if self.game_world.game_model.game_state == GameState.IN_COMBAT:
+            self.combat_manager.update()
+            if self.combat_manager.is_combat_over():
+                self.combat_manager.end_combat()
+
     def draw(self) -> None:
         """Draw the game world, GUI, and debug info if enabled."""
         self.game_screen.draw_background()
@@ -89,11 +105,16 @@ class MainGameController:
 
         # Draw debug information if debug mode is enabled
         if self.debug_manager.debug_mode:
-            self.game_world.composite_player.py_player.draw_debug_info(self.game_screen.get_game_surface())
+            self.game_world.composite_player.py_player.draw_debug_info(
+                self.game_screen.get_game_surface()
+            )
             self.game_world.draw_debug(self.game_screen.get_game_surface())
             self.debug_manager.draw_debug_info(
                 self.game_screen.get_game_surface(), self.game_world
             )
+
+        if self.game_world.game_model.game_state == GameState.IN_COMBAT:
+            self.combat_manager.draw(self.game_screen.get_game_surface())
 
         # Scale the game surface to the screen
         self.game_screen.blit_scaled()

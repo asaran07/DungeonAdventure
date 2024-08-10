@@ -2,6 +2,7 @@ from typing import Dict, Optional
 
 import pygame
 
+from dungeon_adventure.enums.game_state import GameState
 from dungeon_adventure.enums.room_types import Direction
 from dungeon_adventure.models.dungeon.room import Room
 from dungeon_adventure.views.pygame.room.game_room import GameRoom
@@ -17,6 +18,15 @@ class GameWorld:
         self.current_room: Optional[GameRoom] = None
         self.composite_player = composite_player
         self.player_sprite = pygame.sprite.GroupSingle()
+        self._game_model = game_model
+
+    @property
+    def game_model(self):
+        return self._game_model
+
+    @game_model.setter
+    def game_model(self, value):
+        self._game_model = value
 
     def initialize(self):
         self._create_game_rooms()
@@ -104,6 +114,15 @@ class GameWorld:
                 next_room_name  # update the player's location as well
             )
             self._reposition_player(direction)
+        self._handle_room_encounters()
+
+    def _handle_room_encounters(self):
+        if self.current_room.room.has_monsters:
+            self.game_model.game_state = GameState.IN_COMBAT
+            # The MainGameController will handle initiating combat in its update method
+        else:
+            # Handle empty room
+            pass
 
     def _reposition_player(self, entry_direction: Direction):
         opposite_direction = Room.opposite(entry_direction)

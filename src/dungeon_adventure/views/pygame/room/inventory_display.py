@@ -28,7 +28,9 @@ class InventoryDisplay:
         self.item_width = (self.display_width // self.columns) - 60
         self.item_height = (self.display_height // self.rows) - 60
 
-        self.item_details_popup = ItemDetailsPopup(self.screen_width, self.screen_height, self.scale_factor)
+        self.item_details_popup = ItemDetailsPopup(
+            self.screen_width, self.screen_height, self.scale_factor
+        )
 
     def toggle_visibility(self):
         self.is_visible = not self.is_visible
@@ -46,12 +48,16 @@ class InventoryDisplay:
             if event.button == 1:  # Left mouse button
                 clicked_index = self.get_item_at_position(event.pos)
                 if clicked_index is not None:
-                    self.show_item_details(self.inventory.get_all_items()[clicked_index][0])
+                    self.show_item_details(
+                        self.inventory.get_all_items()[clicked_index][0]
+                    )
 
     def get_item_at_position(self, pos: tuple[int, int]) -> Optional[int]:
         x, y = pos
-        if (self.display_x <= x <= self.display_x + self.display_width and
-                self.display_y <= y <= self.display_y + self.display_height):
+        if (
+            self.display_x <= x <= self.display_x + self.display_width
+            and self.display_y <= y <= self.display_y + self.display_height
+        ):
             col = (x - self.display_x) // (self.item_width + 60)
             row = (y - self.display_y) // (self.item_height + 60)
             index = row * self.columns + col
@@ -69,10 +75,17 @@ class InventoryDisplay:
         self.inventory = inventory
 
         # Draw background
-        pygame.draw.rect(surface, (50, 50, 50),
-                         (self.display_x, self.display_y, self.display_width, self.display_height))
-        pygame.draw.rect(surface, (200, 200, 200),
-                         (self.display_x, self.display_y, self.display_width, self.display_height), 2)
+        pygame.draw.rect(
+            surface,
+            (50, 50, 50),
+            (self.display_x, self.display_y, self.display_width, self.display_height),
+        )
+        pygame.draw.rect(
+            surface,
+            (200, 200, 200),
+            (self.display_x, self.display_y, self.display_width, self.display_height),
+            2,
+        )
 
         # Draw items
         items: List[Tuple[Item, int]] = self.inventory.get_all_items()
@@ -88,7 +101,9 @@ class InventoryDisplay:
             else:
                 bg_color = (75, 75, 75)  # Default item color
 
-            pygame.draw.rect(surface, bg_color, (item_x, item_y, self.item_width, self.item_height))
+            pygame.draw.rect(
+                surface, bg_color, (item_x, item_y, self.item_width, self.item_height)
+            )
 
             # Draw item name and quantity
             item_text = f"{item.name} (x{quantity})"
@@ -98,7 +113,10 @@ class InventoryDisplay:
         # Draw total weight
         weight_text = f"Total Weight: {self.inventory.get_total_weight():.1f}/{self.inventory.weight_limit:.1f}"
         weight_surface = self.font.render(weight_text, True, (255, 255, 255))
-        surface.blit(weight_surface, (self.display_x + 5, self.display_y + self.display_height - 30))
+        surface.blit(
+            weight_surface,
+            (self.display_x + 5, self.display_y + self.display_height - 30),
+        )
 
         # Draw item details popup
         self.item_details_popup.draw(surface)
@@ -132,8 +150,17 @@ class ItemDetailsPopup:
             return
 
         # Draw background
-        pygame.draw.rect(surface, (75, 75, 75), (self.popup_x, self.popup_y, self.popup_width, self.popup_height))
-        pygame.draw.rect(surface, (200, 200, 200), (self.popup_x, self.popup_y, self.popup_width, self.popup_height), 2)
+        pygame.draw.rect(
+            surface,
+            (75, 75, 75),
+            (self.popup_x, self.popup_y, self.popup_width, self.popup_height),
+        )
+        pygame.draw.rect(
+            surface,
+            (200, 200, 200),
+            (self.popup_x, self.popup_y, self.popup_width, self.popup_height),
+            2,
+        )
 
         # Draw item details
         y_offset = 10
@@ -153,15 +180,21 @@ class ItemDetailsPopup:
 
         # Item-specific details
         if isinstance(self.item, Weapon):
-            self._draw_text(surface, f"Damage: {self.item.min_damage}-{self.item.max_damage}", y_offset)
+            self._draw_text(
+                surface,
+                f"Damage: {self.item.min_damage}-{self.item.max_damage}",
+                y_offset,
+            )
             y_offset += line_height
         elif isinstance(self.item, Potion):
-            if hasattr(self.item, 'heal_amount'):
+            if hasattr(self.item, "heal_amount"):
                 self._draw_text(surface, f"Heals: {self.item.heal_amount} HP", y_offset)
                 y_offset += line_height
 
         # Item description (multi-line)
-        description_lines = self._wrap_text(self.item.description, self.popup_width - 20)
+        description_lines = self._wrap_text(
+            self.item.description, self.popup_width - 20
+        )
         for line in description_lines:
             self._draw_text(surface, line, y_offset)
             y_offset += line_height
@@ -175,11 +208,11 @@ class ItemDetailsPopup:
         lines = []
         current_line = []
         for word in words:
-            test_line = ' '.join(current_line + [word])
+            test_line = " ".join(current_line + [word])
             if self.font.size(test_line)[0] <= max_width:
                 current_line.append(word)
             else:
-                lines.append(' '.join(current_line))
+                lines.append(" ".join(current_line))
                 current_line = [word]
-        lines.append(' '.join(current_line))
+        lines.append(" ".join(current_line))
         return lines

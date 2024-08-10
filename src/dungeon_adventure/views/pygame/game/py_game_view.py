@@ -32,7 +32,9 @@ class PyGameView:
             self.window_width * self.scale_factor,
             self.window_height * self.scale_factor,
         )
-        self.inventory_display = InventoryDisplay(self.window_width, self.window_height, self.scale_factor)
+        self.inventory_display = InventoryDisplay(
+            self.window_width, self.window_height, self.scale_factor
+        )
         self.room_items_display = RoomItemsDisplay(self.scale_factor)
         self.controls_display = ControlsDisplay(
             self.window_width, self.window_height, self.scale_factor
@@ -63,7 +65,9 @@ class PyGameView:
         self.room_items_display.draw(screen)
         self.controls_display.draw(screen)
 
-    def handle_event(self, event: pygame.event.Event, player_inventory: Inventory) -> bool:
+    def handle_event(
+        self, event: pygame.event.Event, player_inventory: Inventory
+    ) -> bool:
         return self.inventory_display.handle_event(event)
 
     def toggle_inventory(self):

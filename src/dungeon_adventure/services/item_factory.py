@@ -23,7 +23,12 @@ class ItemFactory:
         return f"ITEM_{self._item_counter:04d}"
 
     def create_weapon(
-        self, name: str, weapon_type: WeaponType, damage: int, weight: float, durability: int
+        self,
+        name: str,
+        weapon_type: WeaponType,
+        damage: int,
+        weight: float,
+        durability: int,
     ) -> Weapon:
         item_id = self._generate_item_id()
 
@@ -40,7 +45,7 @@ class ItemFactory:
                 weapon_type,
                 damage,
                 damage + 2,
-                durability
+                durability,
             )
 
     def create_potion(

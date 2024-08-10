@@ -45,7 +45,9 @@ class Weapon(Item):
 
 
 class Sword(Weapon):
-    def __init__(self, item_id: str, name: str, damage: int, weight: float, durability: int):
+    def __init__(
+        self, item_id: str, name: str, damage: int, weight: float, durability: int
+    ):
         super().__init__(
             item_id,
             name,
@@ -54,12 +56,14 @@ class Sword(Weapon):
             WeaponType.SWORD,
             damage,
             damage + 2,
-            durability
+            durability,
         )
 
 
 class Bow(Weapon):
-    def __init__(self, item_id: str, name: str, damage: int, weight: float, durability: int):
+    def __init__(
+        self, item_id: str, name: str, damage: int, weight: float, durability: int
+    ):
         super().__init__(
             item_id,
             name,
@@ -68,5 +72,5 @@ class Bow(Weapon):
             WeaponType.BOW,
             damage - 1,
             damage + 1,
-            durability
+            durability,
         )
