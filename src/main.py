@@ -1,4 +1,9 @@
+import logging
+
+import pygame
+
 from dungeon_adventure.game_model import GameModelError
+from dungeon_adventure.logging_config import setup_logging
 from dungeon_adventure.models.player import Player
 from dungeon_adventure.services.dungeon_generator import DungeonGenerator
 from dungeon_adventure.views.pygame.game.game_screen import GameScreen
@@ -26,6 +31,9 @@ def setup_game_model():
 
 
 def main():
+    setup_logging()
+    logger = logging.getLogger(__name__)
+    logger.info(f"Starting Dungeon Adventure | Pygame version: {pygame.version.ver}")
     game_model = setup_game_model()
     if game_model:
         py_player = PyPlayer()

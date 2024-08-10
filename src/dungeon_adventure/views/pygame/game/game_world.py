@@ -1,3 +1,4 @@
+import logging
 from typing import Dict, Optional
 
 import pygame
@@ -20,6 +21,8 @@ class GameWorld:
         self.player_sprite = pygame.sprite.GroupSingle()
         self._game_model = game_model
         self.on_combat_initiated = None
+        self.logger = logging.getLogger(__name__)
+        self.logger.info("Initializing GameWorld")
 
     @property
     def game_model(self):
@@ -106,6 +109,7 @@ class GameWorld:
             self._handle_room_transition(door_direction)
 
     def _handle_room_transition(self, direction: Direction):
+        self.logger.debug(f"Room transition: {self.current_room.room.name} -> {direction}")
         current_dungeon_room = self.current_room.room
         next_dungeon_room = current_dungeon_room.connections[direction]
         if next_dungeon_room:
@@ -117,13 +121,14 @@ class GameWorld:
 
     def _handle_room_encounters(self):
         if self.current_room.room.has_monsters:
-            print("has monsters")
+            self.logger.info(f"Monsters found in room: {self.current_room.room.name}")
+            self.logger.debug(f"Monsters: {[m.name for m in self.current_room.room.monsters]}")
             self.game_model.game_state = GameState.IN_COMBAT
             if self.on_combat_initiated:
                 self.on_combat_initiated()
         else:
-            print("no monsters")
             # Handle empty room
+            self.logger.debug(f"Entered empty room: {self.current_room.room.name}")
             pass
 
     def _reposition_player(self, entry_direction: Direction):

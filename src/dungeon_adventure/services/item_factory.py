@@ -72,7 +72,6 @@ class ItemFactory:
         weight: float = 1.0,
     ) -> Pillar:
         item_id = self._generate_item_id()
-        print(f"Received pillar_type: {pillar_type}")
         if pillar_type == PillarType.ABSTRACTION:
             return AbstractionPillar(item_id, name, description, weight)
         elif pillar_type == PillarType.ENCAPSULATION:

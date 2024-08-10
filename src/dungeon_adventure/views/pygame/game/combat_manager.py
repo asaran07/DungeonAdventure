@@ -1,3 +1,4 @@
+import logging
 from typing import List, Optional
 import random
 import pygame
@@ -40,11 +41,17 @@ class CombatManager:
         self.total_xp_gained: int = 0
         self.monsters_defeated: int = 0
         self.combat_over: bool = False
+        self.logger = logging.getLogger('dungeon_adventure.combat')
+        self.logger.info("Initializing CombatManager")
 
     def initiate_combat(self) -> None:
         """Initialize combat with monsters from the current room."""
+        self.logger.info("Initiating combat")
+        self.logger.debug(f"Player HP: {self.player.hero.current_hp}/{self.player.hero.max_hp}")
         self.monsters = self.game_world.current_room.room.monsters
+        self.logger.debug(f"Monsters: {[f'{m.name} (HP: {m.current_hp}/{m.max_hp})' for m in self.monsters]}")
         if not self.monsters:
+            print("Current Room has no monsters.")
             return
 
         self.game_world.game_model.game_state = GameState.IN_COMBAT
