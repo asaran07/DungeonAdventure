@@ -1,4 +1,4 @@
-from dungeon_adventure.enums.item_types import PillarType
+from dungeon_adventure.enums.item_types import PillarType, PotionType, WeaponType
 from dungeon_adventure.enums.room_types import Direction, RoomType
 from dungeon_adventure.models.characters.monster import Monster
 from dungeon_adventure.models.dungeon.dungeon import Dungeon
@@ -97,6 +97,9 @@ class DungeonGenerator:
                 10,
             )
         )
+
+        room12.add_item(item_factory.create_weapon("Rusty Sword", WeaponType.SWORD, 10, 7, 100))
+        room12.add_item(item_factory.create_potion("Healing Potion", PotionType.HEALING, 15, 2))
 
         room15 = dungeon.get_room("Room 15 - Exit Chamber")
         room15.set_room_type(RoomType.EXIT)

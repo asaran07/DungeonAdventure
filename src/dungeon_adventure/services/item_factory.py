@@ -23,14 +23,14 @@ class ItemFactory:
         return f"ITEM_{self._item_counter:04d}"
 
     def create_weapon(
-        self, name: str, weapon_type: WeaponType, damage: int, weight: float
+        self, name: str, weapon_type: WeaponType, damage: int, weight: float, durability: int
     ) -> Weapon:
         item_id = self._generate_item_id()
 
         if weapon_type == WeaponType.SWORD:
-            return Sword(item_id, name, damage, weight)
+            return Sword(item_id, name, damage, weight, durability)
         elif weapon_type == WeaponType.BOW:
-            return Bow(item_id, name, damage, weight)
+            return Bow(item_id, name, damage, weight, durability)
         else:
             return Weapon(
                 item_id,
@@ -40,6 +40,7 @@ class ItemFactory:
                 weapon_type,
                 damage,
                 damage + 2,
+                durability
             )
 
     def create_potion(

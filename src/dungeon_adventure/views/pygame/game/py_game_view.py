@@ -59,11 +59,12 @@ class PyGameView:
         """
         self.minimap.draw(screen)
         self.inventory_display.draw(screen, player_inventory)
+        self.inventory_display.item_details_popup.draw(screen)
         self.room_items_display.draw(screen)
         self.controls_display.draw(screen)
 
     def handle_event(self, event: pygame.event.Event, player_inventory: Inventory) -> bool:
-        return self.inventory_display.handle_event(event, player_inventory)
+        return self.inventory_display.handle_event(event)
 
     def toggle_inventory(self):
         self.inventory_display.toggle_visibility()

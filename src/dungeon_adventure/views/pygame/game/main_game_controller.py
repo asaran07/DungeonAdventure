@@ -62,11 +62,13 @@ class MainGameController:
                     self.debug_manager.toggle_debug_mode()
                 elif event.key == pygame.K_t:  # 'T' for Take
                     self.game_world.handle_take_item()
-                elif event.key == pygame.K_x:  # 'D' for Drop
+                elif event.key == pygame.K_x:  # 'X' for Drop
                     self.game_world.handle_drop_item()
+                elif event.key == pygame.K_g:
+                    self.pygame_view.room_items_display.toggle_visibility()
 
             # Handle inventory events if inventory is visible
-            if self.pygame_view.inventory_display.visible:
+            if self.pygame_view.inventory_display.is_visible:
                 self.pygame_view.handle_event(event, self.game_world.composite_player.inventory)
 
         return True
@@ -87,6 +89,7 @@ class MainGameController:
 
         # Draw debug information if debug mode is enabled
         if self.debug_manager.debug_mode:
+            self.game_world.composite_player.py_player.draw_debug_info(self.game_screen.get_game_surface())
             self.game_world.draw_debug(self.game_screen.get_game_surface())
             self.debug_manager.draw_debug_info(
                 self.game_screen.get_game_surface(), self.game_world
