@@ -2,7 +2,7 @@ import pygame
 
 from dungeon_adventure.enums.game_state import GameState
 from dungeon_adventure.views.pygame.combat.combat_screen import CombatScreen
-from dungeon_adventure.views.pygame.game.CombatManager import CombatManager
+from dungeon_adventure.views.pygame.game.combat_manager import CombatManager
 from dungeon_adventure.views.pygame.game.game_screen import GameScreen
 from dungeon_adventure.views.pygame.game.game_world import GameWorld
 from dungeon_adventure.views.pygame.game.py_game_view import PyGameView
