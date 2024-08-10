@@ -89,9 +89,17 @@ class Hero(DungeonCharacter):
 
     # Placeholder for future special ability implementation
     def use_special_ability(self) -> None:
-        """Use a special ability. To be implemented by subclasses."""
-        # if name == warrior/do warrior Crushing Blow etc.
-        pass
+        """Use a special ability."""
+        if self.name == "Warrior":
+            special_ability = "Crushing Blow"
+            # Do Crushing Blow
+        if self.name == "Priestess":
+            special_ability = "Heal"
+            # Do Heal
+        if self.name == "Thief":
+            special_ability = "Sneak Attack"
+            #Do Sneak Attack
+
 
     def __str__(self) -> str:
         weapon_info = (
