@@ -14,6 +14,7 @@ class PyPlayer(pygame.sprite.Sprite):
         self.speed = 2
         self.foot_height = 5
         self.facing_right = True
+        self.debug_info = ""
 
     def initialize(self):
         self.load_animations()
@@ -39,13 +40,10 @@ class PyPlayer(pygame.sprite.Sprite):
         self.animation_manager.add_animation("walk_left", walk_paths, 1000 // 12)
 
     def update(self, dt, current_room: GameRoom):
+        dt_ms = int(dt * 1000)
         keys = pygame.key.get_pressed()
-        dx = (keys[pygame.K_RIGHT] or keys[pygame.K_d]) - (
-            keys[pygame.K_LEFT] or keys[pygame.K_a]
-        )
-        dy = (keys[pygame.K_DOWN] or keys[pygame.K_s]) - (
-            keys[pygame.K_UP] or keys[pygame.K_w]
-        )
+        dx = (keys[pygame.K_RIGHT] or keys[pygame.K_d]) - (keys[pygame.K_LEFT] or keys[pygame.K_a])
+        dy = (keys[pygame.K_DOWN] or keys[pygame.K_s]) - (keys[pygame.K_UP] or keys[pygame.K_w])
 
         if dx > 0:
             self.animation_manager.play("walk_right")
@@ -54,31 +52,31 @@ class PyPlayer(pygame.sprite.Sprite):
             self.animation_manager.play("walk_left")
             self.facing_right = False
         elif dy != 0:
-            self.animation_manager.play(
-                "walk_right" if self.facing_right else "walk_left"
-            )
+            self.animation_manager.play("walk_right" if self.facing_right else "walk_left")
         else:
-            self.animation_manager.play(
-                "idle_right" if self.facing_right else "idle_left"
-            )
+            self.animation_manager.play("idle_right" if self.facing_right else "idle_left")
 
         self.move(dx * self.speed, dy * self.speed, current_room)
-        self.animation_manager.update(dt)
+        self.animation_manager.update(dt_ms)
 
         self.image = self.animation_manager.get_current_frame()
         if self.image is None:
-            raise ValueError(
-                "Player image is None after update. Check animation update logic."
-            )
+            raise ValueError("Player image is None after update. Check animation update logic.")
         if not self.facing_right:
             self.image = pygame.transform.flip(self.image, True, False)
 
-        # Ensure rect is always updated
         if self.rect is None:
             self.rect = self.image.get_rect()
         else:
             new_rect = self.image.get_rect()
             self.rect.size = new_rect.size
+
+        # Add debug info
+        current_animation = self.animation_manager.current_animation
+        if current_animation:
+            self.debug_info = f"Animation: {current_animation.name}, Frame: {current_animation.current_frame + 1}/{len(current_animation.frames)}, dt: {dt}"
+        else:
+            self.debug_info = "No current animation"
 
     def move(self, dx, dy, current_room: GameRoom):
         if self.rect is None:
@@ -127,14 +125,20 @@ class PyPlayer(pygame.sprite.Sprite):
                 1,
             )
 
+    # def draw_debug_info(self, surface: pygame.Surface) -> None:
+    #     if self.rect is not None:
+    #         font = pygame.font.Font(None, 14)
+    #         current_animation = self.animation_manager.current_animation
+    #         if current_animation:
+    #             debug_text = (
+    #                 f"Animation: {current_animation.name}, Frame: {current_animation.current_frame + 1}/"
+    #                 f"{len(current_animation.frames)}"
+    #             )
+    #             debug_surface = font.render(debug_text, True, (255, 255, 255))
+    #             surface.blit(debug_surface, (self.rect.x, self.rect.y - 30))
+
     def draw_debug_info(self, surface: pygame.Surface) -> None:
         if self.rect is not None:
             font = pygame.font.Font(None, 14)
-            current_animation = self.animation_manager.current_animation
-            if current_animation:
-                debug_text = (
-                    f"Animation: {current_animation.name}, Frame: {current_animation.current_frame + 1}/"
-                    f"{len(current_animation.frames)}"
-                )
-                debug_surface = font.render(debug_text, True, (255, 255, 255))
-                surface.blit(debug_surface, (self.rect.x, self.rect.y - 30))
+            debug_surface = font.render(self.debug_info, True, (255, 255, 255))
+            surface.blit(debug_surface, (self.rect.x, self.rect.y - 30))
