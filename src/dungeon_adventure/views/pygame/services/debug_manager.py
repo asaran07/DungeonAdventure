@@ -11,7 +11,7 @@ class DebugManager:
         self.debug_mode = not self.debug_mode
         print(f"Debug mode: {'ON' if self.debug_mode else 'OFF'}")
 
-    def update_fps(self, clock):
+    def update_fps(self, clock: pygame.time.Clock):
         current_time = pygame.time.get_ticks()
         if current_time - self.fps_update_time > 1000:
             self.fps = clock.get_fps()

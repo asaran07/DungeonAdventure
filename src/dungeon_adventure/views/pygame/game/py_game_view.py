@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Optional
 
 import pygame
 
@@ -19,14 +19,19 @@ class PyGameView:
         :param window_height: Height of the game window
         :param scale_factor: Scale factor for UI elements
         """
-        self.minimap: MiniMap = MiniMap(window_width, window_height)
-        self.inventory_display: InventoryDisplay = InventoryDisplay(
-            window_width, window_height
-        )
-        self.room_items_display: RoomItemsDisplay = RoomItemsDisplay(scale_factor)
-        self.controls_display: ControlsDisplay = ControlsDisplay(
-            window_width, window_height, scale_factor
-        )
+        self.window_width = window_width
+        self.window_height = window_height
+        self.scale_factor = scale_factor
+        self.minimap: Optional[MiniMap] = None
+        self.inventory_display: Optional[InventoryDisplay] = None
+        self.room_items_display: Optional[RoomItemsDisplay] = None
+        self.controls_display: Optional[ControlsDisplay] = None
+
+    def initialize(self):
+        self.minimap = MiniMap(self.window_width, self.window_height)
+        self.inventory_display = InventoryDisplay(self.window_width, self.window_height)
+        self.room_items_display = RoomItemsDisplay(self.scale_factor)
+        self.controls_display = ControlsDisplay(self.window_width, self.window_height, self.scale_factor)
 
     def update(self, current_room: GameRoom, room_dict: Dict[str, GameRoom]) -> None:
         """

@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Optional
 
 import pygame
 
@@ -13,20 +13,28 @@ class GameWorld:
     def __init__(self, game_model: GameModel, composite_player: CompositePlayer):
         self.dungeon = game_model.dungeon
         self.game_rooms = pygame.sprite.Group()
-        self.room_dict: Dict[str, GameRoom] = self._create_game_rooms()
-        self.current_room = self._get_starting_room()
+        self.room_dict: Dict[str, GameRoom] = {}
+        self.current_room: Optional[GameRoom] = None
         self.composite_player = composite_player
-        self.composite_player.py_player.rect.center = self.current_room.rect.center
-        self.player_sprite = pygame.sprite.GroupSingle(self.composite_player.sprite)
+        self.player_sprite = pygame.sprite.GroupSingle()
 
-    def _create_game_rooms(self) -> Dict[str, GameRoom]:
-        room_dict = {}
+    def initialize(self):
+        self._create_game_rooms()
+        self.current_room = self._get_starting_room()
+        self.composite_player.initialize()
+        self.composite_player.py_player.rect.center = self.current_room.rect.center
+        self.player_sprite.add(self.composite_player.py_player)
+
+    def _create_game_rooms(self):
         for room_name, room in self.dungeon.rooms.items():
             game_room = GameRoom(room)
-            game_room.rect.center = (480 // 2, 270 // 2)
+            self.room_dict[room_name] = game_room
             self.game_rooms.add(game_room)
-            room_dict[room_name] = game_room
-        return room_dict
+
+        # Initialize and position rooms after all have been created
+        for game_room in self.room_dict.values():
+            game_room.initialize()
+            game_room.set_position((480 // 2, 270 // 2))
 
     def _get_starting_room(self) -> GameRoom:
         starting_room_name = next(iter(self.dungeon.rooms.keys()))

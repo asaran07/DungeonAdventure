@@ -9,6 +9,9 @@ class CompositePlayer:
         self.player = core_player
         self.py_player = py_player
 
+    def initialize(self):
+        self.py_player.initialize()
+
     def update(self, dt: int, current_room: GameRoom):
         self.py_player.update(dt, current_room)
 

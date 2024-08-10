@@ -9,15 +9,19 @@ class PyPlayer(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.animation_manager = AnimationManager()
+        self.image = None
+        self.rect = None
+        self.speed = 2
+        self.foot_height = 5
+        self.facing_right = True
+
+    def initialize(self):
         self.load_animations()
         self.animation_manager.play("idle_right")
         self.image = self.animation_manager.get_current_frame().convert_alpha()
         if self.image is None:
             raise ValueError("Player image is None. Check animation loading.")
         self.rect = self.image.get_rect()
-        self.speed = 2
-        self.foot_height = 5
-        self.facing_right = True
 
     def load_animations(self):
         base_path = os.path.join(RESOURCES_DIR, "hero_animations", "hero_walk")

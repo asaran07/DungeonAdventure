@@ -27,9 +27,16 @@ class MainGameController:
         self.pygame_view: PyGameView = pygame_view
         self.debug_manager: DebugManager = debug_manager
 
-    def run(self) -> None:
-        """Main game loop."""
-        running: bool = True
+    def initialize(self):
+        pygame.init()
+        self.game_screen.initialize()
+        self.pygame_view.initialize()
+        self.game_world.initialize()
+
+    def run(self):
+        """Main Game Loop"""
+        self.initialize()
+        running = True
         while running:
             running = self.handle_events()
             self.update()
@@ -54,7 +61,7 @@ class MainGameController:
         dt = self.game_screen.tick(60)
         self.game_world.update(dt)
         self.pygame_view.update(self.game_world.current_room, self.game_world.room_dict)
-        self.debug_manager.update_fps(self.game_screen.get_fps())
+        self.debug_manager.update_fps(self.game_screen.clock)
 
     def draw(self) -> None:
         """Draw the game world, GUI, and debug info if enabled."""

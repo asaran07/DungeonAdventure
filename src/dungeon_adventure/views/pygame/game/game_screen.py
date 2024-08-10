@@ -1,3 +1,5 @@
+from typing import Optional
+
 import pygame
 from pygame.surface import Surface
 from pygame.time import Clock
@@ -21,11 +23,19 @@ class GameScreen:
         self._window_width: int = self._width * self._scale_factor
         self._window_height: int = self._height * self._scale_factor
 
-        self._screen: Surface = pygame.display.set_mode(
-            (self._window_width, self._window_height)
-        )
-        self._game_surface: Surface = Surface((self._width, self._height))
-        self._clock: Clock = pygame.time.Clock()
+        self._screen: Optional[Surface] = None
+        self._game_surface: Optional[Surface] = None
+        self._clock: Optional[Clock] = None
+
+    def initialize(self):
+        pygame.display.set_caption("Dungeon Adventure")
+        self._screen = pygame.display.set_mode((self._window_width, self._window_height))
+        self._game_surface = Surface((self._width, self._height))
+        self._clock = pygame.time.Clock()
+
+    @property
+    def clock(self) -> Clock:
+        return self._clock
 
     @property
     def width(self) -> int:

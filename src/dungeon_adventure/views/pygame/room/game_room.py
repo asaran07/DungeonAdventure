@@ -17,9 +17,18 @@ class GameRoom(pygame.sprite.Sprite):
         )
         self._setup_room_image()
         self.visuals = RoomVisuals(self.image_path, (480, 270))
+        self.image = None
+        self.rect = None
+
+    def initialize(self):
+        self.visuals.initialize()
         self.image = self.visuals.image
         self.rect = self.image.get_rect()
         self._setup_hitboxes()
+
+    def set_position(self, center_pos):
+        if self.rect:
+            self.rect.center = center_pos
 
     def _setup_room_image(self):
         open_doors = [
