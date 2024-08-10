@@ -103,6 +103,3 @@ class Monster(DungeonCharacter):
                 print("SQLite connection is closed")
 
         return records
-
-
-
