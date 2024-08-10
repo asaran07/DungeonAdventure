@@ -10,6 +10,7 @@ from dungeon_adventure.views.pygame.room.game_room import GameRoom
 from dungeon_adventure.views.pygame.room.inventory_display import InventoryDisplay
 from dungeon_adventure.views.pygame.room.mini_map import MiniMap
 from dungeon_adventure.views.pygame.room.room_items_display import RoomItemsDisplay
+from dungeon_adventure.views.pygame.services.keybind_manager import KeyBindManager
 from dungeon_adventure.views.pygame.sprites.composite_player import CompositePlayer
 from src.dungeon_adventure.views.pygame.room.controls_display import ControlsDisplay
 
@@ -43,9 +44,11 @@ class Application:
         self.current_room = self._get_starting_room()
 
         self.minimap = MiniMap(self.window_width, self.window_height)
-        self.inventory_display = InventoryDisplay(
-            self.window_width, self.window_height, self.scale_factor
-        )
+
+        self.inventory_display = InventoryDisplay(self.window_width, self.window_height)
+        self.key_bind_manager = KeyBindManager()
+        self.show_inventory = False
+
         self.room_items_display = RoomItemsDisplay(self.scale_factor)
         self.controls_display = ControlsDisplay(
             self.window_width, self.window_height, self.scale_factor
@@ -202,6 +205,7 @@ class Application:
                     self.handle_take_item()
                 elif event.key == pygame.K_x:  # 'D' for Drop
                     self.handle_drop_item()
+
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 # Check if the click is inside the inventory area
                 if self.inventory_display.is_point_inside(event.pos):

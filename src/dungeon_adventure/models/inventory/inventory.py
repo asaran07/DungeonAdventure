@@ -1,6 +1,9 @@
 from typing import Dict, List, Optional, Tuple
 
-from src.dungeon_adventure.exceptions.player import InventoryFullError, ItemNotFoundError
+from src.dungeon_adventure.exceptions.player import (
+    InventoryFullError,
+    ItemNotFoundError,
+)
 from src.dungeon_adventure.models.inventory.inventory_db import InventoryDatabase
 from src.dungeon_adventure.models.items.item import Item
 
@@ -72,6 +75,8 @@ class Inventory:
     def __str__(self) -> str:
         inventory_str = "Inventory:\n"
         for item, quantity in self._items.values():
-            inventory_str += f"  {item.name}: {quantity} (Weight: {item.weight * quantity})\n"
+            inventory_str += (
+                f"  {item.name}: {quantity} (Weight: {item.weight * quantity})\n"
+            )
         inventory_str += f"Total Weight: {self.get_total_weight()}/{self._weight_limit}"
         return inventory_str
