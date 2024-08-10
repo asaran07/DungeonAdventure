@@ -104,6 +104,8 @@ class DungeonGenerator:
         room12.add_item(
             item_factory.create_potion("Healing Potion", PotionType.HEALING, 15, 2)
         )
+        room12.add_monster(Monster())
+        room12.add_monster(Monster("Monster Bob"))
 
         room15 = dungeon.get_room("Room 15 - Exit Chamber")
         room15.set_room_type(RoomType.EXIT)

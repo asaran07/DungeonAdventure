@@ -19,6 +19,7 @@ class GameWorld:
         self.composite_player = composite_player
         self.player_sprite = pygame.sprite.GroupSingle()
         self._game_model = game_model
+        self.on_combat_initiated = None
 
     @property
     def game_model(self):
@@ -110,20 +111,21 @@ class GameWorld:
         if next_dungeon_room:
             next_room_name = next_dungeon_room.name
             self.current_room = self.room_dict[next_room_name]
-            self.composite_player.current_room = (
-                next_room_name  # update the player's location as well
-            )
+            self.composite_player.current_room = next_room_name
             self._reposition_player(direction)
-        self._handle_room_encounters()
+            self._handle_room_encounters()
 
     def _handle_room_encounters(self):
         if self.current_room.room.has_monsters:
+            print("has monsters")
             self.game_model.game_state = GameState.IN_COMBAT
-
-            # The MainGameController will handle initiating combat in its update method
+            if self.on_combat_initiated:
+                self.on_combat_initiated()
         else:
+            print("no monsters")
             # Handle empty room
             pass
+
 
     def _reposition_player(self, entry_direction: Direction):
         opposite_direction = Room.opposite(entry_direction)

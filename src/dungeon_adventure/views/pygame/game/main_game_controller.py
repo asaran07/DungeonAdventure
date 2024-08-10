@@ -31,6 +31,10 @@ class MainGameController:
         self.debug_manager: DebugManager = debug_manager
         self.key_bind_manager = KeyBindManager()
         self.combat_manager = CombatManager(self.game_world)
+        self.game_world.on_combat_initiated = self.initiate_combat
+
+    def initiate_combat(self):
+        self.combat_manager.initiate_combat()
 
     def initialize(self):
         pygame.init()
@@ -72,11 +76,11 @@ class MainGameController:
                 if self.game_world.game_model.game_state == GameState.IN_COMBAT:
                     self.combat_manager.handle_event(event)
 
-            # Handle inventory events if inventory is visible
-            if self.pygame_view.inventory_display.is_visible:
-                self.pygame_view.handle_event(
-                    event, self.game_world.composite_player.inventory
-                )
+            # Handle inventory events if inventory is visible and combat
+            if self.game_world.game_model.game_state == GameState.IN_COMBAT:
+                self.combat_manager.handle_event(event)
+            elif self.pygame_view.inventory_display.is_visible:
+                self.pygame_view.handle_event(event, self.game_world.composite_player.inventory)
 
         return True
 
@@ -97,6 +101,9 @@ class MainGameController:
         # Draw the game world
         self.game_world.draw(self.game_screen.get_game_surface())
 
+        if self.game_world.game_model.game_state == GameState.IN_COMBAT:
+            self.combat_manager.draw(self.game_screen.get_game_surface())
+
         # Draw debug information if debug mode is enabled
         if self.debug_manager.debug_mode:
             self.game_world.composite_player.py_player.draw_debug_info(
@@ -106,9 +113,6 @@ class MainGameController:
             self.debug_manager.draw_debug_info(
                 self.game_screen.get_game_surface(), self.game_world
             )
-
-        if self.game_world.game_model.game_state == GameState.IN_COMBAT:
-            self.combat_manager.draw(self.game_screen.get_game_surface())
 
         # Scale the game surface to the screen
         self.game_screen.blit_scaled()
