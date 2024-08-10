@@ -1,5 +1,7 @@
 import pygame
 
+from dungeon_adventure.views.pygame.game.game_world import GameWorld
+
 
 class DebugManager:
     def __init__(self):
@@ -17,7 +19,7 @@ class DebugManager:
             self.fps = clock.get_fps()
             self.fps_update_time = current_time
 
-    def draw_debug_info(self, surface, game_world):
+    def draw_debug_info(self, surface, game_world: GameWorld):
         if not self.debug_mode:
             return
 
@@ -43,11 +45,11 @@ class DebugManager:
                 debug_info.append(f"  {direction.name}: {connected_room.name}")
 
         # Add player position
-        player_pos = game_world.player.rect.center
+        player_pos = game_world.composite_player.rect.center
         debug_info.append(f"Player Position: {player_pos}")
-        debug_info.append(f"Player Name: {game_world.player.name}")
+        debug_info.append(f"Player Name: {game_world.composite_player.name}")
         debug_info.append(
-            f"Player HP: {game_world.player.hero.current_hp}/{game_world.player.hero.max_hp}"
+            f"Player HP: {game_world.composite_player.hero.current_hp}/{game_world.composite_player.hero.max_hp}"
         )
 
         for i, info in enumerate(debug_info):

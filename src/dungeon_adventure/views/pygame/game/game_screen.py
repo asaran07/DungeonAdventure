@@ -4,6 +4,8 @@ import pygame
 from pygame.surface import Surface
 from pygame.time import Clock
 
+from dungeon_adventure.config import RESOURCES_DIR
+
 
 class GameScreen:
     def __init__(self, width: int = 480, height: int = 270, scale_factor: int = 3):
@@ -29,7 +31,9 @@ class GameScreen:
 
     def initialize(self):
         pygame.display.set_caption("Dungeon Adventure")
-        self._screen = pygame.display.set_mode((self._window_width, self._window_height))
+        self._screen = pygame.display.set_mode(
+            (self._window_width, self._window_height)
+        )
         self._game_surface = Surface((self._width, self._height))
         self._clock = pygame.time.Clock()
 
@@ -100,6 +104,13 @@ class GameScreen:
         :param color: RGB color tuple to fill the surface with
         """
         self._game_surface.fill(color)
+
+    def draw_background(self):
+        background = pygame.image.load(
+            f"{RESOURCES_DIR}/default_background.png"
+        ).convert_alpha()
+        background = pygame.transform.scale(background, (self.width, self.height))
+        self._game_surface.blit(background, (0, 0))
 
     def blit_scaled(self) -> None:
         """Draw the scaled game surface onto the main screen."""

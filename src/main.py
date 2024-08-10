@@ -33,8 +33,12 @@ def main():
         game_world = GameWorld(game_model, composite_player)
         game_screen = GameScreen()
         debug_manager = DebugManager()
-        pygame_view = PyGameView(game_screen.width, game_screen.height, game_screen.scale_factor)
-        main_game_controller = MainGameController(game_world, game_screen, pygame_view, debug_manager)
+        pygame_view = PyGameView(
+            game_screen.width, game_screen.height, game_screen.scale_factor
+        )
+        main_game_controller = MainGameController(
+            game_world, game_screen, pygame_view, debug_manager
+        )
         main_game_controller.run()
 
     else:

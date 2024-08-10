@@ -4,6 +4,7 @@ from dungeon_adventure.views.pygame.game.game_screen import GameScreen
 from dungeon_adventure.views.pygame.game.game_world import GameWorld
 from dungeon_adventure.views.pygame.game.py_game_view import PyGameView
 from dungeon_adventure.views.pygame.services.debug_manager import DebugManager
+from dungeon_adventure.views.pygame.services.keybind_manager import KeyBindManager
 
 
 class MainGameController:
@@ -26,6 +27,7 @@ class MainGameController:
         self.game_screen: GameScreen = game_screen
         self.pygame_view: PyGameView = pygame_view
         self.debug_manager: DebugManager = debug_manager
+        self.key_bind_manager = KeyBindManager()
 
     def initialize(self):
         pygame.init()
@@ -53,6 +55,15 @@ class MainGameController:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return False
+            elif event.type == pygame.KEYDOWN:
+                if self.key_bind_manager.is_inventory_key(event):
+                    self.pygame_view.toggle_inventory()
+                elif event.key == pygame.K_b:
+                    self.debug_manager.toggle_debug_mode()
+
+            # Handle inventory events if inventory is visible
+            if self.pygame_view.inventory_display.visible:
+                self.pygame_view.handle_event(event, self.game_world.composite_player.inventory)
 
         return True
 
@@ -65,7 +76,7 @@ class MainGameController:
 
     def draw(self) -> None:
         """Draw the game world, GUI, and debug info if enabled."""
-        self.game_screen.clear()
+        self.game_screen.draw_background()
 
         # Draw the game world
         self.game_world.draw(self.game_screen.get_game_surface())

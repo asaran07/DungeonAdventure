@@ -6,7 +6,6 @@ import pygame
 from dungeon_adventure.config import RESOURCES_DIR
 from dungeon_adventure.enums.item_types import ItemType
 from dungeon_adventure.enums.room_types import Direction, RoomType
-from dungeon_adventure.models.dungeon.room import Room
 from dungeon_adventure.views.pygame.room.game_room import GameRoom
 
 

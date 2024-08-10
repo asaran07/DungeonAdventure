@@ -28,10 +28,15 @@ class PyGameView:
         self.controls_display: Optional[ControlsDisplay] = None
 
     def initialize(self):
-        self.minimap = MiniMap(self.window_width, self.window_height)
-        self.inventory_display = InventoryDisplay(self.window_width, self.window_height)
+        self.minimap = MiniMap(
+            self.window_width * self.scale_factor,
+            self.window_height * self.scale_factor,
+        )
+        self.inventory_display = InventoryDisplay(self.window_width, self.window_height, self.scale_factor)
         self.room_items_display = RoomItemsDisplay(self.scale_factor)
-        self.controls_display = ControlsDisplay(self.window_width, self.window_height, self.scale_factor)
+        self.controls_display = ControlsDisplay(
+            self.window_width, self.window_height, self.scale_factor
+        )
 
     def update(self, current_room: GameRoom, room_dict: Dict[str, GameRoom]) -> None:
         """
@@ -56,6 +61,12 @@ class PyGameView:
         self.inventory_display.draw(screen, player_inventory)
         self.room_items_display.draw(screen)
         self.controls_display.draw(screen)
+
+    def handle_event(self, event: pygame.event.Event, player_inventory: Inventory) -> bool:
+        return self.inventory_display.handle_event(event, player_inventory)
+
+    def toggle_inventory(self):
+        self.inventory_display.toggle_visibility()
 
     # We can add methods here for handling GUI-related input,
     # showing messages, etc., similar to what ConsoleView did

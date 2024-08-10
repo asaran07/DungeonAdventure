@@ -1,6 +1,7 @@
 import pygame
-from typing import List, Tuple, Optional
+from typing import Dict, List, Tuple, Optional
 
+from dungeon_adventure.config import FONT_PATH
 from dungeon_adventure.enums.item_types import PotionType
 from dungeon_adventure.models.inventory.inventory import Inventory
 from dungeon_adventure.models.items.item import Item
@@ -9,20 +10,34 @@ from dungeon_adventure.models.items.potion import Potion
 
 
 class InventoryDisplay:
-    def __init__(self, screen_width: int, screen_height: int):
+    def __init__(self, screen_width: int, screen_height: int, scale_factor: int):
         self.screen_width = screen_width
         self.screen_height = screen_height
-        self.width = int(screen_width * 0.5)
-        self.height = int(screen_height * 0.5)
+        self.scale_factor = scale_factor
+        self.width = int(screen_width * 1)
+        self.height = int(screen_height * 1)
         self.x = (screen_width - self.width) // 2
         self.y = (screen_height - self.height) // 2
         self.columns = 3
-        self.padding = 10
-        self.item_size = (self.width // self.columns - self.padding * 2, 50)
-        self.font = pygame.font.Font(None, 24)
+        self.padding = 10 * scale_factor
+        self.item_size = (
+            (self.width // self.columns - self.padding * 2),
+            50 * scale_factor,
+        )
+        self.title_font = pygame.font.Font(
+            FONT_PATH + "Foldit-Medium.ttf", 24 * scale_factor
+        )
+        self.item_font = pygame.font.Font(FONT_PATH + "barlow.ttf", 16 * scale_factor)
         self.selected_item: Optional[Item] = None
+        self.visible = False
+
+    def toggle_visibility(self):
+        self.visible = not self.visible
 
     def draw(self, surface: pygame.Surface, inventory: Inventory):
+        if not self.visible:
+            return
+
         # Draw main inventory window
         pygame.draw.rect(
             surface, (50, 50, 50), (self.x, self.y, self.width, self.height)
@@ -31,13 +46,22 @@ class InventoryDisplay:
             surface, (200, 200, 200), (self.x, self.y, self.width, self.height), 2
         )
 
+        # Draw title
+        title_surface = self.title_font.render("Inventory", True, (255, 255, 255))
+        surface.blit(title_surface, (self.x + 10, self.y + 10))
+
         # Draw items
         items = inventory.get_all_items()
         for i, (item, quantity) in enumerate(items):
             col = i % self.columns
             row = i // self.columns
             item_x = self.x + col * (self.width // self.columns) + self.padding
-            item_y = self.y + row * (self.item_size[1] + self.padding) + self.padding
+            item_y = (
+                self.y
+                + row * (self.item_size[1] + self.padding)
+                + self.padding
+                + 50 * self.scale_factor
+            )
 
             # Draw item background
             item_rect = pygame.Rect(item_x, item_y, *self.item_size)
@@ -49,7 +73,7 @@ class InventoryDisplay:
 
             # Draw item name and quantity
             text = f"{item.name} x{quantity}"
-            text_surface = self.font.render(text, True, (255, 255, 255))
+            text_surface = self.item_font.render(text, True, (255, 255, 255))
             surface.blit(text_surface, (item_x + 5, item_y + 5))
 
         # Draw item details if an item is selected
@@ -57,8 +81,8 @@ class InventoryDisplay:
             self.draw_item_details(surface)
 
     def draw_item_details(self, surface: pygame.Surface):
-        detail_width = 200
-        detail_height = 150
+        detail_width = 200 * self.scale_factor
+        detail_height = 150 * self.scale_factor
         detail_x = self.x + self.width
         detail_y = self.y
 
@@ -91,10 +115,15 @@ class InventoryDisplay:
             lines.append(f"Healing: {self.selected_item.heal_amount}")
 
         for i, line in enumerate(lines):
-            text_surface = self.font.render(line, True, (255, 255, 255))
-            surface.blit(text_surface, (detail_x + 5, detail_y + 5 + i * 25))
+            text_surface = self.item_font.render(line, True, (255, 255, 255))
+            surface.blit(
+                text_surface, (detail_x + 5, detail_y + 5 + i * 25 * self.scale_factor)
+            )
 
     def handle_event(self, event: pygame.event.Event, inventory: Inventory) -> bool:
+        if not self.visible:
+            return False
+
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = pygame.mouse.get_pos()
             items = inventory.get_all_items()
@@ -103,7 +132,10 @@ class InventoryDisplay:
                 row = i // self.columns
                 item_x = self.x + col * (self.width // self.columns) + self.padding
                 item_y = (
-                    self.y + row * (self.item_size[1] + self.padding) + self.padding
+                    self.y
+                    + row * (self.item_size[1] + self.padding)
+                    + self.padding
+                    + 50 * self.scale_factor
                 )
                 item_rect = pygame.Rect(item_x, item_y, *self.item_size)
                 if item_rect.collidepoint(mouse_pos):
