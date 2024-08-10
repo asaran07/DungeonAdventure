@@ -16,7 +16,7 @@ class Animation:
         # images and loads them into a list as the pygame's Surface property.
         # So we get a bunch of surfaces derived from files back.
         # We can then load the surfaces into our 'frames' list.
-            return [pygame.image.load(path).convert_alpha() for path in frame_paths]
+        return [pygame.image.load(path).convert_alpha() for path in frame_paths]
 
     def update(self, dt: int) -> None:
         if len(self.frames) > 1:  # Only update if there's at least one frame,

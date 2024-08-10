@@ -126,7 +126,6 @@ class GameWorld:
             # Handle empty room
             pass
 
-
     def _reposition_player(self, entry_direction: Direction):
         opposite_direction = Room.opposite(entry_direction)
         door_hitbox = self.current_room.visuals.door_hitboxes[opposite_direction]

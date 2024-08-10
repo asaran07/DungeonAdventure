@@ -42,8 +42,12 @@ class PyPlayer(pygame.sprite.Sprite):
     def update(self, dt, current_room: GameRoom):
         dt_ms = int(dt * 1000)
         keys = pygame.key.get_pressed()
-        dx = (keys[pygame.K_RIGHT] or keys[pygame.K_d]) - (keys[pygame.K_LEFT] or keys[pygame.K_a])
-        dy = (keys[pygame.K_DOWN] or keys[pygame.K_s]) - (keys[pygame.K_UP] or keys[pygame.K_w])
+        dx = (keys[pygame.K_RIGHT] or keys[pygame.K_d]) - (
+            keys[pygame.K_LEFT] or keys[pygame.K_a]
+        )
+        dy = (keys[pygame.K_DOWN] or keys[pygame.K_s]) - (
+            keys[pygame.K_UP] or keys[pygame.K_w]
+        )
 
         if dx > 0:
             self.animation_manager.play("walk_right")
@@ -52,16 +56,22 @@ class PyPlayer(pygame.sprite.Sprite):
             self.animation_manager.play("walk_left")
             self.facing_right = False
         elif dy != 0:
-            self.animation_manager.play("walk_right" if self.facing_right else "walk_left")
+            self.animation_manager.play(
+                "walk_right" if self.facing_right else "walk_left"
+            )
         else:
-            self.animation_manager.play("idle_right" if self.facing_right else "idle_left")
+            self.animation_manager.play(
+                "idle_right" if self.facing_right else "idle_left"
+            )
 
         self.move(dx * self.speed, dy * self.speed, current_room)
         self.animation_manager.update(dt_ms)
 
         self.image = self.animation_manager.get_current_frame()
         if self.image is None:
-            raise ValueError("Player image is None after update. Check animation update logic.")
+            raise ValueError(
+                "Player image is None after update. Check animation update logic."
+            )
         if not self.facing_right:
             self.image = pygame.transform.flip(self.image, True, False)
 
