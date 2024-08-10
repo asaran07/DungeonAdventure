@@ -1,4 +1,5 @@
 import random
+import sqlite3
 from typing import Optional
 
 from dungeon_adventure.models.characters.dungeon_character import DungeonCharacter
@@ -84,6 +85,7 @@ class Hero(DungeonCharacter):
     # Placeholder for future special ability implementation
     def use_special_ability(self) -> None:
         """Use a special ability. To be implemented by subclasses."""
+        # if name == warrior/do warrior Crushing Blow etc.
         pass
 
     def __str__(self) -> str:
