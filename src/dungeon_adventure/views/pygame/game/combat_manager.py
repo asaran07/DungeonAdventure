@@ -1,14 +1,12 @@
 import logging
-import random
 from typing import List, Optional
 
-import pygame
 from transitions import Machine
 
 from dungeon_adventure.enums.combat_state import CombatState
-from dungeon_adventure.enums.game_state import GameState
 from dungeon_adventure.models.characters.hero import Hero
 from dungeon_adventure.models.characters.monster import Monster
+from dungeon_adventure.views.pygame.combat.combat_screen import CombatScreen
 from dungeon_adventure.views.pygame.game.game_world import GameWorld
 
 
@@ -17,6 +15,7 @@ class CombatManager:
 
     def __init__(self, game_world: GameWorld):
         self.game_world = game_world
+        self.view: CombatScreen = Optional[None]
         self.player = game_world.composite_player
         self.monsters: List[Monster] = []
         self.combat_state: CombatState = CombatState.WAITING
@@ -49,9 +48,23 @@ class CombatManager:
             "end_combat", "*", "combat_end", after="cleanup_combat"
         )
 
+    def set_combat_screen(self, combat_screen: CombatScreen):
+        self.view = combat_screen
+
     def setup_combat(self):
         self.logger.info("Setting up combat")
-        print("Setting up combat...")
+        self.determine_turn_order()
+        self.update_combat_screen()
+
+    def determine_turn_order(self) -> None:
+        self.logger.info("Determining turn order")
+        self.turn_order = [self.player.hero] + self.monsters
+        self.turn_order.sort(key=lambda x: x.attack_speed, reverse=True)
+
+    def update_combat_screen(self):
+        self.logger.info("Updating combat screen")
+        if self.view:
+            self.view.update_player_info(self.player.hero.current_hp, self.player.hero.max_hp)
 
     def start_enemy_turn(self):
         print("Enemy turn starting...")
@@ -71,26 +84,27 @@ class CombatManager:
     def draw(self):
         pass
 
-    def handle_event(self, event: pygame.event.Event):
-        # We don't process any events unless we're ready for input
-        # (so if we've already done the pre combat preparations)
-        if CombatState == CombatState.READY:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_a:
-                    return self.handle_combat_action("Attack")
-                elif event.key == pygame.K_u:
-                    return self.handle_combat_action("Use Item")
-                elif event.key == pygame.K_f:
-                    return self.handle_combat_action("Flee")
+    # def handle_event(self, event: pygame.event.Event):
+    #     # We don't process any events unless we're ready for input
+    #     # (so if we've already done the pre combat preparations)
+    #     if CombatState == CombatState.READY:
+    #         if event.type == pygame.KEYDOWN:
+    #             if event.key == pygame.K_a:
+    #                 return self.handle_combat_action("Attack")
+    #             elif event.key == pygame.K_u:
+    #                 return self.handle_combat_action("Use Item")
+    #             elif event.key == pygame.K_f:
+    #                 return self.handle_combat_action("Flee")
 
-    def initiate_combat(self) -> None:
-        self.logger.info("Initiating combat")
-        self.monsters = self.game_world.current_room.room.monsters
-        if not self.monsters:
-            self.logger.warning("No monsters found while initializing combat")
-            return
-        self.game_world.game_model.game_state = GameState.IN_COMBAT
-        self.combat_state = CombatState.PLAYER_TURN
+    # def initiate_combat(self) -> None:
+    #     self.logger.info("Initiating combat")
+    #     self.monsters = self.game_world.current_room.room.monsters
+    #     if not self.monsters:
+    #         self.logger.warning("No monsters found while initializing combat")
+    #         return
+    #     self.game_world.game_model.game_state = GameState.IN_COMBAT
+    #     self.combat_state = CombatState.PLAYER_TURN
+
 
     #
     # def handle_combat_action(
@@ -138,10 +152,7 @@ class CombatManager:
     #     self.combat_state = CombatState.WAITING
     #     self.monsters = []
     #
-    # def determine_turn_order(self) -> None:
-    #     self.logger.info("Determining turn order")
-    #     self.turn_order = [self.player.hero] + self.monsters
-    #     self.turn_order.sort(key=lambda x: x.attack_speed, reverse=True)
+
     #
     # def handle_player_action(
     #     self, action: str, target_index: Optional[int] = None

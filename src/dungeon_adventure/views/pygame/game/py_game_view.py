@@ -140,6 +140,7 @@ class PyGameView:
 
         :param component: The name of the component to toggle
         """
+        self.logger.info(f"Toggling visibility of {component}", stacklevel=2)
         if component == "minimap":
             self.minimap_visible = not self.minimap_visible
         elif component == "combat_screen":

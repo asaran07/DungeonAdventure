@@ -51,6 +51,8 @@ class MainGameController:
     def initiate_combat(self) -> None:
         """Initiate combat when triggered by the game world."""
         self.logger.debug("Initiating combat", stacklevel=2)
+        self.pygame_view.toggle_visibility("combat_screen")
+        self.combat_manager.set_combat_screen(self.pygame_view.combat_screen)
         self.combat_manager.start_combat()
 
     def initialize(self) -> None:
@@ -124,7 +126,12 @@ class MainGameController:
         self._draw_debug_info()
         self.game_screen.blit_scaled()
         # The GUI elements made with Pygame components are draw directly onto the screen, instead of the game_surface.
+        if self.pygame_view.combat_screen_visible:
+            self._draw_combat_screen()
         self._draw_gui()
+
+    def _draw_combat_screen(self) -> None:
+        self.pygame_view.combat_screen.draw(self.game_screen.get_screen())
 
     def _draw_game_world(self) -> None:
         """Draw the game world and combat screen if in combat."""

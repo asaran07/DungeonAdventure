@@ -138,14 +138,16 @@ class CombatScreen:
         display.blit(text_surface, text_rect)
 
     def update_player_info(self, player_health: int, player_max_health: int):
+        self.logger.debug("Updating Player Info -> {}/{}".format(player_health, player_max_health))
         self.display_text(
             f"HP: {player_health}/{player_max_health}",
             self.player_info_display,
-            font_size=24,
+            font_size=48,
             position="center",
         )
 
     def display_combat_message(self, message: str):
+        self.logger.debug("Displaying Combat Message -> {}".format(message))
         self.display_text(
-            message, self.combat_info_display, font_size=24, position="center"
+            message, self.combat_info_display, font_size=48, position="center"
         )
