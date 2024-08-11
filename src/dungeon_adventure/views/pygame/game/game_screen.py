@@ -22,8 +22,8 @@ class GameScreen:
         self._width: int = width
         self._height: int = height
         self._scale_factor: int = scale_factor
-        self._window_width: int = self._width * self._scale_factor
-        self._window_height: int = self._height * self._scale_factor
+        self._scaled_width: int = self._width * self._scale_factor
+        self._scaled_height: int = self._height * self._scale_factor
 
         self._screen: Optional[Surface] = None
         self._game_surface: Optional[Surface] = None
@@ -32,7 +32,7 @@ class GameScreen:
     def initialize(self):
         pygame.display.set_caption("Dungeon Adventure")
         self._screen = pygame.display.set_mode(
-            (self._window_width, self._window_height)
+            (self._scaled_width, self._scaled_height)
         )
         self._game_surface = Surface((self._width, self._height))
         self._clock = pygame.time.Clock()
@@ -56,16 +56,6 @@ class GameScreen:
         """Scale factor for the window size."""
         return self._scale_factor
 
-    @property
-    def window_width(self) -> int:
-        """Width of the game window."""
-        return self._window_width
-
-    @property
-    def window_height(self) -> int:
-        """Height of the game window."""
-        return self._window_height
-
     def get_game_surface(self) -> Surface:
         """Return the base game surface for drawing."""
         return self._game_surface
@@ -77,7 +67,7 @@ class GameScreen:
     def get_scaled_surface(self) -> Surface:
         """Return a scaled version of the game surface to fit the window."""
         return pygame.transform.scale(
-            self._game_surface, (self._window_width, self._window_height)
+            self._game_surface, (self._scaled_width, self._scaled_height)
         )
 
     def tick(self, fps: int) -> float:
@@ -115,3 +105,7 @@ class GameScreen:
     def blit_scaled(self) -> None:
         """Draw the scaled game surface onto the main screen."""
         self._screen.blit(self.get_scaled_surface(), (0, 0))
+
+    def blit_no_scale(self) -> None:
+        """Draw the scaled game surface onto the main screen."""
+        self._screen.blit(self._game_surface, (0, 0))

@@ -3,6 +3,7 @@ import logging
 import pygame
 
 from dungeon_adventure.enums.game_state import GameState
+from dungeon_adventure.views.pygame.combat.combat_screen import CombatScreen
 from dungeon_adventure.views.pygame.game.combat_manager import CombatManager
 from dungeon_adventure.views.pygame.game.game_screen import GameScreen
 from dungeon_adventure.views.pygame.game.game_world import GameWorld
@@ -79,6 +80,10 @@ class MainGameController:
                     self.game_world.handle_drop_item()
                 elif event.key == pygame.K_g:
                     self.pygame_view.room_items_display.toggle_visibility()
+                elif event.key == pygame.K_m:
+                    self.pygame_view.toggle_minimap_visibility()
+                elif event.key == pygame.K_c:
+                    self.pygame_view.toggle_combat_screen_visibility()
                 if self.game_world.game_model.game_state == GameState.IN_COMBAT:
                     self.combat_manager.handle_event(event)
 

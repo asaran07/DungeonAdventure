@@ -68,7 +68,7 @@ class CombatManager:
         self.logger.debug("Determining turn order")
         self.turn_order = [self.player.hero] + self.monsters
         self.turn_order.sort(key=lambda x: x.attack_speed, reverse=True)
-        self.logger.debug(f"Turn order: {self.turn_order}")
+        self.logger.debug(f"Turn order: {[f'{i.name}' for i in self.turn_order]}")
 
     def update(self) -> None:
         """Update the combat state each frame."""

@@ -1,2 +1,0 @@
-2024-08-10 15:13:51,631 | __main__ | INFO | main.py:36 | Starting Dungeon Adventure | Pygame version: 2.5.0
-2024-08-10 15:13:51,632 | dungeon_adventure.views.pygame.game.game_world | INFO | game_world.py:25 | Initializing GameWorld

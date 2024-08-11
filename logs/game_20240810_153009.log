@@ -1,9 +1,0 @@
-2024-08-10 15:30:09,209 | __main__ | INFO | main.py:36 | Starting Dungeon Adventure | Pygame version: 2.5.0
-2024-08-10 15:30:09,209 | dungeon_adventure.views.pygame.game.game_world | INFO | game_world.py:25 | Initializing GameWorld
-2024-08-10 15:30:09,382 | dungeon_adventure.combat | INFO | combat_manager.py:45 | Initializing CombatManager
-2024-08-10 15:30:10,401 | dungeon_adventure.views.pygame.game.game_world | DEBUG | game_world.py:112 | Room transition: Room 1 - Entrance Hall -> Direction.SOUTH
-2024-08-10 15:30:10,401 | dungeon_adventure.views.pygame.game.game_world | INFO | game_world.py:124 | Monsters found in room: Room 12
-2024-08-10 15:30:10,401 | dungeon_adventure.views.pygame.game.game_world | DEBUG | game_world.py:125 | Monsters: ['Generic Monster', 'Monster Bob']
-2024-08-10 15:30:10,401 | dungeon_adventure.combat | INFO | combat_manager.py:49 | Initiating combat
-2024-08-10 15:30:10,401 | dungeon_adventure.combat | DEBUG | combat_manager.py:50 | Player HP: 75/75
-2024-08-10 15:30:10,402 | dungeon_adventure.combat | DEBUG | combat_manager.py:51 | Monsters: []
