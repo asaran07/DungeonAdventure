@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, Callable
+from typing import Callable, Dict
 
 import pygame
 
@@ -51,7 +51,7 @@ class MainGameController:
     def initiate_combat(self) -> None:
         """Initiate combat when triggered by the game world."""
         self.logger.debug("Initiating combat", stacklevel=2)
-        self.combat_manager.initiate_combat()
+        self.combat_manager.start_combat()
 
     def initialize(self) -> None:
         """Initialize all game components."""
@@ -100,8 +100,8 @@ class MainGameController:
 
     def _handle_combat_events(self, event: pygame.event.Event) -> None:
         """Handle combat and inventory-specific events."""
-        if self.game_world.game_model.game_state == GameState.IN_COMBAT:
-            self.combat_manager.handle_event(event)
+        # if self.game_world.game_model.game_state == GameState.IN_COMBAT:
+        #     self.combat_manager.handle_event(event)
 
     def _handle_inventory_events(self, event: pygame.event.Event) -> None:
         if self.pygame_view.inventory_visible:
@@ -114,8 +114,8 @@ class MainGameController:
         self.pygame_view.update(self.game_world.current_room, self.game_world.room_dict)
         self.debug_manager.update_fps(self.game_screen.clock)
 
-        if self.game_world.game_model.game_state == GameState.IN_COMBAT:
-            self.combat_manager.update()
+        # if self.game_world.game_model.game_state == GameState.IN_COMBAT:
+        #     self.combat_manager.update()
 
     def draw(self) -> None:
         """Draw the game world, GUI, and debug info if enabled."""
@@ -129,8 +129,8 @@ class MainGameController:
     def _draw_game_world(self) -> None:
         """Draw the game world and combat screen if in combat."""
         self.game_world.draw(self.game_screen.get_game_surface())
-        if self.game_world.game_model.game_state == GameState.IN_COMBAT:
-            self.combat_manager.draw()
+        # if self.game_world.game_model.game_state == GameState.IN_COMBAT:
+        #     self.combat_manager.draw()
 
     def _draw_debug_info(self) -> None:
         """Draw debug information if debug mode is enabled."""
