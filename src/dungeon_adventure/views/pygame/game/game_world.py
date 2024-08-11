@@ -109,7 +109,9 @@ class GameWorld:
             self._handle_room_transition(door_direction)
 
     def _handle_room_transition(self, direction: Direction):
-        self.logger.debug(f"Room transition: {self.current_room.room.name} -> {direction}")
+        self.logger.debug(
+            f"Room transition: {self.current_room.room.name} -> {direction}"
+        )
         current_dungeon_room = self.current_room.room
         next_dungeon_room = current_dungeon_room.connections[direction]
         if next_dungeon_room:
@@ -122,7 +124,9 @@ class GameWorld:
     def _handle_room_encounters(self):
         if self.current_room.room.has_monsters:
             self.logger.info(f"Monsters found in room: {self.current_room.room.name}")
-            self.logger.debug(f"Monsters: {[m.name for m in self.current_room.room.monsters]}")
+            self.logger.debug(
+                f"Monsters: {[m.name for m in self.current_room.room.monsters]}"
+            )
             self.game_model.game_state = GameState.IN_COMBAT
             if self.on_combat_initiated:
                 self.on_combat_initiated()

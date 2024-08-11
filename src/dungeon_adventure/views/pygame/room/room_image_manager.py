@@ -34,7 +34,9 @@ class RoomImageManager:
         if not os.path.exists(image_path):
             # Fallback to default image if specific configuration doesn't exist
             image_path = os.path.join(self.base_path, "room_XXXX.png")
-            self.logger.warning(f"No image found for {door_code}, defaulting to {image_path}")
+            self.logger.warning(
+                f"No image found for {door_code}, defaulting to {image_path}"
+            )
 
         self.image_cache[door_code] = image_path
         return image_path

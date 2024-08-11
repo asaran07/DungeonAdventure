@@ -91,9 +91,7 @@ class MainGameController:
             if self.game_world.game_model.game_state == GameState.IN_COMBAT:
                 self.combat_manager.handle_event(event)
             elif self.pygame_view.inventory_display.is_visible:
-                self.pygame_view.handle_event(
-                    event, self.game_world.composite_player.inventory
-                )
+                self.pygame_view.handle_event(event)
 
         return True
 
