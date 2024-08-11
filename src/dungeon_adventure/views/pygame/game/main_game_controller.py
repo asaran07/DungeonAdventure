@@ -116,6 +116,7 @@ class MainGameController:
         self._draw_game_world()
         self._draw_debug_info()
         self.game_screen.blit_scaled()
+        # The GUI elements made with Pygame components are draw directly onto the screen, instead of the game_surface.
         self._draw_gui()
 
     def _draw_game_world(self) -> None:

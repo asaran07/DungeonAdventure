@@ -23,15 +23,12 @@ class CombatScreen:
     def display(self, surface: pygame.Surface):
         self._display = surface
 
-    @property
-    def width(self):
-        return self._width
-
-    @property
-    def height(self):
-        return self._height
-
     def draw(self, screen: pygame.Surface):
+        display_rect = self.draw_combat_display(screen)
+
+        screen.blit(self.display, display_rect)
+
+    def draw_combat_display(self, screen: pygame.Surface):
         self.display.fill(BLACK)
         pygame.draw.rect(self.display, WHITE, self.display.get_rect(), 2)
         centering_rect = screen.get_rect()
@@ -41,5 +38,7 @@ class CombatScreen:
         title_rect = title_surface.get_rect(center=self.display.get_rect().center)
 
         self.display.blit(title_surface, title_rect)
+        return display_rect
 
-        screen.blit(self.display, display_rect)
+
+

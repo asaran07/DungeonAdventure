@@ -12,7 +12,7 @@ class ControlsDisplay:
             self.controls_height,
         )
         self.font = pygame.font.Font(None, 24)
-        self.keybinds = [
+        self.keybindings = [
             ("WASD", "Movement"),
             ("I", "Inventory"),
             ("M", "Map"),
@@ -32,8 +32,8 @@ class ControlsDisplay:
             title_surface, (self.controls_rect.x + 10, self.controls_rect.y + 10)
         )
 
-        # Draw keybinds
-        for i, (key, value) in enumerate(self.keybinds):
+        # Draw keybindings
+        for i, (key, value) in enumerate(self.keybindings):
             key_surface = self.font.render(key, True, (255, 255, 255))
             value_surface = self.font.render(value, True, (255, 255, 255))
             y_pos = self.controls_rect.y + 50 + i * 30
