@@ -14,9 +14,11 @@ class ControlsDisplay:
         self.font = pygame.font.Font(None, 24)
         self.keybinds = [
             ("WASD", "Movement"),
+            ("I", "Inventory"),
+            ("M", "Map"),
             ("T", "Take Items"),
             ("X", "Drop Items"),
-            ("B", "Debug"),
+            # ("B", "Debug"),
         ]
 
     def draw(self, surface: pygame.Surface):

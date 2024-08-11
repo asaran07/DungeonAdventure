@@ -51,9 +51,6 @@ class RoomItemsDisplay:
         self.display_background.fill(self.BACKGROUND_COLOR)
         self.is_visible: bool = False
 
-    def toggle_visibility(self):
-        self.is_visible = not self.is_visible
-
     def calc_display_size(self, scale_factor: int) -> Size:
         display_width: int = int(self.DISPLAY_WIDTH_FACTOR * scale_factor)
         display_height: int = int(self.DISPLAY_HEIGHT_FACTOR * scale_factor)
@@ -79,8 +76,6 @@ class RoomItemsDisplay:
 
     # TODO: Add parameter for drawing backgrounds or not etc.
     def draw(self, surface: pygame.Surface) -> None:
-        if not self.is_visible:
-            return
         """Draw the room items display on the given surface."""
         # Draw transparent background
         surface.blit(
