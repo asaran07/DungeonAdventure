@@ -2,6 +2,8 @@ import logging
 import random
 from typing import List, Optional
 
+import pygame
+
 from dungeon_adventure.enums.combat_state import CombatState
 from dungeon_adventure.enums.game_state import GameState
 from dungeon_adventure.models.characters.hero import Hero
@@ -30,12 +32,23 @@ class CombatManager:
     def draw(self):
         pass
 
-    def handle_event(self):
-        pass
+    def handle_event(self, event: pygame.event.Event):
+        # We don't process any events unless we're ready for input
+        # (so if we've already done the pre combat preparations)
+        if CombatState == CombatState.READY:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_a:
+                    return self.handle_combat_action("Attack")
+                elif event.key == pygame.K_u:
+                    return self.handle_combat_action("Use Item")
+                elif event.key == pygame.K_f:
+                    return self.handle_combat_action("Flee")
 
     def initiate_combat(self) -> None:
+        self.logger.info("Initiating combat")
         self.monsters = self.game_world.current_room.room.monsters
         if not self.monsters:
+            self.logger.warning("No monsters found while initializing combat")
             return
         self.game_world.game_model.game_state = GameState.IN_COMBAT
         self.combat_state = CombatState.PLAYER_TURN

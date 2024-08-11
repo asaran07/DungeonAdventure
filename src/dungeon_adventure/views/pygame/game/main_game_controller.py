@@ -35,7 +35,7 @@ class MainGameController:
         self.key_bind_manager: KeyBindManager = KeyBindManager()
         self.combat_manager: CombatManager = CombatManager(self.game_world)
         self.game_world.on_combat_initiated = self.initiate_combat
-        self.logger: logging.Logger = logging.getLogger(__name__)
+        self.logger: logging.Logger = logging.getLogger(self.__class__.__name__)
 
         self.key_actions: Dict[int, Callable] = {
             pygame.K_i: lambda: self.pygame_view.toggle_visibility("inventory"),
@@ -50,11 +50,13 @@ class MainGameController:
 
     def initiate_combat(self) -> None:
         """Initiate combat when triggered by the game world."""
+        self.logger.debug("Initiating combat", stacklevel=2)
         self.combat_manager.initiate_combat()
 
     def initialize(self) -> None:
         """Initialize all game components."""
         pygame.init()
+        self.logger.debug("Initializing game components", stacklevel=2)
         self.game_screen.initialize()
         self.pygame_view.initialize()
         self.game_world.initialize()
@@ -83,21 +85,26 @@ class MainGameController:
                 self.logger.info("Quit event received")
                 return False
             self._handle_keydown_event(event)
-            self._handle_combat_and_inventory_events(event)
+            self._handle_combat_events(event)
         return True
 
     def _handle_keydown_event(self, event: pygame.event.Event) -> None:
         """Handle keydown events."""
-        if event.type == pygame.KEYDOWN:
+        if (
+            event.type == pygame.KEYDOWN
+            and self.game_world.game_model.game_state != GameState.IN_COMBAT
+        ):
             action = self.key_actions.get(event.key)
             if action:
                 action()
 
-    def _handle_combat_and_inventory_events(self, event: pygame.event.Event) -> None:
+    def _handle_combat_events(self, event: pygame.event.Event) -> None:
         """Handle combat and inventory-specific events."""
         if self.game_world.game_model.game_state == GameState.IN_COMBAT:
-            self.combat_manager.handle_event()
-        elif self.pygame_view.inventory_visible:
+            self.combat_manager.handle_event(event)
+
+    def _handle_inventory_events(self, event: pygame.event.Event) -> None:
+        if self.pygame_view.inventory_visible:
             self.pygame_view.handle_event(event)
 
     def update(self) -> None:

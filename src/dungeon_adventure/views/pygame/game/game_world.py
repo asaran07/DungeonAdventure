@@ -127,6 +127,7 @@ class GameWorld:
             self.logger.debug(
                 f"Monsters: {[m.name for m in self.current_room.room.monsters]}"
             )
+            self.logger.info("Setting GameState to IN_COMBAT")
             self.game_model.game_state = GameState.IN_COMBAT
             if self.on_combat_initiated:
                 self.on_combat_initiated()
