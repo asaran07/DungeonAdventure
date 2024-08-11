@@ -14,12 +14,13 @@ class CombatScreen:
         self._height = window_height
         self._display = pygame.Surface((self._width - 50, self._height - 50))
         self.player_info_display = pygame.Surface(
-            (self._width - 1000, self._height - 500)
+            (self._width - 1000, self._height - 565)
         )
         self.enemy_info_display = pygame.Surface(
-            (self._width - 1000, self._height - 500)
+            (self._width - 1000, self._height - 565)
         )
-        self.action_display = pygame.Surface((self._width - 1000, self._height - 500))
+        self.action_display = pygame.Surface((self._width - 1000, self._height - 565))
+        self.combat_info_display = pygame.Surface((self._width - 100, self._height // 2))
         self.logger = logging.getLogger(__name__)
 
     @property
@@ -35,6 +36,7 @@ class CombatScreen:
         self.draw_player_info()
         self.draw_action_display()
         self.draw_enemy_info()
+        self.draw_combat_info_display()
         screen.blit(self.display, display_rect)
 
     def draw_combat_display(self, screen: pygame.Surface):
@@ -79,7 +81,7 @@ class CombatScreen:
             bottomright=(self.display.get_width() - 20, self.display.get_height() - 20)
         )
 
-        enemy_info_surface = pygame.font.Font(None, 40).render(
+        enemy_info_surface = pygame.font.Font(FONT_PATH + "honk.ttf", 40).render(
             "Enemy Info", True, WHITE
         )
         enemy_info_title_rect = enemy_info_surface.get_rect(
@@ -96,10 +98,30 @@ class CombatScreen:
             midbottom=(self.display.get_width() // 2, self.display.get_height() - 20)
         )
 
-        action_surface = pygame.font.Font(None, 40).render("Actions", True, WHITE)
+        action_surface = pygame.font.Font(FONT_PATH + "honk.ttf", 40).render(
+            "Actions", True, WHITE
+        )
         action_title_rect = action_surface.get_rect(
             midtop=(self.action_display.get_width() // 2, 10)
         )
 
         self.action_display.blit(action_surface, action_title_rect)
         self.display.blit(self.action_display, action_rect)
+
+    def draw_combat_info_display(self):
+        pygame.draw.rect(self.combat_info_display, WHITE, self.combat_info_display.get_rect(), 2)
+
+        combat_info_rect = self.combat_info_display.get_rect(
+            midtop=(self.display.get_width() // 2, 70)  # Center horizontally, 70 pixels from the top
+        )
+
+        combat_info_surface = pygame.font.Font(FONT_PATH + "honk.ttf", 40).render(
+            "Info", True, WHITE
+        )
+
+        combat_title_rect = combat_info_surface.get_rect(
+            midtop=(self.combat_info_display.get_width() // 2, 10)
+        )
+
+        self.combat_info_display.blit(combat_info_surface, combat_title_rect)
+        self.display.blit(self.combat_info_display, combat_info_rect)
