@@ -8,7 +8,7 @@ from dungeon_adventure.exceptions.input import InvalidInputError
 from dungeon_adventure.exceptions.player import InvalidPlayerActionError
 from dungeon_adventure.views.view import View
 from src import GameModel
-from serialization.project_state import ProjectState, load_game
+from serialization.game_snapshot import GameSnapshot, load_game
 
 
 class GameController:
@@ -77,7 +77,7 @@ class GameController:
 
     def handle_load(self):
         try:
-            proj_state: ProjectState = load_game("save.pkl")
+            proj_state: GameSnapshot = load_game("save.pkl")
             self.game_model = proj_state.get_game_model()
             self.player_action_controller = PlayerActionController(proj_state.game_model,
                                                                    proj_state.map_visualizer,
