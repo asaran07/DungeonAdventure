@@ -68,7 +68,7 @@ LOGGING_CONFIG = {
 
 
 class GameLogger:
-    def __init__(self, log_file_path='game.log'):
+    def __init__(self, log_file_path="game.log"):
         self.log_file_path = log_file_path
         self.ensure_log_directory()
 
@@ -81,23 +81,23 @@ class GameLogger:
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         log_entry = f"{timestamp} | {level.upper()} | {message}\n"
 
-        with open(self.log_file_path, 'a') as log_file:
+        with open(self.log_file_path, "a") as log_file:
             log_file.write(log_entry)
 
     def debug(self, message):
-        self.log('DEBUG', message)
+        self.log("DEBUG", message)
 
     def info(self, message):
-        self.log('INFO', message)
+        self.log("INFO", message)
 
     def warning(self, message):
-        self.log('WARNING', message)
+        self.log("WARNING", message)
 
     def error(self, message):
-        self.log('ERROR', message)
+        self.log("ERROR", message)
 
     def critical(self, message):
-        self.log('CRITICAL', message)
+        self.log("CRITICAL", message)
 
 
 def setup_logging():

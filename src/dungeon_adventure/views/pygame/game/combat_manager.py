@@ -24,7 +24,6 @@ class CombatManager:
         self.combat_over: bool = False
         self.logger = logging.getLogger("dungeon_adventure.combat")
 
-
     def update(self):
         pass
 
@@ -41,7 +40,9 @@ class CombatManager:
         self.game_world.game_model.game_state = GameState.IN_COMBAT
         self.combat_state = CombatState.PLAYER_TURN
 
-    def handle_combat_action(self, action: str, target_index: Optional[int] = None) -> str:
+    def handle_combat_action(
+        self, action: str, target_index: Optional[int] = None
+    ) -> str:
         if action == "Attack":
             return self.handle_attack(target_index)
         elif action == "Use Item":
