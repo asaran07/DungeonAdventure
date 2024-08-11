@@ -32,15 +32,7 @@ class InventoryDisplay:
             self.screen_width, self.screen_height, self.scale_factor
         )
 
-    def toggle_visibility(self):
-        self.is_visible = not self.is_visible
-        if not self.is_visible:
-            self.item_details_popup.hide()
-
     def handle_event(self, event: pygame.event.Event):
-        if not self.is_visible:
-            return
-
         if event.type == pygame.MOUSEMOTION:
             self.hovered_index = self.get_item_at_position(event.pos)
 
@@ -69,9 +61,6 @@ class InventoryDisplay:
         self.item_details_popup.show(item)
 
     def draw(self, surface: pygame.Surface, inventory: Inventory):
-        if not self.is_visible:
-            return
-
         self.inventory = inventory
 
         # Draw background

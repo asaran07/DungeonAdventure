@@ -1,9 +1,11 @@
 import logging
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
 import pygame
 
+from dungeon_adventure.models.characters.monster import Monster
 from dungeon_adventure.models.inventory.inventory import Inventory
+from dungeon_adventure.models.player import Player
 from dungeon_adventure.views.pygame.combat.combat_screen import CombatScreen
 from dungeon_adventure.views.pygame.room.controls_display import ControlsDisplay
 from dungeon_adventure.views.pygame.room.game_room import GameRoom
@@ -85,9 +87,9 @@ class PyGameView:
         if self._controls_visible:
             self.controls_display.draw(screen)
 
-    def handle_event(self, event: pygame.event.Event) -> bool:
-        """Handle pygame events for UI components."""
-        return self.inventory_display.handle_event(event)
+    def handle_event(self, event: pygame.event.Event):
+        if self.combat_screen_visible:
+            return self.handle_combat_input(event)
 
     @property
     def minimap_visible(self) -> bool:
@@ -154,3 +156,41 @@ class PyGameView:
             self.logger.warning(
                 f"Unknown component: {component} for toggling visibility"
             )
+
+    def initialize_combat(
+        self, player: Player, monsters: List[Monster], available_actions: List[str]
+    ):
+        self.logger.debug("Initializing combat")
+        self.combat_screen.setup_combat(player, monsters, available_actions)
+        self.combat_screen_visible = True
+
+    def update_combat_display(self, player: Player, monsters: List[Monster]):
+        self.combat_screen.update_panel(
+            "player_info",
+            lambda panel: self.combat_screen.draw_player_info(panel, player),
+        )
+        self.combat_screen.monsters = monsters
+        self.combat_screen.update_monster_info()
+
+    def display_combat_message(self, message: str):
+        self.combat_screen.set_combat_message(message)
+
+    def handle_combat_input(self, event: pygame.event.Event) -> Optional[str]:
+        return self.combat_screen.handle_input(event)
+
+    def get_selected_combat_action(self) -> str:
+        return self.combat_screen.get_selected_action()
+
+    def get_selected_monster_index(self) -> int:
+        return self.combat_screen.get_selected_monster_index()
+
+    def reset_combat_selection(self):
+        self.combat_screen.reset_selection()
+
+    def end_combat(self):
+        self.combat_screen.end_combat()
+        self.combat_screen_visible = False
+
+    def draw_combat_screen(self, screen: pygame.Surface):
+        if self.combat_screen_visible:
+            self.combat_screen.draw(screen)
