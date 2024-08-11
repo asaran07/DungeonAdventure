@@ -1,5 +1,9 @@
+import atexit
+import inspect
 import logging.config
 import os
+import threading
+import time
 from datetime import datetime
 
 # Get the directory of this file
@@ -61,6 +65,39 @@ LOGGING_CONFIG = {
         "pygame": {"handlers": ["file"], "level": "WARNING", "propagate": False},
     },
 }
+
+
+class GameLogger:
+    def __init__(self, log_file_path='game.log'):
+        self.log_file_path = log_file_path
+        self.ensure_log_directory()
+
+    def ensure_log_directory(self):
+        directory = os.path.dirname(self.log_file_path)
+        if directory and not os.path.exists(directory):
+            os.makedirs(directory)
+
+    def log(self, level, message):
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        log_entry = f"{timestamp} | {level.upper()} | {message}\n"
+
+        with open(self.log_file_path, 'a') as log_file:
+            log_file.write(log_entry)
+
+    def debug(self, message):
+        self.log('DEBUG', message)
+
+    def info(self, message):
+        self.log('INFO', message)
+
+    def warning(self, message):
+        self.log('WARNING', message)
+
+    def error(self, message):
+        self.log('ERROR', message)
+
+    def critical(self, message):
+        self.log('CRITICAL', message)
 
 
 def setup_logging():

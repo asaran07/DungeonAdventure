@@ -24,18 +24,65 @@ class CombatManager:
         self.combat_over: bool = False
         self.logger = logging.getLogger("dungeon_adventure.combat")
 
+
+    def update(self):
+        pass
+
+    def draw(self):
+        pass
+
+    def handle_event(self):
+        pass
+
     def initiate_combat(self) -> None:
-        self.logger.info("Initiating combat")
         self.monsters = self.game_world.current_room.room.monsters
         if not self.monsters:
-            self.logger.warning("No monsters found in current room.")
             return
-
         self.game_world.game_model.game_state = GameState.IN_COMBAT
-        self.determine_turn_order()
         self.combat_state = CombatState.PLAYER_TURN
-        self.current_turn = 0
-        self.selected_monster = None
+
+    def handle_combat_action(self, action: str, target_index: Optional[int] = None) -> str:
+        if action == "Attack":
+            return self.handle_attack(target_index)
+        elif action == "Use Item":
+            return "Item use not implemented yet."
+        elif action == "Flee":
+            return self.attempt_flee()
+        else:
+            return "Invalid action."
+
+    def handle_attack(self, target_index: Optional[int]) -> str:
+        if target_index is None or target_index >= len(self.monsters):
+            return "Invalid target."
+        target = self.monsters[target_index]
+        damage = self.player.hero.attempt_attack(target)
+        message = f"You deal {damage} damage to {target.name}!"
+        if not target.is_alive:
+            message += f" {target.name} has been defeated!"
+            self.monsters.pop(target_index)
+        return message
+
+    def attempt_flee(self) -> str:
+        if random.random() < 0.5:
+            self.end_combat()
+            return "You successfully fled from combat!"
+        else:
+            return "Failed to flee. You lose your turn!"
+
+    def handle_monster_turns(self) -> List[str]:
+        messages = []
+        for monster in self.monsters:
+            damage = monster.attempt_attack(self.player.hero)
+            messages.append(f"{monster.name} deals {damage} damage to you!")
+        return messages
+
+    def is_combat_over(self) -> bool:
+        return not self.monsters or not self.player.hero.is_alive
+
+    def end_combat(self) -> None:
+        self.game_world.game_model.game_state = GameState.EXPLORING
+        self.combat_state = CombatState.WAITING
+        self.monsters = []
 
     def determine_turn_order(self) -> None:
         self.logger.info("Determining turn order")
@@ -79,14 +126,6 @@ class CombatManager:
         self.total_xp_gained += xp_gained
         self.monsters_defeated += 1
 
-    def attempt_flee(self) -> str:
-        if random.random() < 0.5:
-            self.end_combat()
-            return "You successfully fled from combat!"
-        else:
-            self.next_turn()
-            return "Failed to flee. You lose your turn!"
-
     def next_turn(self) -> None:
         self.logger.info("Advancing turn")
         if not self.turn_order:
@@ -107,19 +146,6 @@ class CombatManager:
         damage = monster.attempt_attack(self.player.hero)
         self.next_turn()
         return f"{monster.name} deals {damage} damage to you!"
-
-    def is_combat_over(self) -> bool:
-        return not self.monsters or not self.player.hero.is_alive
-
-    def end_combat(self) -> None:
-        self.logger.debug("Ending combat")
-        self.game_world.game_model.game_state = GameState.EXPLORING
-        self.combat_state = CombatState.WAITING
-        self.monsters = []
-        self.turn_order = []
-        self.total_xp_gained = 0
-        self.monsters_defeated = 0
-        self.combat_over = True
 
     def get_combat_summary(self) -> dict:
         return {

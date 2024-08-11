@@ -21,7 +21,7 @@ class GameWorld:
         self.player_sprite = pygame.sprite.GroupSingle()
         self._game_model = game_model
         self.on_combat_initiated = None
-        self.logger = logging.getLogger(__name__)
+        self.logger = logging.getLogger(self.__class__.__name__)
         self.logger.info("Initializing GameWorld")
 
     @property

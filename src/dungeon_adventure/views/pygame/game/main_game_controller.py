@@ -3,7 +3,6 @@ from typing import Dict, Callable
 
 import pygame
 
-from dungeon_adventure.enums.combat_state import CombatState
 from dungeon_adventure.enums.game_state import GameState
 from dungeon_adventure.views.pygame.game.combat_manager import CombatManager
 from dungeon_adventure.views.pygame.game.game_screen import GameScreen
@@ -52,11 +51,6 @@ class MainGameController:
     def initiate_combat(self) -> None:
         """Initiate combat when triggered by the game world."""
         self.combat_manager.initiate_combat()
-        self.pygame_view.initialize_combat(
-            self.game_world.composite_player.player,
-            self.combat_manager.monsters,
-            self.combat_manager.available_actions,
-        )
 
     def initialize(self) -> None:
         """Initialize all game components."""
@@ -102,20 +96,7 @@ class MainGameController:
     def _handle_combat_and_inventory_events(self, event: pygame.event.Event) -> None:
         """Handle combat and inventory-specific events."""
         if self.game_world.game_model.game_state == GameState.IN_COMBAT:
-            result = self.pygame_view.handle_combat_input(event)
-            if result == "action_selected":
-                action = self.pygame_view.get_selected_combat_action()
-                if action == "Attack":
-                    self.pygame_view.reset_combat_selection()
-                else:
-                    message = self.combat_manager.handle_player_action(action)
-                    self.pygame_view.display_combat_message(message)
-            elif result == "monster_selected":
-                monster_index = self.pygame_view.get_selected_monster_index()
-                message = self.combat_manager.handle_player_action(
-                    "Attack", monster_index
-                )
-                self.pygame_view.display_combat_message(message)
+            self.combat_manager.handle_event()
         elif self.pygame_view.inventory_visible:
             self.pygame_view.handle_event(event)
 
@@ -127,21 +108,7 @@ class MainGameController:
         self.debug_manager.update_fps(self.game_screen.clock)
 
         if self.game_world.game_model.game_state == GameState.IN_COMBAT:
-            if self.combat_manager.combat_state == CombatState.MONSTER_TURN:
-                message = self.combat_manager.handle_monster_turn()
-                self.pygame_view.display_combat_message(message)
-
-            self.pygame_view.update_combat_display(
-                self.game_world.composite_player.player, self.combat_manager.monsters
-            )
-
-            if self.combat_manager.is_combat_over():
-                self.end_combat()
-
-    def end_combat(self):
-        self.combat_manager.end_combat()
-        self.pygame_view.end_combat()
-        self.game_world.game_model.game_state = GameState.EXPLORING
+            self.combat_manager.update()
 
     def draw(self) -> None:
         """Draw the game world, GUI, and debug info if enabled."""
@@ -156,7 +123,7 @@ class MainGameController:
         """Draw the game world and combat screen if in combat."""
         self.game_world.draw(self.game_screen.get_game_surface())
         if self.game_world.game_model.game_state == GameState.IN_COMBAT:
-            self.pygame_view.draw_combat_screen(self.game_screen.get_game_surface())
+            self.combat_manager.draw()
 
     def _draw_debug_info(self) -> None:
         """Draw debug information if debug mode is enabled."""
