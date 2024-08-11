@@ -33,7 +33,7 @@ class MainGameController:
         self.pygame_view: PyGameView = pygame_view
         self.debug_manager: DebugManager = debug_manager
         self.key_bind_manager: KeyBindManager = KeyBindManager()
-        self.combat_manager: CombatManager = CombatManager(self.game_world)
+        self.combat_manager: CombatManager = CombatManager(self.game_world, pygame_view)
         self.game_world.on_combat_initiated = self.initiate_combat
         self.logger: logging.Logger = logging.getLogger(__name__)
 

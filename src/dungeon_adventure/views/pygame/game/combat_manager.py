@@ -1,12 +1,15 @@
 import logging
-from typing import List, Optional
 import random
+from typing import List, Optional
+
 import pygame
+
 from dungeon_adventure.enums.combat_state import CombatState
 from dungeon_adventure.enums.game_state import GameState
-from dungeon_adventure.models.characters.monster import Monster
 from dungeon_adventure.models.characters.hero import Hero
+from dungeon_adventure.models.characters.monster import Monster
 from dungeon_adventure.views.pygame.game.game_world import GameWorld
+from dungeon_adventure.views.pygame.game.py_game_view import PyGameView
 
 
 class CombatManager:
@@ -17,7 +20,7 @@ class CombatManager:
     combat state transitions, and rendering of the combat UI.
     """
 
-    def __init__(self, game_world: GameWorld):
+    def __init__(self, game_world: GameWorld, pygame_view: PyGameView):
         self.game_world: GameWorld = game_world
         self.player = game_world.composite_player
         self.monsters: List[Monster] = []
@@ -43,10 +46,15 @@ class CombatManager:
         self.combat_over: bool = False
         self.logger = logging.getLogger("dungeon_adventure.combat")
         self.logger.info("Initializing CombatManager")
+        self.view = pygame_view
+        self.toggled_visibility = False
 
     def initiate_combat(self) -> None:
         """Initialize combat with monsters from the current room."""
         self.logger.info("Initiating combat")
+        self.toggled_visibility = False
+        self.view.controls_visible = False
+
         self.logger.debug(
             f"Player HP: {self.player.hero.current_hp}/{self.player.hero.max_hp}"
         )
@@ -157,8 +165,10 @@ class CombatManager:
             )
 
         if not self.monsters:
+            self.logger.info("No monsters left in combat, ending combat.")
             self.combat_over = True
             self.display_combat_summary()
+            self.view.combat_screen_visible = False
         elif not self.player.hero.is_alive:
             self.combat_over = True
             self.end_combat("Player has been defeated!")
@@ -199,11 +209,26 @@ class CombatManager:
         if self.combat_state == CombatState.SUMMARY:
             self.draw_combat_summary(surface)
         else:
+            self.draw_combat_info()
             self._draw_player_info(surface)
             self._draw_actions(surface)
             self._draw_monsters(surface)
             self._draw_combat_message(surface)
             self._draw_combat_state(surface)
+
+    def draw_combat_info(self):
+        if not self.combat_over:
+            if not self.toggled_visibility:
+                self.view.combat_screen_visible = True
+                self.toggled_visibility = True
+            self.view.combat_screen.create_panel("player_info", (150, 225), (0, 100))
+            self.view.combat_screen.toggle_panel("player_info", True)
+            self.view.combat_screen.update_panel(
+                "player_info",
+                lambda panel: self.view.combat_screen.draw_player_info(
+                    panel, self.player
+                ),
+            )
 
     def _draw_player_info(self, surface: pygame.Surface) -> None:
         """Render player information on the combat UI."""
