@@ -54,6 +54,7 @@ class CombatManager:
     def set_combat_screen(self, combat_screen: CombatScreen):
         self.view = combat_screen
         # self.setup_action_callbacks()
+
     #
     # def setup_action_callbacks(self):
     #     if self.view:

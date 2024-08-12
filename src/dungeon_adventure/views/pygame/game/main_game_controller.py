@@ -2,7 +2,6 @@ import logging
 from typing import Callable, Dict
 
 import pygame
-import pygame_gui
 
 from dungeon_adventure.enums.game_state import GameState
 from dungeon_adventure.views.pygame.combat.combat_screen import CombatScreen
@@ -104,13 +103,14 @@ class MainGameController:
             if event.type == pygame.QUIT:
                 self.logger.info("Quit event received")
                 return False
+            self.combat_screen.handle_event(event)
             self._handle_keydown_event(event)
             self._handle_combat_events(event)
         return True
 
     def _handle_keydown_event(self, event: pygame.event.Event) -> None:
         """Handle keydown events."""
-        if event.type == pygame.KEYDOWN and self.combat_manager.enable_input_receiving:
+        if event.type == pygame.KEYDOWN and not self.combat_manager.enable_input_receiving:
             action = self.key_actions.get(event.key)
             if action:
                 action()
