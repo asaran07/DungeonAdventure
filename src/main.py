@@ -1,7 +1,10 @@
 import logging
+import os
 
 import pygame
+import pygame_gui
 
+from dungeon_adventure.config import FONT_PATH
 from dungeon_adventure.game_model import GameModelError
 from dungeon_adventure.logging_config import setup_logging
 from dungeon_adventure.models.player import Player

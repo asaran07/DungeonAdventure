@@ -47,19 +47,10 @@ class MainGameController:
             )
         )
 
-        # Initialize UI Manager
-        self.ui_manager = pygame_gui.UIManager(
-            (
-                self.game_screen.width * self.game_screen.scale_factor,
-                self.game_screen.height * self.game_screen.scale_factor,
-            )
-        )
-
         # Initialize CombatScreen
         self.combat_screen = CombatScreen(
             self.game_screen.width * self.game_screen.scale_factor,
             self.game_screen.height * self.game_screen.scale_factor,
-            self.ui_manager,
         )
 
         # Initialize CombatManager with CombatScreen
@@ -113,7 +104,6 @@ class MainGameController:
             if event.type == pygame.QUIT:
                 self.logger.info("Quit event received")
                 return False
-            self.ui_manager.process_events(event)
             self._handle_keydown_event(event)
             self._handle_combat_events(event)
         return True
@@ -141,7 +131,7 @@ class MainGameController:
         self.debug_manager.update_fps(self.game_screen.clock)
         if self.game_world.game_model.game_state == GameState.IN_COMBAT:
             self.combat_manager.update(dt)
-        self.ui_manager.update(dt)
+        self.combat_manager.update(dt)
 
     def draw(self) -> None:
         self.game_screen.draw_background()
@@ -149,12 +139,13 @@ class MainGameController:
         self._draw_debug_info()
         self.game_screen.blit_scaled()
         if self.game_world.game_model.game_state == GameState.IN_COMBAT:
-            self._draw_combat_screen()
+            pass
+            # self._draw_combat_screen()
         self._draw_gui()
-        self.ui_manager.draw_ui(self.screen)
-
-    def _draw_combat_screen(self) -> None:
         self.combat_screen.draw(self.screen)
+
+    # def _draw_combat_screen(self) -> None:
+    #     self.combat_screen.draw(self.screen)
 
     def _draw_game_world(self) -> None:
         self.game_world.draw(self.game_screen.get_game_surface())

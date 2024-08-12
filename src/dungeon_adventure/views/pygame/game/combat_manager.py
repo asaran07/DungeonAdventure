@@ -53,13 +53,13 @@ class CombatManager:
 
     def set_combat_screen(self, combat_screen: CombatScreen):
         self.view = combat_screen
-        self.setup_action_callbacks()
-
-    def setup_action_callbacks(self):
-        if self.view:
-            self.view.set_action_callback("attack", self.handle_attack)
-            self.view.set_action_callback("use_item", self.handle_use_item)
-            self.view.set_action_callback("flee", self.handle_flee)
+        # self.setup_action_callbacks()
+    #
+    # def setup_action_callbacks(self):
+    #     if self.view:
+    #         self.view.set_action_callback("attack", self.handle_attack)
+    #         self.view.set_action_callback("use_item", self.handle_use_item)
+    #         self.view.set_action_callback("flee", self.handle_flee)
 
     def handle_attack(self):
         self.logger.info("Attack action triggered")
@@ -74,61 +74,62 @@ class CombatManager:
         # Implement flee logic here
 
     def process_events(self, event: pygame.event.Event):
-        if self.view:
-            self.view.process_events(event)
-        else:
-            self.logger.warning("Combat screen not initialized")
+        pass
+        # if self.view:
+        #     self.view.process_events(event)
+        # else:
+        #     self.logger.warning("Combat screen not initialized")
 
-    def setup_combat(self):
-        self.logger.info("Setting up combat")
-        self.determine_turn_order()
-        self.update_combat_screen()
+    # def setup_combat(self):
+    #     self.logger.info("Setting up combat")
+    #     self.determine_turn_order()
+    #     self.update_combat_screen()
 
     def determine_turn_order(self) -> None:
         self.logger.info("Determining turn order")
         self.turn_order = [self.player.hero] + self.monsters
         self.turn_order.sort(key=lambda x: x.attack_speed, reverse=True)
 
-    def update_combat_screen(self):
-        self.logger.info("Updating combat screen")
-        if self.view:
-            self.view.update_player_info(
-                self.player.hero.current_hp, self.player.hero.max_hp
-            )
-            self.view.display_combat_message("Monsters encountered!")
-            self.logger.info("Start waiting for user input")
-            self.enable_input_receiving = True
+    # def update_combat_screen(self):
+    #     self.logger.info("Updating combat screen")
+    #     if self.view:
+    #         self.view.update_player_info(
+    #             self.player.hero.current_hp, self.player.hero.max_hp
+    #         )
+    #         self.view.display_combat_message("Monsters encountered!")
+    #         self.logger.info("Start waiting for user input")
+    #         self.enable_input_receiving = True
 
     def wait_for_user_input(self, event: pygame.event.Event):
         if event.type == pygame.KEYDOWN:
             self.logger.debug("Keypress detected")
             if event.key == pygame.K_TAB:
                 self.logger.debug("Tab key pressed")
-                self.cycle_action_choices()
 
-    def cycle_action_choices(self):
-        self.logger.info(
-            "Cycling action choices, current action: {}".format(self.current_action)
-        )
-        if self.current_action == "":
-            self.view.clear_action_display()
-            self.view.draw_on_action_display("Attack")
-            self.current_action = "Attack"
-        elif self.current_action == "Attack":
-            self.view.clear_action_display()
-            self.view.draw_on_action_display("Flee")
-            self.current_action = "Flee"
-        elif self.current_action == "Flee":
-            self.view.clear_action_display()
-            self.view.draw_on_action_display("Use Item")
-            self.current_action = "Use Item"
-        elif self.current_action == "Use Item":
-            self.view.clear_action_display()
-            self.view.draw_on_action_display("Action")
-            self.current_action = ""
-        else:
-            self.view.clear_action_display()
-            self.logger.warning("Invalid action choice")
+    #
+    # def cycle_action_choices(self):
+    #     self.logger.info(
+    #         "Cycling action choices, current action: {}".format(self.current_action)
+    #     )
+    #     if self.current_action == "":
+    #         self.view.clear_action_display()
+    #         self.view.draw_on_action_display("Attack")
+    #         self.current_action = "Attack"
+    #     elif self.current_action == "Attack":
+    #         self.view.clear_action_display()
+    #         self.view.draw_on_action_display("Flee")
+    #         self.current_action = "Flee"
+    #     elif self.current_action == "Flee":
+    #         self.view.clear_action_display()
+    #         self.view.draw_on_action_display("Use Item")
+    #         self.current_action = "Use Item"
+    #     elif self.current_action == "Use Item":
+    #         self.view.clear_action_display()
+    #         self.view.draw_on_action_display("Action")
+    #         self.current_action = ""
+    #     else:
+    #         self.view.clear_action_display()
+    #         self.logger.warning("Invalid action choice")
 
     def start_enemy_turn(self):
         print("Enemy turn starting...")
