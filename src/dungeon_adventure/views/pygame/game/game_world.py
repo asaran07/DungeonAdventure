@@ -5,10 +5,11 @@ import pygame
 
 from dungeon_adventure.enums.game_state import GameState
 from dungeon_adventure.enums.room_types import Direction
+from dungeon_adventure.game_model import GameModel
 from dungeon_adventure.models.dungeon.room import Room
 from dungeon_adventure.views.pygame.room.game_room import GameRoom
 from dungeon_adventure.views.pygame.sprites.composite_player import CompositePlayer
-from src import GameModel
+
 
 
 class GameWorld:

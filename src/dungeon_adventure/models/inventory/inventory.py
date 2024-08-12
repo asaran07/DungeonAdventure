@@ -1,11 +1,11 @@
 from typing import Dict, List, Optional, Tuple
 
-from src.dungeon_adventure.exceptions.player import (
+from dungeon_adventure.exceptions.player import (
     InventoryFullError,
     ItemNotFoundError,
 )
-from src.dungeon_adventure.models.inventory.inventory_db import InventoryDatabase
-from src.dungeon_adventure.models.items.item import Item
+from dungeon_adventure.models.inventory.inventory_db import InventoryDatabase
+from dungeon_adventure.models.items.item import Item
 
 
 class Inventory:

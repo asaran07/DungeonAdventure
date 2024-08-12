@@ -1,4 +1,4 @@
-from dungeon_adventure.models.player import Player
+from dungeon_adventure.models.player.player import Player
 from dungeon_adventure.views.pygame.sprites.py_player import PyPlayer
 from dungeon_adventure.views.pygame.room.game_room import GameRoom
 import pygame

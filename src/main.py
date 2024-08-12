@@ -2,9 +2,9 @@ import logging
 
 import pygame
 
-from dungeon_adventure.game_model import GameModelError
+from dungeon_adventure.game_model import GameModel, GameModelError
 from dungeon_adventure.logging_config import setup_logging
-from dungeon_adventure.models.player import Player
+from dungeon_adventure.models.player.player import Player
 from dungeon_adventure.services.dungeon_generator import DungeonGenerator
 from dungeon_adventure.views.pygame.game.game_screen import GameScreen
 from dungeon_adventure.views.pygame.game.game_world import GameWorld
@@ -13,7 +13,6 @@ from dungeon_adventure.views.pygame.game.py_game_view import PyGameView
 from dungeon_adventure.views.pygame.services.debug_manager import DebugManager
 from dungeon_adventure.views.pygame.sprites.composite_player import CompositePlayer
 from dungeon_adventure.views.pygame.sprites.py_player import PyPlayer
-from src import GameModel
 
 
 def setup_game_model():
