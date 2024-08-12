@@ -11,7 +11,6 @@ from dungeon_adventure.views.pygame.room.game_room import GameRoom
 from dungeon_adventure.views.pygame.sprites.composite_player import CompositePlayer
 
 
-
 class GameWorld:
     def __init__(self, game_model: GameModel, composite_player: CompositePlayer):
         self.dungeon = game_model.dungeon

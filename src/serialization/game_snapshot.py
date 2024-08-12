@@ -12,12 +12,14 @@ from dungeon_adventure.views.view import View
 class GameSnapshot:
     """Represents the serializable object for saving and loading the game."""
 
-    def __init__(self,
-                 game_model: GameModel,
-                 map_visualizer: MapVisualizer,
-                 view,
-                 player: Player,
-                 current_room: Optional[Room]) -> None:
+    def __init__(
+        self,
+        game_model: GameModel,
+        map_visualizer: MapVisualizer,
+        view,
+        player: Player,
+        current_room: Optional[Room],
+    ) -> None:
         self.game_model: GameModel = game_model
         self.map_visualizer: MapVisualizer = map_visualizer
         self.view: View = view
@@ -43,7 +45,7 @@ class GameSnapshot:
 def load_game(file_path: str) -> GameSnapshot:
     if os.path.exists(file_path):
         if os.path.getsize(file_path) > 0:
-            with open(file_path, 'rb') as file:
+            with open(file_path, "rb") as file:
                 return pickle.load(file)
         else:
             print("Error: File is empty.")
@@ -53,6 +55,6 @@ def load_game(file_path: str) -> GameSnapshot:
 
 
 def save_game(game_state: GameSnapshot, file_name: str) -> None:
-    with open(file_name, 'wb') as file:
+    with open(file_name, "wb") as file:
         pickle.dump(game_state, file)
         print(f"Game saved to {file_name}")

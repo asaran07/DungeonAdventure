@@ -83,6 +83,7 @@ class Monster(DungeonCharacter):
         :return: A new Monster instance with custom attributes
         """
         return cls(**kwargs)
+
     #
     # def get_SQL_monster_info(self, name: str) -> List[any]:
     #     try:

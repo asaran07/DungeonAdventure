@@ -98,8 +98,7 @@ class Hero(DungeonCharacter):
             # Do Heal
         if self.name == "Thief":
             special_ability = "Sneak Attack"
-            #Do Sneak Attack
-
+            # Do Sneak Attack
 
     def __str__(self) -> str:
         weapon_info = (
@@ -118,7 +117,7 @@ class Hero(DungeonCharacter):
             f"{weapon_info}"
         )
 
-    def get_SQL_hero_info(self, name:str) -> List[any]:
+    def get_SQL_hero_info(self, name: str) -> List[any]:
         try:
             sqliteConnection = sqlite3.connect("hero_factory.db")
             cursor = sqliteConnection.cursor()
@@ -136,6 +135,7 @@ class Hero(DungeonCharacter):
                 print("SQLite connection is closed")
 
         return records
+
 
 # if __name__ == "__main__":
 #     hero = Hero()

@@ -1,7 +1,9 @@
 import sqlite3
 
+
 def __init__():
     pass
+
 
 def getSkeletonInfo(name):
     try:
@@ -25,4 +27,3 @@ def getSkeletonInfo(name):
 
 
 getSkeletonInfo("Skeleton")
-
