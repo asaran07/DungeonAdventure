@@ -11,20 +11,47 @@ from dungeon_adventure.views.pygame.room.room_visuals import RoomVisuals
 class GameRoom(pygame.sprite.Sprite):
     def __init__(self, room: Room):
         super().__init__()
-        self.room = room
-        self.image_manager = RoomImageManager(os.path.join(RESOURCES_DIR, "room_images"))
+        self._room = room
+        self.image_manager = RoomImageManager(
+            os.path.join(RESOURCES_DIR, "room_images")
+        )
         self._setup_room_image()
         self.visuals = RoomVisuals(self.image_path, (480, 270))
+        self.image = None
+        self.rect = None
+
+    @property
+    def room(self):
+        return self._room
+
+    @room.setter
+    def room(self, room):
+        self._room = room
+
+    def initialize(self):
+        self.visuals.initialize()
         self.image = self.visuals.image
         self.rect = self.image.get_rect()
         self._setup_hitboxes()
 
+    def set_position(self, center_pos):
+        if self.rect:
+            self.rect.center = center_pos
+
     def _setup_room_image(self):
-        open_doors = [direction for direction, connected_room in self.room.connections.items() if connected_room]
+        open_doors = [
+            direction
+            for direction, connected_room in self.room.connections.items()
+            if connected_room
+        ]
         self.image_path = self.image_manager.get_room_image(open_doors)
 
     def _setup_hitboxes(self):
-        open_directions = [direction for direction, connected_room in self.room.connections.items() if connected_room]
+        open_directions = [
+            direction
+            for direction, connected_room in self.room.connections.items()
+            if connected_room
+        ]
         self.visuals.create_hitboxes(open_directions)
 
     # def _setup_hitboxes(self):

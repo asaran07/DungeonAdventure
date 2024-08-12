@@ -1,0 +1,126 @@
+{
+    "defaults":
+    {
+        "colours":
+        {
+            "normal_bg": "#D9D9D9",
+            "hovered_bg": "#D9D9D9",
+            "disabled_bg": "#A9A9A9",
+            "selected_bg": "#D9D9D9",
+            "dark_bg": "#D9D9D9",
+            "normal_text": "#000000",
+            "hovered_text": "#000000",
+            "selected_text": "#000000",
+            "disabled_text": "#6E6E6E",
+            "link_text": "#000000",
+            "link_hover": "#000000",
+            "link_selected": "#000000",
+            "text_shadow": "#00000000",
+            "normal_border": "#000000",
+            "hovered_border": "#000000",
+            "disabled_border": "#808080",
+            "selected_border": "#000000",
+            "active_border": "#000000",
+            "filled_bar": "#C72C2C",
+            "unfilled_bar": "#D9D9D9"
+        }
+    },
+
+    "#main_panel":
+    {
+        "colours":
+        {
+            "dark_bg": "#78514F",
+            "normal_border": "#5E3A38"
+        },
+        "misc":
+        {
+            "border_width": "6",
+            "shadow_width": "2",
+            "enable_shadow": "1"
+        }
+    },
+
+    "#text_area":
+    {
+        "colours":
+        {
+            "dark_bg": "#D9D9D9",
+            "normal_text": "#000000",
+            "normal_border": "#000000"
+        },
+        "misc":
+        {
+            "border_width": "3"
+        }
+    },
+
+    "#attack_button, #flee_button, #use_item_button":
+    {
+        "colours":
+        {
+            "normal_bg": "#D9D9D9",
+            "hovered_bg": "#D9D9D9",
+            "disabled_bg": "#A9A9A9",
+            "normal_text": "#000000",
+            "hovered_text": "#000000",
+            "disabled_text": "#6E6E6E",
+            "normal_border": "#000000",
+            "hovered_border": "#000000",
+            "disabled_border": "#808080"
+        },
+        "misc":
+        {
+            "border_width": "2",
+            "shadow_width": "0",
+            "enable_shadow": "0"
+        },
+        "font": {
+            "name": "honk.ttf",
+            "size": "16"
+        }
+    },
+
+    "#hp_panel":
+    {
+        "colours":
+        {
+            "dark_bg": "#D9D9D9",
+            "normal_border": "#000000"
+        },
+        "misc":
+        {
+            "border_width": "2",
+            "shadow_width": "0"
+        }
+    },
+
+    "#hp_label":
+    {
+        "colours":
+        {
+            "normal_text": "#000000"
+        },
+        "font": {
+            "name": "honk.ttf",
+            "size": "20",
+            "bold": "1"
+        }
+    },
+
+    "#hp_bar":
+    {
+        "colours":
+        {
+            "normal_bg": "#D9D9D9",
+            "filled_bar": "#C72C2C",
+            "unfilled_bar": "#D9D9D9",
+            "normal_border": "#000000"
+        },
+        "misc":
+        {
+            "border_width": "1",
+            "shadow_width": "0"
+        }
+    }
+}

@@ -79,9 +79,9 @@ class GameController:
         try:
             proj_state: GameSnapshot = load_game("save.pkl")
             self.game_model = proj_state.get_game_model()
-            self.player_action_controller = PlayerActionController(proj_state.game_model,
-                                                                   proj_state.map_visualizer,
-                                                                   proj_state.view)
+            self.player_action_controller = PlayerActionController(
+                proj_state.game_model, proj_state.map_visualizer, proj_state.view
+            )
         except FileNotFoundError as e:
             self.view.display_message(f"File not found: {e}")
 
