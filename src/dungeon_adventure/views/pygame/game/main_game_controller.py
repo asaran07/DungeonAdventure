@@ -2,8 +2,10 @@ import logging
 from typing import Callable, Dict
 
 import pygame
+import pygame_gui
 
 from dungeon_adventure.enums.game_state import GameState
+from dungeon_adventure.views.pygame.combat.combat_screen import CombatScreen
 from dungeon_adventure.views.pygame.game.combat_manager import CombatManager
 from dungeon_adventure.views.pygame.game.game_screen import GameScreen
 from dungeon_adventure.views.pygame.game.game_world import GameWorld
@@ -33,9 +35,38 @@ class MainGameController:
         self.pygame_view: PyGameView = pygame_view
         self.debug_manager: DebugManager = debug_manager
         self.key_bind_manager: KeyBindManager = KeyBindManager()
-        self.combat_manager: CombatManager = CombatManager(self.game_world)
-        self.game_world.on_combat_initiated = self.initiate_combat
+
         self.logger: logging.Logger = logging.getLogger(self.__class__.__name__)
+        pygame.init()
+
+        # Set up the display
+        self.screen = pygame.display.set_mode(
+            (
+                self.game_screen.width * self.game_screen.scale_factor,
+                self.game_screen.height * self.game_screen.scale_factor,
+            )
+        )
+
+        # Initialize UI Manager
+        self.ui_manager = pygame_gui.UIManager(
+            (
+                self.game_screen.width * self.game_screen.scale_factor,
+                self.game_screen.height * self.game_screen.scale_factor,
+            )
+        )
+
+        # Initialize CombatScreen
+        self.combat_screen = CombatScreen(
+            self.game_screen.width * self.game_screen.scale_factor,
+            self.game_screen.height * self.game_screen.scale_factor,
+            self.ui_manager,
+        )
+
+        # Initialize CombatManager with CombatScreen
+        self.combat_manager: CombatManager = CombatManager(self.game_world)
+        self.combat_manager.set_combat_screen(self.combat_screen)
+
+        self.game_world.on_combat_initiated = self.initiate_combat
 
         self.key_actions: Dict[int, Callable] = {
             pygame.K_i: lambda: self.pygame_view.toggle_visibility("inventory"),
@@ -52,7 +83,6 @@ class MainGameController:
         """Initiate combat when triggered by the game world."""
         self.logger.debug("Initiating combat", stacklevel=2)
         self.pygame_view.toggle_visibility("combat_screen")
-        self.combat_manager.set_combat_screen(self.pygame_view.combat_screen)
         self.combat_manager.start_combat()
 
     def initialize(self) -> None:
@@ -68,79 +98,68 @@ class MainGameController:
         self.logger.info("Starting game loop")
         self.initialize()
         running = True
+        clock = pygame.time.Clock()
         while running:
+            time_delta = clock.tick(60) / 1000.0
             running = self.handle_events()
-            self.update()
+            self.update(time_delta)
             self.draw()
-            self.game_screen.flip()
+            pygame.display.flip()
         self.logger.info("Game loop ended")
         pygame.quit()
 
     def handle_events(self) -> bool:
-        """
-        Handle pygame events.
-
-        :return: False if the game should quit, True otherwise
-        """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.logger.info("Quit event received")
                 return False
+            self.ui_manager.process_events(event)
             self._handle_keydown_event(event)
             self._handle_combat_events(event)
         return True
 
     def _handle_keydown_event(self, event: pygame.event.Event) -> None:
         """Handle keydown events."""
-        if (
-            event.type == pygame.KEYDOWN
-            and self.game_world.game_model.game_state != GameState.IN_COMBAT
-        ):
+        if event.type == pygame.KEYDOWN and self.combat_manager.enable_input_receiving:
             action = self.key_actions.get(event.key)
             if action:
                 action()
 
     def _handle_combat_events(self, event: pygame.event.Event) -> None:
         """Handle combat and inventory-specific events."""
-        # if self.game_world.game_model.game_state == GameState.IN_COMBAT:
-        #     self.combat_manager.handle_event(event)
+        self.combat_manager.process_events(event)
+        if self.combat_manager.enable_input_receiving:
+            self.combat_manager.wait_for_user_input(event)
 
     def _handle_inventory_events(self, event: pygame.event.Event) -> None:
         if self.pygame_view.inventory_visible:
             self.pygame_view.handle_event(event)
 
-    def update(self) -> None:
-        """Update game state, GUI, and debug info."""
-        dt = self.game_screen.tick(60)
+    def update(self, dt: float) -> None:
         self.game_world.update(dt)
         self.pygame_view.update(self.game_world.current_room, self.game_world.room_dict)
         self.debug_manager.update_fps(self.game_screen.clock)
-
-        # if self.game_world.game_model.game_state == GameState.IN_COMBAT:
-        #     self.combat_manager.update()
+        if self.game_world.game_model.game_state == GameState.IN_COMBAT:
+            self.combat_manager.update(dt)
+        self.ui_manager.update(dt)
 
     def draw(self) -> None:
-        """Draw the game world, GUI, and debug info if enabled."""
         self.game_screen.draw_background()
         self._draw_game_world()
         self._draw_debug_info()
         self.game_screen.blit_scaled()
-        # The GUI elements made with Pygame components are draw directly onto the screen, instead of the game_surface.
-        if self.pygame_view.combat_screen_visible:
+        if self.game_world.game_model.game_state == GameState.IN_COMBAT:
             self._draw_combat_screen()
         self._draw_gui()
+        self.ui_manager.draw_ui(self.screen)
 
     def _draw_combat_screen(self) -> None:
-        self.pygame_view.combat_screen.draw(self.game_screen.get_screen())
+        self.combat_screen.draw(self.screen)
 
     def _draw_game_world(self) -> None:
-        """Draw the game world and combat screen if in combat."""
         self.game_world.draw(self.game_screen.get_game_surface())
-        # if self.game_world.game_model.game_state == GameState.IN_COMBAT:
-        #     self.combat_manager.draw()
 
     def _draw_debug_info(self) -> None:
-        """Draw debug information if debug mode is enabled."""
         if self.debug_manager.debug_mode:
             self.game_world.composite_player.py_player.draw_debug_info(
                 self.game_screen.get_game_surface()
@@ -151,9 +170,8 @@ class MainGameController:
             )
 
     def _draw_gui(self) -> None:
-        """Draw GUI elements if not in debug mode."""
         if not self.debug_manager.debug_mode:
             self.pygame_view.draw(
-                self.game_screen.get_screen(),
+                self.screen,
                 self.game_world.composite_player.inventory,
             )

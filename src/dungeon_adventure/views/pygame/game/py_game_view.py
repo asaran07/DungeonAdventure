@@ -51,10 +51,6 @@ class PyGameView:
             self.window_width * self.scale_factor,
             self.window_height * self.scale_factor,
         )
-        self.combat_screen = CombatScreen(
-            self.window_width * self.scale_factor,
-            self.window_height * self.scale_factor,
-        )
 
     def update(self, current_room: GameRoom, room_dict: Dict[str, GameRoom]) -> None:
         """

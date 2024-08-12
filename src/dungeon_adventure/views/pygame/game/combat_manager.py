@@ -1,6 +1,7 @@
 import logging
 from typing import List, Optional
 
+import pygame
 from transitions import Machine
 
 from dungeon_adventure.enums.combat_state import CombatState
@@ -14,6 +15,7 @@ class CombatManager:
     states = ["idle", "player_turn", "enemy_turn", "animating_attack", "combat_end"]
 
     def __init__(self, game_world: GameWorld):
+        self.enable_input_receiving = False
         self.game_world = game_world
         self.view: CombatScreen = Optional[None]
         self.player = game_world.composite_player
@@ -26,6 +28,7 @@ class CombatManager:
         self.total_xp_gained: int = 0
         self.monsters_defeated: int = 0
         self.combat_over: bool = False
+        self.current_action = ""
         self.logger = logging.getLogger("dungeon_adventure.combat")
 
         self.machine = Machine(model=self, states=CombatManager.states, initial="idle")
@@ -50,6 +53,31 @@ class CombatManager:
 
     def set_combat_screen(self, combat_screen: CombatScreen):
         self.view = combat_screen
+        self.setup_action_callbacks()
+
+    def setup_action_callbacks(self):
+        if self.view:
+            self.view.set_action_callback("attack", self.handle_attack)
+            self.view.set_action_callback("use_item", self.handle_use_item)
+            self.view.set_action_callback("flee", self.handle_flee)
+
+    def handle_attack(self):
+        self.logger.info("Attack action triggered")
+        # Implement attack logic here
+
+    def handle_use_item(self):
+        self.logger.info("Use Item action triggered")
+        # Implement use item logic here
+
+    def handle_flee(self):
+        self.logger.info("Flee action triggered")
+        # Implement flee logic here
+
+    def process_events(self, event: pygame.event.Event):
+        if self.view:
+            self.view.process_events(event)
+        else:
+            self.logger.warning("Combat screen not initialized")
 
     def setup_combat(self):
         self.logger.info("Setting up combat")
@@ -64,7 +92,43 @@ class CombatManager:
     def update_combat_screen(self):
         self.logger.info("Updating combat screen")
         if self.view:
-            self.view.update_player_info(self.player.hero.current_hp, self.player.hero.max_hp)
+            self.view.update_player_info(
+                self.player.hero.current_hp, self.player.hero.max_hp
+            )
+            self.view.display_combat_message("Monsters encountered!")
+            self.logger.info("Start waiting for user input")
+            self.enable_input_receiving = True
+
+    def wait_for_user_input(self, event: pygame.event.Event):
+        if event.type == pygame.KEYDOWN:
+            self.logger.debug("Keypress detected")
+            if event.key == pygame.K_TAB:
+                self.logger.debug("Tab key pressed")
+                self.cycle_action_choices()
+
+    def cycle_action_choices(self):
+        self.logger.info(
+            "Cycling action choices, current action: {}".format(self.current_action)
+        )
+        if self.current_action == "":
+            self.view.clear_action_display()
+            self.view.draw_on_action_display("Attack")
+            self.current_action = "Attack"
+        elif self.current_action == "Attack":
+            self.view.clear_action_display()
+            self.view.draw_on_action_display("Flee")
+            self.current_action = "Flee"
+        elif self.current_action == "Flee":
+            self.view.clear_action_display()
+            self.view.draw_on_action_display("Use Item")
+            self.current_action = "Use Item"
+        elif self.current_action == "Use Item":
+            self.view.clear_action_display()
+            self.view.draw_on_action_display("Action")
+            self.current_action = ""
+        else:
+            self.view.clear_action_display()
+            self.logger.warning("Invalid action choice")
 
     def start_enemy_turn(self):
         print("Enemy turn starting...")
@@ -78,11 +142,11 @@ class CombatManager:
     def cleanup_combat(self):
         print("Cleaning up after combat...")
 
-    def update(self):
-        pass
+    def update(self, dt):
+        self.view.update(dt)
 
-    def draw(self):
-        pass
+    def draw(self, surface):
+        self.view.draw(surface)
 
     # def handle_event(self, event: pygame.event.Event):
     #     # We don't process any events unless we're ready for input
@@ -104,7 +168,6 @@ class CombatManager:
     #         return
     #     self.game_world.game_model.game_state = GameState.IN_COMBAT
     #     self.combat_state = CombatState.PLAYER_TURN
-
 
     #
     # def handle_combat_action(
