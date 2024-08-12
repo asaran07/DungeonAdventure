@@ -110,7 +110,10 @@ class MainGameController:
 
     def _handle_keydown_event(self, event: pygame.event.Event) -> None:
         """Handle keydown events."""
-        if event.type == pygame.KEYDOWN and not self.combat_manager.enable_input_receiving:
+        if (
+            event.type == pygame.KEYDOWN
+            and not self.combat_manager.enable_input_receiving
+        ):
             action = self.key_actions.get(event.key)
             if action:
                 action()
