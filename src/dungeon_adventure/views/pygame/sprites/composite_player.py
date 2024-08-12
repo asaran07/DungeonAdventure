@@ -5,9 +5,12 @@ import pygame
 
 
 class CompositePlayer:
-    def __init__(self, name: str, inventory_weight_limit: float = 50.0):
-        self.player = Player(name, inventory_weight_limit)
-        self.py_player = PyPlayer()
+    def __init__(self, core_player: Player, py_player: PyPlayer):
+        self.player = core_player
+        self.py_player = py_player
+
+    def initialize(self):
+        self.py_player.initialize()
 
     def update(self, dt: int, current_room: GameRoom):
         self.py_player.update(dt, current_room)

@@ -25,12 +25,11 @@ class RoomVisuals:
     }
 
     def __init__(self, image_path: str, screen_size: tuple):
-        self.image = pygame.image.load(image_path).convert_alpha()
+        self.image_path = image_path
         self.screen_size = screen_size
-        self.rect = self.image.get_rect()
-        self._walkable_floor_hitbox = pygame.Rect(
-            *self.FLOOR_RECT_POSITION, *self.DEFAULT_FLOOR_DIMENSIONS
-        )
+        self.image = None
+        self.rect = None
+        self._walkable_floor_hitbox = None
         self.door_hitboxes = {}
         self.extended_floor_areas = {}
 
@@ -39,6 +38,13 @@ class RoomVisuals:
         self.floor_color = (0, 255, 0)  # Green
         self.door_color = (255, 250, 0)  # Yellow
         self.extended_floor_color = (0, 0, 255)  # Blue
+
+    def initialize(self):
+        self.image = pygame.image.load(self.image_path).convert_alpha()
+        self.rect = self.image.get_rect()
+        self._walkable_floor_hitbox = pygame.Rect(
+            *self.FLOOR_RECT_POSITION, *self.DEFAULT_FLOOR_DIMENSIONS
+        )
 
     @property
     def walkable_floor_hitbox(self):

@@ -49,6 +49,7 @@ class RoomItemsDisplay:
             (self.display_rect.width, self.display_rect.height), pygame.SRCALPHA
         )
         self.display_background.fill(self.BACKGROUND_COLOR)
+        self.is_visible: bool = False
 
     def calc_display_size(self, scale_factor: int) -> Size:
         display_width: int = int(self.DISPLAY_WIDTH_FACTOR * scale_factor)

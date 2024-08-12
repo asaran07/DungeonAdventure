@@ -1,16 +1,22 @@
-from dungeon_adventure.controllers.game_controller import GameController
-from dungeon_adventure.controllers.player_action_controller import (
-    PlayerActionController,
-)
+import logging
+
+import pygame
+
 from dungeon_adventure.game_model import GameModelError
+from dungeon_adventure.logging_config import setup_logging
 from dungeon_adventure.models.player import Player
 from dungeon_adventure.services.dungeon_generator import DungeonGenerator
-from dungeon_adventure.views.console.console_view import ConsoleView
-from dungeon_adventure.views.console.map_visualizer import MapVisualizer
+from dungeon_adventure.views.pygame.game.game_screen import GameScreen
+from dungeon_adventure.views.pygame.game.game_world import GameWorld
+from dungeon_adventure.views.pygame.game.main_game_controller import MainGameController
+from dungeon_adventure.views.pygame.game.py_game_view import PyGameView
+from dungeon_adventure.views.pygame.services.debug_manager import DebugManager
+from dungeon_adventure.views.pygame.sprites.composite_player import CompositePlayer
+from dungeon_adventure.views.pygame.sprites.py_player import PyPlayer
 from src import GameModel
 
 
-def setup_game():
+def setup_game_model():
     try:
         dungeon = DungeonGenerator.generate_default_dungeon()
         player = Player("Player 1")
@@ -25,15 +31,24 @@ def setup_game():
 
 
 def main():
-    game_model = setup_game()
+    setup_logging()
+    logger = logging.getLogger(__name__)
+    logger.info(f"Starting Dungeon Adventure | Pygame version: {pygame.version.ver}")
+    game_model = setup_game_model()
     if game_model:
-        view = ConsoleView()
-        map_visualizer = MapVisualizer(game_model.dungeon)
-        player_action_controller = PlayerActionController(
-            game_model, map_visualizer, view
+        py_player = PyPlayer()
+        composite_player = CompositePlayer(game_model.player, py_player)
+        game_world = GameWorld(game_model, composite_player)
+        game_screen = GameScreen()
+        debug_manager = DebugManager()
+        pygame_view = PyGameView(
+            game_screen.width, game_screen.height, game_screen.scale_factor
         )
-        controller = GameController(game_model, player_action_controller, view)
-        controller.run_game()
+        main_game_controller = MainGameController(
+            game_world, game_screen, pygame_view, debug_manager
+        )
+        main_game_controller.run()
+
     else:
         print("Failed to set up the game. Exiting.")
 

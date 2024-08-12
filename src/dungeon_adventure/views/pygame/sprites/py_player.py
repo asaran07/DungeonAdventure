@@ -9,15 +9,20 @@ class PyPlayer(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.animation_manager = AnimationManager()
+        self.image = None
+        self.rect = None
+        self.speed = 2
+        self.foot_height = 5
+        self.facing_right = True
+        self.debug_info = ""
+
+    def initialize(self):
         self.load_animations()
         self.animation_manager.play("idle_right")
         self.image = self.animation_manager.get_current_frame().convert_alpha()
         if self.image is None:
             raise ValueError("Player image is None. Check animation loading.")
         self.rect = self.image.get_rect()
-        self.speed = 2
-        self.foot_height = 5
-        self.facing_right = True
 
     def load_animations(self):
         base_path = os.path.join(RESOURCES_DIR, "hero_animations", "hero_walk")
@@ -35,6 +40,7 @@ class PyPlayer(pygame.sprite.Sprite):
         self.animation_manager.add_animation("walk_left", walk_paths, 1000 // 12)
 
     def update(self, dt, current_room: GameRoom):
+        dt_ms = int(dt * 1000)
         keys = pygame.key.get_pressed()
         dx = (keys[pygame.K_RIGHT] or keys[pygame.K_d]) - (
             keys[pygame.K_LEFT] or keys[pygame.K_a]
@@ -59,7 +65,7 @@ class PyPlayer(pygame.sprite.Sprite):
             )
 
         self.move(dx * self.speed, dy * self.speed, current_room)
-        self.animation_manager.update(dt)
+        self.animation_manager.update(dt_ms)
 
         self.image = self.animation_manager.get_current_frame()
         if self.image is None:
@@ -69,12 +75,18 @@ class PyPlayer(pygame.sprite.Sprite):
         if not self.facing_right:
             self.image = pygame.transform.flip(self.image, True, False)
 
-        # Ensure rect is always updated
         if self.rect is None:
             self.rect = self.image.get_rect()
         else:
             new_rect = self.image.get_rect()
             self.rect.size = new_rect.size
+
+        # Add debug info
+        current_animation = self.animation_manager.current_animation
+        if current_animation:
+            self.debug_info = f"Animation: {current_animation.name}, Frame: {current_animation.current_frame + 1}/{len(current_animation.frames)}, dt: {dt}"
+        else:
+            self.debug_info = "No current animation"
 
     def move(self, dx, dy, current_room: GameRoom):
         if self.rect is None:
@@ -123,14 +135,20 @@ class PyPlayer(pygame.sprite.Sprite):
                 1,
             )
 
+    # def draw_debug_info(self, surface: pygame.Surface) -> None:
+    #     if self.rect is not None:
+    #         font = pygame.font.Font(None, 14)
+    #         current_animation = self.animation_manager.current_animation
+    #         if current_animation:
+    #             debug_text = (
+    #                 f"Animation: {current_animation.name}, Frame: {current_animation.current_frame + 1}/"
+    #                 f"{len(current_animation.frames)}"
+    #             )
+    #             debug_surface = font.render(debug_text, True, (255, 255, 255))
+    #             surface.blit(debug_surface, (self.rect.x, self.rect.y - 30))
+
     def draw_debug_info(self, surface: pygame.Surface) -> None:
         if self.rect is not None:
             font = pygame.font.Font(None, 14)
-            current_animation = self.animation_manager.current_animation
-            if current_animation:
-                debug_text = (
-                    f"Animation: {current_animation.name}, Frame: {current_animation.current_frame + 1}/"
-                    f"{len(current_animation.frames)}"
-                )
-                debug_surface = font.render(debug_text, True, (255, 255, 255))
-                surface.blit(debug_surface, (self.rect.x, self.rect.y - 30))
+            debug_surface = font.render(self.debug_info, True, (255, 255, 255))
+            surface.blit(debug_surface, (self.rect.x, self.rect.y - 30))

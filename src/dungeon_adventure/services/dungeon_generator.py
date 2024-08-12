@@ -1,4 +1,4 @@
-from dungeon_adventure.enums.item_types import PillarType
+from dungeon_adventure.enums.item_types import PillarType, PotionType, WeaponType
 from dungeon_adventure.enums.room_types import Direction, RoomType
 from dungeon_adventure.models.dungeon.dungeon import Dungeon
 from dungeon_adventure.services.item_factory import ItemFactory
@@ -75,21 +75,9 @@ class DungeonGenerator:
         room1.room_type = RoomType.ENTRANCE
 
         room2 = dungeon.get_room("Room 2")
-        room2.add_monster(Monster("Robby Goblin"))
-        room2.add_monster(Monster("Bobby Goblin"))
-
-        room3 = dungeon.get_room("Room 3")
-        room3.add_monster(
-            Monster("Gobby King", max_hp=50, base_min_damage=15, base_max_damage=25)
-        )
-
-        room12 = dungeon.get_room("Room 12")
-        room12.add_item(
-            item_factory.create_pillar(
-                PillarType.ABSTRACTION, "Abstraction Pillar", "A abstract pillar", 5
-            )
-        )
-        room12.add_item(
+        # room2.add_monster(Monster("Robby Goblin"))
+        # room2.add_monster(Monster("Bobby Goblin"))
+        room2.add_item(
             item_factory.create_pillar(
                 PillarType.ENCAPSULATION,
                 "Encapsulation Pillar",
@@ -97,6 +85,33 @@ class DungeonGenerator:
                 10,
             )
         )
+        room2.add_item(
+            item_factory.create_weapon("Rusty Sword", WeaponType.SWORD, 10, 7, 100)
+        )
+        room2.add_item(
+            item_factory.create_potion("Healing Potion", PotionType.HEALING, 15, 2)
+        )
+
+        # room3 = dungeon.get_room("Room 3")
+        # room3.add_monster(
+        #     Monster("Gobby King", max_hp=50, base_min_damage=15, base_max_damage=25)
+        # )
+
+        room12 = dungeon.get_room("Room 12")
+        room12.add_item(
+            item_factory.create_pillar(
+                PillarType.ABSTRACTION, "Abstraction Pillar", "A abstract pillar", 5
+            )
+        )
+
+        room12.add_item(
+            item_factory.create_weapon("Rusty Sword", WeaponType.SWORD, 10, 7, 100)
+        )
+        room12.add_item(
+            item_factory.create_potion("Healing Potion", PotionType.HEALING, 15, 2)
+        )
+        room12.add_monster(Monster())
+        room12.add_monster(Monster("Monster Bob"))
 
         room15 = dungeon.get_room("Room 15 - Exit Chamber")
         room15.set_room_type(RoomType.EXIT)
