@@ -72,7 +72,7 @@ class MainGameController:
     def initiate_combat(self) -> None:
         """Initiate combat when triggered by the game world."""
         self.logger.debug("Initiating combat", stacklevel=2)
-        self.pygame_view.toggle_visibility("combat_screen")
+        # self.pygame_view.toggle_visibility("combat_screen")
         self.combat_manager.start_combat()
 
     def initialize(self) -> None:

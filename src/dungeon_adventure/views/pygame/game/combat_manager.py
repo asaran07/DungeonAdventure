@@ -15,6 +15,11 @@ class CombatManager:
     states = ["idle", "player_turn", "enemy_turn", "animating_attack", "combat_end"]
 
     def __init__(self, game_world: GameWorld):
+        self.logger = logging.getLogger("dungeon_adventure.combat")
+        self.elapsed_log_time = 0
+        self.log_interval = 5000  # Log every 5000 milliseconds (5 seconds)
+        self.combat_time = 0  # Track total combat time
+
         self.enable_input_receiving = False
         self.game_world = game_world
         self.view: CombatScreen = Optional[None]
@@ -29,7 +34,6 @@ class CombatManager:
         self.monsters_defeated: int = 0
         self.combat_over: bool = False
         self.current_action = ""
-        self.logger = logging.getLogger("dungeon_adventure.combat")
 
         self.machine = Machine(model=self, states=CombatManager.states, initial="idle")
         self.machine.add_transition(
@@ -84,6 +88,8 @@ class CombatManager:
     def setup_combat(self):
         self.logger.info("Setting up combat")
         self.determine_turn_order()
+        if self.view:
+            self.view.set_message("Combat Started!")
         # self.update_combat_screen()
 
     def determine_turn_order(self) -> None:
@@ -145,7 +151,16 @@ class CombatManager:
         print("Cleaning up after combat...")
 
     def update(self, dt):
-        self.view.update(dt)
+        self.combat_time += dt
+
+        current_time = pygame.time.get_ticks()
+        if current_time - self.elapsed_log_time > self.log_interval:
+            self.logger.debug(f"Updating combat state (dt: {dt:.2f}ms, total combat time: {self.combat_time:.2f}ms)")
+            self.elapsed_log_time = current_time
+
+        if self.view:
+            self.view.update(dt)
+
 
     def draw(self, surface):
         self.view.draw(surface)

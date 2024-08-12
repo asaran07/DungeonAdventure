@@ -1,3 +1,5 @@
+import logging
+
 import pygame
 import pygame.font
 from enum import Enum, auto
@@ -59,6 +61,7 @@ class AnimationEvent:
 
 class CombatScreen:
     def __init__(self, width, height, scale_factor=3):
+        self.logger = logging.getLogger(self.__class__.__name__)
         self.width = width
         self.height = height
         self.scale_factor = scale_factor
@@ -74,6 +77,7 @@ class CombatScreen:
         self.typewriter_speed = 50  # ms per character
         self.last_typewriter_update = 0
         self.initialize()
+        self.logger.debug(f"CombatScreen initialized with message: '{self.message}'")
 
     def initialize(self):
         pygame.font.init()
@@ -120,6 +124,7 @@ class CombatScreen:
         # Text Panel
         self.draw_panel(surface, 72, 37, 339, 85, (217, 217, 217), (0, 0, 0))
         self.draw_text(surface, self.typewriter_text, 80, 45, (0, 0, 0))
+        self.logger.debug(f"Drawing text: '{self.typewriter_text}'")
 
         # Buttons
         for button in self.buttons:
@@ -145,8 +150,9 @@ class CombatScreen:
         current_time = pygame.time.get_ticks()
 
         # Handle animation queue
-        if self.animation_queue and current_time >= self.animation_queue[0].delay:
+        while self.animation_queue and current_time >= self.animation_queue[0].delay:
             event = self.animation_queue.pop(0)
+            self.logger.debug(f"Executing animation event: {event.action.__name__}")
             event.action(*event.args)
 
         # Update typewriter effect
@@ -155,20 +161,28 @@ class CombatScreen:
                 self.typewriter_text += self.message[self.typewriter_index]
                 self.typewriter_index += 1
                 self.last_typewriter_update = current_time
+                self.logger.debug(f"Typewriter updated: '{self.typewriter_text}'")
+
+        self.logger.debug(
+            f"Update: current_time={current_time}, message='{self.message}', typewriter='{self.typewriter_text}'")
 
     def handle_event(self, event):
         for button in self.buttons:
             action = button.handle_event(event, self.scale_factor)
             if action:
+                self.logger.debug(f"Button action triggered: {action}")
                 if action == CombatAction.TEST:
+                    self.logger.debug("Test button pressed, initiating sequence")
                     self.test_animation_sequence()
                 return action
         return None
 
     def set_message(self, message):
+        self.logger.debug(f"Setting new message: '{message}'")
         self.message = message
         self.typewriter_text = ""
         self.typewriter_index = 0
+        self.last_typewriter_update = pygame.time.get_ticks()
 
     def update_player_hp(self, current_hp, max_hp):
         self.player_hp = current_hp
@@ -177,23 +191,16 @@ class CombatScreen:
     def test_animation_sequence(self):
         current_time = pygame.time.get_ticks()
         self.animation_queue = [
-            AnimationEvent(
-                current_time + 0, self.set_message, "Initiating test sequence..."
-            ),
-            AnimationEvent(
-                current_time + 2000, self.set_message, "Prepare for combat!"
-            ),
-            AnimationEvent(
-                current_time + 4000, self.set_message, "Blinking attack button..."
-            ),
+            AnimationEvent(current_time + 0, self.set_message, "Initiating test sequence..."),
+            AnimationEvent(current_time + 2000, self.set_message, "Prepare for combat!"),
+            AnimationEvent(current_time + 4000, self.set_message, "Blinking attack button..."),
             AnimationEvent(current_time + 4000, self.blink_button, "attack", True),
             AnimationEvent(current_time + 4500, self.blink_button, "attack", False),
             AnimationEvent(current_time + 5000, self.blink_button, "attack", True),
             AnimationEvent(current_time + 5500, self.blink_button, "attack", False),
-            AnimationEvent(
-                current_time + 6000, self.set_message, "Test sequence complete!"
-            ),
+            AnimationEvent(current_time + 6000, self.set_message, "Test sequence complete!"),
         ]
+        self.logger.debug("Test animation sequence initiated")
 
     def blink_button(self, button_text, state):
         for button in self.buttons:
@@ -204,6 +211,7 @@ class CombatScreen:
 
 # Example usage:
 if __name__ == "__main__":
+    logger = logging.getLogger('CombatScreenMain')
     pygame.init()
     width, height = 480, 270
     scale_factor = 3
@@ -229,5 +237,8 @@ if __name__ == "__main__":
         screen.fill((37, 19, 26))  # White background
         combat_screen.draw(screen)
         pygame.display.flip()
+
+        # Log frame info
+        logger.debug(f"Frame completed. FPS: {clock.get_fps():.2f}")
 
     pygame.quit()
