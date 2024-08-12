@@ -15,7 +15,7 @@ from dungeon_adventure.views.console.map_visualizer import MapVisualizer
 from dungeon_adventure.views.view import View
 from dungeon_adventure.utils.R import Resources as Res
 from src import GameModel
-from serialization.project_state import ProjectState, save_game
+from serialization.game_snapshot import GameSnapshot, save_game
 
 
 class PlayerActionController:
@@ -24,7 +24,7 @@ class PlayerActionController:
     """
 
     def __init__(
-        self, game_model: GameModel, map_visualizer: MapVisualizer, view: View
+            self, game_model: GameModel, map_visualizer: MapVisualizer, view: View
     ):
         self.game_model = game_model
         self.map_visualizer = map_visualizer
@@ -130,13 +130,11 @@ class PlayerActionController:
             item_name = " ".join(action_parts[1:])
             self.handle_use_item(item_name)
         elif action_parts[0] == Res.Actions.SAVE:
-            proj_state = ProjectState(
-                self.game_model,
-                self.map_visualizer,
-                self._view,
-                self.player,
-                self.current_room,
-            )
+            proj_state = GameSnapshot(self.game_model,
+                                      self.map_visualizer,
+                                      self._view,
+                                      self.player,
+                                      self.current_room)
             save_game(proj_state, "save.pkl")
 
     def handle_equip(self, weapon_name: str):

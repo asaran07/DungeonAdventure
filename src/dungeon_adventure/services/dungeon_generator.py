@@ -1,8 +1,8 @@
 from dungeon_adventure.enums.item_types import PillarType
 from dungeon_adventure.enums.room_types import Direction, RoomType
-from dungeon_adventure.models.characters.monster import Monster
 from dungeon_adventure.models.dungeon.dungeon import Dungeon
 from dungeon_adventure.services.item_factory import ItemFactory
+from src.dungeon_adventure.models.characters.monster import Monster
 
 
 class DungeonGenerator:

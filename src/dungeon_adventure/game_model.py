@@ -1,10 +1,10 @@
 from typing import Dict
 
-from dungeon_adventure.enums.game_state import GameState
-from dungeon_adventure.exceptions.game_logic import GameStateError
-from dungeon_adventure.exceptions.input import InvalidInputError
-from dungeon_adventure.models.dungeon.dungeon import Dungeon
-from dungeon_adventure.models.player import Player
+from src.dungeon_adventure.enums.game_state import GameState
+from src.dungeon_adventure.exceptions.game_logic import GameStateError
+from src.dungeon_adventure.exceptions.input import InvalidInputError
+from src.dungeon_adventure.models.dungeon.dungeon import Dungeon
+from src.dungeon_adventure.models.player import Player
 
 
 class GameModelError(Exception):

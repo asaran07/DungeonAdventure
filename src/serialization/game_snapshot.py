@@ -9,28 +9,20 @@ from dungeon_adventure.views.console.map_visualizer import MapVisualizer
 from dungeon_adventure.views.view import View
 
 
-class ProjectState:
-    """Saves and loads the current project state."""
+class GameSnapshot:
+    """Represents the serializable object for saving and loading the game."""
 
-    def __init__(
-        self,
-        game_model: GameModel,
-        map_visualizer: MapVisualizer,
-        view,
-        player: Player,
-        current_room: Optional[Room],
-    ) -> None:
+    def __init__(self,
+                 game_model: GameModel,
+                 map_visualizer: MapVisualizer,
+                 view,
+                 player: Player,
+                 current_room: Optional[Room]) -> None:
         self.game_model: GameModel = game_model
         self.map_visualizer: MapVisualizer = map_visualizer
         self.view: View = view
         self.player: Player = player
         self.current_room: Room = current_room
-
-    # def __getstate__(self):
-    #     return self.game_model, self.map_visualizer
-
-    # def __setstate__(self, state):
-    #     self.game_model, self.map_visualizer = state
 
     def get_game_model(self) -> GameModel:
         return self.game_model
@@ -48,17 +40,10 @@ class ProjectState:
         return self.current_room
 
 
-def load_game(file_path: str) -> ProjectState:
-    # if os.path.exists(file_path):
-    #     with open(file_path, 'rb') as file:
-    #         return pickle.load(file)
-
-    # with open(file_path, 'rb') as file:
-    #     return pickle.load(file)
-
+def load_game(file_path: str) -> GameSnapshot:
     if os.path.exists(file_path):
         if os.path.getsize(file_path) > 0:
-            with open(file_path, "rb") as file:
+            with open(file_path, 'rb') as file:
                 return pickle.load(file)
         else:
             print("Error: File is empty.")
@@ -67,8 +52,7 @@ def load_game(file_path: str) -> ProjectState:
         print(f"Error: File {file_path} does not exist.")
 
 
-def save_game(game_state: ProjectState, file_name: str) -> None:
-    with open(file_name, "wb") as file:
-        # wb means write binary
+def save_game(game_state: GameSnapshot, file_name: str) -> None:
+    with open(file_name, 'wb') as file:
         pickle.dump(game_state, file)
         print(f"Game saved to {file_name}")

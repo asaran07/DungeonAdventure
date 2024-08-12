@@ -1,5 +1,6 @@
 import random
-from typing import Optional
+import sqlite3
+from typing import Optional, List
 
 from dungeon_adventure.models.characters.dungeon_character import DungeonCharacter
 from dungeon_adventure.models.items import Weapon
@@ -30,6 +31,11 @@ class Hero(DungeonCharacter):
         self.xp: int = 0
         self.xp_to_next_level: int = 100  # Starting XP required for level 2
         self.equipped_weapon: Optional[Weapon] = None
+
+    def hero_class(self, name: str):
+        data = self.get_SQL_hero_info(name)
+        for item in data:
+            print(item)
 
     def _mitigate_damage(self, damage: int) -> int:
         """Attempt to block incoming damage."""
@@ -83,8 +89,17 @@ class Hero(DungeonCharacter):
 
     # Placeholder for future special ability implementation
     def use_special_ability(self) -> None:
-        """Use a special ability. To be implemented by subclasses."""
-        pass
+        """Use a special ability."""
+        if self.name == "Warrior":
+            special_ability = "Crushing Blow"
+            # Do Crushing Blow
+        if self.name == "Priestess":
+            special_ability = "Heal"
+            # Do Heal
+        if self.name == "Thief":
+            special_ability = "Sneak Attack"
+            #Do Sneak Attack
+
 
     def __str__(self) -> str:
         weapon_info = (
@@ -102,3 +117,26 @@ class Hero(DungeonCharacter):
             f"Block Chance: {self.block_chance}%\n"
             f"{weapon_info}"
         )
+
+    def get_SQL_hero_info(self, name:str) -> List[any]:
+        try:
+            sqliteConnection = sqlite3.connect("hero_factory.db")
+            cursor = sqliteConnection.cursor()
+            print("Connected to SQLite")
+
+            sqlite_select_query = """select * from hero_factory where name = ?"""
+            cursor.execute(sqlite_select_query, (name,))
+            records = cursor.fetchall()
+            cursor.close()
+        except sqlite3.Error as error:
+            print("Failed to read data from sqlite", error)
+        finally:
+            if sqliteConnection:
+                sqliteConnection.close()
+                print("SQLite connection is closed")
+
+        return records
+
+# if __name__ == "__main__":
+#     hero = Hero()
+#     hero.hero_class("Thief")
