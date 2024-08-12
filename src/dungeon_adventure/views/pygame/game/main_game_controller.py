@@ -142,13 +142,11 @@ class MainGameController:
         self._draw_debug_info()
         self.game_screen.blit_scaled()
         if self.game_world.game_model.game_state == GameState.IN_COMBAT:
-            pass
-            # self._draw_combat_screen()
+            self._draw_combat_screen()
         self._draw_gui()
-        self.combat_screen.draw(self.screen)
 
-    # def _draw_combat_screen(self) -> None:
-    #     self.combat_screen.draw(self.screen)
+    def _draw_combat_screen(self) -> None:
+        self.combat_screen.draw(self.screen)
 
     def _draw_game_world(self) -> None:
         self.game_world.draw(self.game_screen.get_game_surface())

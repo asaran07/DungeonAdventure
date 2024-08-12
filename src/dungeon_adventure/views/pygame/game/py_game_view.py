@@ -71,8 +71,8 @@ class PyGameView:
         """
         if self._minimap_visible:
             self.minimap.draw(screen)
-        if self._combat_screen_visible:
-            self.combat_screen.draw(screen)
+        # if self._combat_screen_visible:
+        #     self.combat_screen.draw(screen)
         if self._inventory_visible:
             self.inventory_display.draw(screen, player_inventory)
             self.inventory_display.item_details_popup.draw(screen)

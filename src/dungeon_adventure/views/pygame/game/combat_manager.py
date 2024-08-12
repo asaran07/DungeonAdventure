@@ -35,21 +35,21 @@ class CombatManager:
         self.machine.add_transition(
             "start_combat", "idle", "player_turn", after="setup_combat"
         )
-        self.machine.add_transition(
-            "end_player_turn", "player_turn", "enemy_turn", after="start_enemy_turn"
-        )
-        self.machine.add_transition(
-            "start_attack_animation",
-            "*",
-            "animating_attack",
-            after="play_attack_animation",
-        )
-        self.machine.add_transition(
-            "end_attack_animation", "animating_attack", "=", after="resolve_attack"
-        )
-        self.machine.add_transition(
-            "end_combat", "*", "combat_end", after="cleanup_combat"
-        )
+        # self.machine.add_transition(
+        #     "end_player_turn", "player_turn", "enemy_turn", after="start_enemy_turn"
+        # )
+        # self.machine.add_transition(
+        #     "start_attack_animation",
+        #     "*",
+        #     "animating_attack",
+        #     after="play_attack_animation",
+        # )
+        # self.machine.add_transition(
+        #     "end_attack_animation", "animating_attack", "=", after="resolve_attack"
+        # )
+        # self.machine.add_transition(
+        #     "end_combat", "*", "combat_end", after="cleanup_combat"
+        # )
 
     def set_combat_screen(self, combat_screen: CombatScreen):
         self.view = combat_screen
@@ -81,10 +81,10 @@ class CombatManager:
         # else:
         #     self.logger.warning("Combat screen not initialized")
 
-    # def setup_combat(self):
-    #     self.logger.info("Setting up combat")
-    #     self.determine_turn_order()
-    #     self.update_combat_screen()
+    def setup_combat(self):
+        self.logger.info("Setting up combat")
+        self.determine_turn_order()
+        # self.update_combat_screen()
 
     def determine_turn_order(self) -> None:
         self.logger.info("Determining turn order")
