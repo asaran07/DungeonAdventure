@@ -3,11 +3,13 @@ from typing import Optional
 from dungeon_adventure.models.characters.hero import Hero
 from dungeon_adventure.models.inventory.inventory import Inventory
 from dungeon_adventure.models.items import Item, Weapon
+from dungeon_adventure.exceptions.player import *
 
 
 class Player:
     def __init__(self, name: str, inventory_weight_limit: float = 50.0):
-        self._name: str = name
+        self._name: str = ""
+        self.name = name  # Calls setter method
         self._inventory: Inventory = Inventory(inventory_weight_limit)
         self._hero: Hero = Hero()
         self.current_room: Optional["Room"] = None
@@ -18,6 +20,9 @@ class Player:
 
     @name.setter
     def name(self, name: str):
+        """Set the name of player."""
+        if not name or len(name) == 0:
+            raise InvalidPlayerAttributeError("Name cannot be empty.")
         self._name = name
 
     @property

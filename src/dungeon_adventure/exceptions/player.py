@@ -35,3 +35,8 @@ class ItemNotInInventoryError(PlayerError):
 
 class InvalidDirectionError(PlayerError):
     """Raised when trying to move in an invalid direction"""
+
+
+class InvalidPlayerAttributeError(PlayerError):
+    """Raised when an attribute set to player is invalid"""
+    pass
