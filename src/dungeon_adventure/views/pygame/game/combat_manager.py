@@ -182,8 +182,17 @@ class CombatManager:
                 self.logger.info(f"{self.player.hero.name} attacked {target.name} for {attack_amount} damage")
                 self.view.set_message(f"You hit {target.name} for {attack_amount} damage!",
                                       self.on_attack_animation_complete)
+
+                # Update monster stats and trigger animation
+                self.view.update_monster_stats([target], self.on_monster_stats_updated)
         else:
             self.logger.warning(f"Invalid monster index: {monster_index}")
+
+    def on_monster_stats_updated(self):
+        # This method will be called when the monster stats animation is complete
+        self.logger.debug("Monster stats updated and animated")
+        # You can add any additional logic here if needed
+        pass
 
     def draw(self, surface: pygame.Surface) -> None:
         if self.view:

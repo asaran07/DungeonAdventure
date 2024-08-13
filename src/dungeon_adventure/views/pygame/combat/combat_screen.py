@@ -235,7 +235,7 @@ class CombatScreen:
 
         self.update_monster_stats(monsters, self.monster_stats_callback)
 
-    def update_monster_stats(self, monsters: List, callback: Callable):
+    def update_monster_stats(self, monsters: List[Monster], callback: Callable):
         for i, monster in enumerate(monsters):
             if i < len(self.monster_bars):  # Ensure we don't go out of bounds
                 new_hp_ratio = monster.current_hp / monster.max_hp
@@ -243,16 +243,11 @@ class CombatScreen:
 
         # If there are no animations to run, call the callback immediately
         if all(anim is None for anim in self.monster_bar_animation):
-            self.logger.debug(
-                "No monster bar animations to run, calling callback immediately"
-            )
+            self.logger.debug("No monster bar animations to run, calling callback immediately")
             if callback:
                 callback()
-            else:
-                self.logger.warning("Monster stats callback is None, not calling")
         else:
-            pass
-            # self.logger.debug("Monster bar animations started, callback will be called when complete")
+            self.logger.debug("Monster bar animations started, callback will be called when complete")
 
     def animate_monster_bar(self, index, new_value):
         try:
