@@ -2,6 +2,7 @@ import logging
 from typing import Callable, Dict, List, Optional
 
 import pygame
+from transitions import Machine
 
 from dungeon_adventure.enums.combat_state import CombatState
 from dungeon_adventure.models.characters.hero import Hero
@@ -15,12 +16,14 @@ from dungeon_adventure.views.pygame.sprites.composite_player import CompositePla
 
 
 class CombatManager:
+    states = ["waiting", "player_turn", "monster_turn", "animating", "combat_end"]
+
     def __init__(self, game_world: GameWorld):
         self.enable_input_receiving: bool = False
         self.logger: logging.Logger = logging.getLogger("dungeon_adventure.combat")
         self.game_world: GameWorld = game_world
         self.view: Optional[CombatScreen] = None
-        self.player: 'CompositePlayer' = game_world.composite_player
+        self.player: "CompositePlayer" = game_world.composite_player
         self.monsters: List[Monster] = []
         self.combat_state: CombatState = CombatState.WAITING
         self.turn_order: List[Hero | Monster] = []
@@ -30,14 +33,41 @@ class CombatManager:
             CombatAction.FLEE: self.handle_flee,
             CombatAction.USE_ITEM: self.handle_use_item,
         }
+        self.animation_timer: Optional[int] = None
+        self.animation_duration: int = 1500  # 1.5 seconds
+
+        # Initialize the state machine
+        self.machine = Machine(
+            model=self, states=CombatManager.states, initial="waiting"
+        )
+
+        # Define transitions
+        self.machine.add_transition(
+            "start_combat", "waiting", "player_turn", before="setup_combat"
+        )
+        self.machine.add_transition(
+            "end_player_turn",
+            "player_turn",
+            "animating",
+            before="start_animation",
+            after="prepare_monster_turn",
+        )
+        self.machine.add_transition("start_monster_turn", "animating", "monster_turn")
+        self.machine.add_transition(
+            "end_monster_turn",
+            "monster_turn",
+            "animating",
+            before="start_animation",
+            after="prepare_player_turn",
+        )
+        self.machine.add_transition("start_player_turn", "animating", "player_turn")
+        self.machine.add_transition(
+            "end_combat", "*", "combat_end", after="cleanup_combat"
+        )
 
     def set_combat_screen(self, combat_screen: CombatScreen) -> None:
         self.logger.info("Initializing combat screen")
         self.view = combat_screen
-
-    def start_combat(self) -> None:
-        self.logger.info("Starting combat")
-        self.setup_combat()
 
     def setup_combat(self) -> None:
         self.logger.info("Setting up combat")
@@ -64,8 +94,35 @@ class CombatManager:
             self.view.display_stat_bars(
                 self.player, True, True, True, self.on_stat_bars_displayed
             )
-            self.view.display_monster_stats(self.monsters, self.on_monster_stats_displayed)
+            self.view.display_monster_stats(
+                self.monsters, self.on_monster_stats_displayed
+            )
         self.start_next_turn()
+
+    def start_animation(self):
+        self.animation_timer = pygame.time.get_ticks()
+
+    def prepare_monster_turn(self):
+        self.logger.info("Preparing monster turn")
+        current_monster = self.turn_order[self.current_turn_index]
+        self.handle_monster_action(current_monster)
+
+    def handle_monster_action(self, monster: Monster) -> None:
+        target = self.player.hero
+        attack_amount = monster.attempt_attack(target)
+        if attack_amount == 0:
+            self.view.set_message(f"{monster.name} missed!", self.end_monster_turn)
+        else:
+            self.view.set_message(
+                f"{monster.name} hit you for {attack_amount} damage!",
+                self.end_monster_turn,
+            )
+            self.view.update_stat_bars(self.player, self.on_stat_bars_updated)
+
+    def prepare_player_turn(self):
+        self.logger.info("Preparing player turn")
+        if self.view:
+            self.view.set_message("Your turn! Choose an action.", None)
 
     def on_stat_bars_displayed(self) -> None:
         self.logger.debug("Player stat bars displayed")
@@ -98,12 +155,25 @@ class CombatManager:
             self.logger.info(f"Player attacking {target.name}")
             attack_amount = self.player.hero.attempt_attack(target)
             if attack_amount == 0:
-                self.logger.info(f"{self.player.hero.name} missed attack on {target.name}")
-                self.view.set_message("You missed!", self.start_next_turn)
+                self.logger.info(
+                    f"{self.player.hero.name} missed attack on {target.name}"
+                )
+                self.view.set_message("You missed!", self.end_player_turn)
+                self.logger.info("Incrementing Turn Index")
+                self.current_turn_index = +1
             else:
-                self.logger.info(f"{self.player.hero.name} attacked {target.name} for {attack_amount} damage")
-                self.view.update_monster_stats(self.monsters, self.on_monster_stats_updated)
-            self.end_turn()
+                self.logger.info(
+                    f"{self.player.hero.name} attacked {target.name} for {attack_amount} damage"
+                )
+                self.view.set_message(
+                    f"You hit {target.name} for {attack_amount} damage!",
+                    self.end_player_turn,
+                )
+                self.view.update_monster_stats(
+                    self.monsters, self.on_monster_stats_updated
+                )
+                self.logger.info("Incrementing Turn Index")
+                self.current_turn_index = +1
         else:
             self.logger.warning(f"Invalid monster index: {monster_index}")
 
@@ -120,12 +190,23 @@ class CombatManager:
         if self.view:
             self.view.update(dt)
 
+        if self.state == "animating":
+            current_time = pygame.time.get_ticks()
+            if current_time - self.animation_timer >= self.animation_duration:
+                if isinstance(self.turn_order[self.current_turn_index], Hero):
+                    self.start_player_turn()
+                else:
+                    self.start_monster_turn()
+                self.current_turn_index = (self.current_turn_index + 1) % len(
+                    self.turn_order
+                )
+
     def draw(self, surface: pygame.Surface) -> None:
         if self.view:
             self.view.draw(surface)
 
     def process_events(self, event):
-        if self.view:
+        if self.state == "player_turn" and self.view:
             action = self.view.handle_event(event)
             if isinstance(action, tuple) and action[0] == "ATTACK":
                 self.logger.info(f"Attacking monster at index {action[1]}")
@@ -134,8 +215,6 @@ class CombatManager:
                 self.handle_flee()
             elif action == CombatAction.USE_ITEM:
                 self.handle_use_item()
-        else:
-            self.logger.warning("Combat screen not initialized")
 
     def wait_for_user_input(self, event: pygame.event.Event) -> None:
         pass
@@ -155,3 +234,6 @@ class CombatManager:
 
     def on_monster_stats_updated(self) -> None:
         self.logger.debug("Monster stats updated")
+
+    def cleanup_combat(self):
+        self.logger.info("Combat ended")
