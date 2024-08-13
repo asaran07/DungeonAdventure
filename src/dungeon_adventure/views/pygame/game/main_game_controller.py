@@ -69,11 +69,10 @@ class MainGameController:
             pygame.K_h: lambda: self.pygame_view.toggle_visibility("controls"),
         }
 
-    def initiate_combat(self) -> None:
-        """Initiate combat when triggered by the game world."""
+    def initiate_combat(self):
         self.logger.debug("Initiating combat", stacklevel=2)
-        # self.pygame_view.toggle_visibility("combat_screen")
-        self.combat_manager.start_combat()
+        self.combat_manager.reset_combat_state()  # Ensure we're in WAITING state
+        self.combat_manager.trigger('start_combat')
 
     def initialize(self) -> None:
         """Initialize all game components."""
