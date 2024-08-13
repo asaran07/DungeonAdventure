@@ -1,4 +1,6 @@
-from dungeon_adventure.controllers.player_action_controller import PlayerActionController
+from dungeon_adventure.controllers.player_action_controller import (
+    PlayerActionController,
+)
 from dungeon_adventure.enums.game_state import GameState
 from dungeon_adventure.exceptions.dungeon import RoomNotFoundError
 from dungeon_adventure.exceptions.game_logic import GameStateError

@@ -2,7 +2,9 @@ import logging
 
 import pygame
 
-from dungeon_adventure.controllers.player_action_controller import PlayerActionController
+from dungeon_adventure.controllers.player_action_controller import (
+    PlayerActionController,
+)
 from dungeon_adventure.game_model import GameModel, GameModelError
 from dungeon_adventure.logging_config import setup_logging
 from dungeon_adventure.models.player.player import Player
@@ -42,7 +44,9 @@ def main():
         composite_player = CompositePlayer(game_model.player, py_player)
         map_visualizer = MapVisualizer(game_model.dungeon)
         console_view = ConsoleView()
-        player_action_controller = PlayerActionController(game_model, map_visualizer, console_view)
+        player_action_controller = PlayerActionController(
+            game_model, map_visualizer, console_view
+        )
         game_world = GameWorld(game_model, composite_player)
         game_screen = GameScreen()
         debug_manager = DebugManager()

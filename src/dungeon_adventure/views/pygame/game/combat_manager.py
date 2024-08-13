@@ -49,50 +49,10 @@ class CombatManager:
         self.machine.add_transition(
             "setup_complete", "setup", "player_turn", after="start_player_turn"
         )
-        self.machine.add_transition(
-            "player_action",
-            "player_turn",
-            "animating_attack",
-            after="handle_player_action",
-        )
-        self.machine.add_transition(
-            "animation_complete",
-            "animating_attack",
-            "enemy_turn",
-            after="start_enemy_turn",
-        )
-        self.machine.add_transition(
-            "enemy_action",
-            "enemy_turn",
-            "animating_attack",
-            after="handle_enemy_action",
-        )
-        self.machine.add_transition(
-            "turn_complete",
-            "animating_attack",
-            "player_turn",
-            conditions=["combat_active"],
-            after="start_player_turn",
-        )
-        self.machine.add_transition(
-            "turn_complete",
-            "animating_attack",
-            "combat_end",
-            conditions=["combat_over"],
-            after="end_combat",
-        )
 
     def set_combat_screen(self, combat_screen: CombatScreen):
         self.logger.info("Initializing combat screen")
         self.view = combat_screen
-        # self.setup_action_callbacks()
-
-    #
-    # def setup_action_callbacks(self):
-    #     if self.view:
-    #         self.view.set_action_callback("attack", self.handle_attack)
-    #         self.view.set_action_callback("use_item", self.handle_use_item)
-    #         self.view.set_action_callback("flee", self.handle_flee)
 
     def process_events(self, event: pygame.event.Event):
         pass
@@ -108,13 +68,12 @@ class CombatManager:
         if self.view:
             self.logger.debug("Connecting to combat screen")
             self.view.set_message("Combat Started!", self.on_setup_message_complete)
-        # self.update_combat_screen()
 
     def on_stat_bars_displayed(self):
         self.logger.debug("Stats bars creation finished")
 
     def on_setup_message_complete(self):
-        self.logger.debug("Setup message complete callback from combat_screen received!", stacklevel=2)
+        self.logger.debug("Callback from combat_screen received!", stacklevel=2)
         self.setup_complete()
 
     def determine_turn_order(self) -> None:
@@ -144,9 +103,6 @@ class CombatManager:
 
     def start_player_turn(self):
         self.logger.info("Starting Player Turn")
-        self.view.display_stat_bars(
-            self.player, True, True, True, self.on_stat_bars_displayed
-        )
         if self.current_turn < len(self.turn_order):
             character = self.turn_order[self.current_turn]
             self.logger.info(f"Turn starting for {character}")

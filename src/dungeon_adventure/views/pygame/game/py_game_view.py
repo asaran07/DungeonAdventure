@@ -33,7 +33,7 @@ class PyGameView:
         self.logger: logging.Logger = logging.getLogger(self.__class__.__name__)
         self._minimap_visible: bool = True
         self._combat_screen_visible: bool = False
-        self._controls_visible: bool = False
+        self._controls_visible: bool = True
         self._room_items_visible: bool = False
         self._inventory_visible: bool = False
 

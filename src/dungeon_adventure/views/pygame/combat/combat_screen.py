@@ -1,9 +1,11 @@
 import logging
-from typing import Callable, Optional
+from typing import Callable, List, Optional
 
 import pygame
 import pygame.font
 from enum import Enum, auto
+
+from dungeon_adventure.models.characters.monster import Monster
 
 
 class CombatAction(Enum):
@@ -83,6 +85,7 @@ class CombatScreen:
         self.hero_title_font = pygame.font.SysFont(
             None, 20 * self.scale_factor, bold=True
         )
+        self.monster_font = pygame.font.SysFont(None, 12 * self.scale_factor, bold=True)
         self.stat_bars = {"HP": 0, "Mana": 0, "XP": 0}
         self.stat_bar_visible = {"HP": False, "Mana": False, "XP": False}
         self.stat_bar_colors = {
@@ -91,6 +94,9 @@ class CombatScreen:
             "XP": (44, 199, 87),
         }
         self.stat_bar_animation = {"HP": None, "Mana": None, "XP": None}
+
+        self.monster_bars = []
+        self.monster_bar_animation = []
 
         self.animation_queue = []
         self.typewriter_text = ""
@@ -159,6 +165,74 @@ class CombatScreen:
         self.draw_stat_bar(surface, "HP", 196, 163, 17, 54)
         self.draw_stat_bar(surface, "Mana", 228, 163, 17, 54)
         self.draw_stat_bar(surface, "XP", 260, 163, 17, 54)
+
+        # Monster Stats Panel
+        self.draw_panel(surface, 303, 134, 108, 89, (217, 217, 217), (0, 0, 0))
+
+        # Draw monster stats
+        for i, monster in enumerate(self.monster_bars):
+            y_offset = i * 37
+            self.draw_text(
+                surface,
+                monster["name"],
+                316,
+                141 + y_offset,
+                (0, 0, 0),
+                font=self.monster_font,
+            )
+            self.draw_monster_bar(surface, i, 319, 155 + y_offset, 76, 16)
+
+    def draw_monster_bar(self, surface, index, x, y, width, height):
+        monster = self.monster_bars[index]
+        fill_width = int(width * monster["hp_ratio"])
+        pygame.draw.rect(
+            surface,
+            (199, 44, 44),
+            (self.scale(x), self.scale(y), self.scale(fill_width), self.scale(height)),
+        )
+        pygame.draw.rect(
+            surface,
+            (0, 0, 0),
+            (self.scale(x), self.scale(y), self.scale(width), self.scale(height)),
+            self.scale(1),
+        )
+
+    def display_monster_stats(self, monsters: List, callback: Callable):
+        self.monster_bars = []
+        self.monster_bar_animation = []
+        for i, monster in enumerate(monsters[:2]):  # Limit to 2 monsters
+            try:
+                hp_ratio = float(monster.current_hp) / float(monster.max_hp)
+            except (ValueError, AttributeError, ZeroDivisionError):
+                hp_ratio = 0.0
+                self.logger.error(f"Error calculating hp ratio for monster {i}")
+
+            self.monster_bars.append({"name": monster.name, "hp_ratio": hp_ratio})
+            self.monster_bar_animation.append(None)
+        callback()
+
+    def update_monster_stats(self, monsters: List, callback: Callable):
+        for i, monster in enumerate(monsters[:2]):  # Limit to 2 monsters
+            new_hp_ratio = monster.current_hp / monster.max_hp
+            if self.monster_bars[i]["hp_ratio"] != new_hp_ratio:
+                self.animate_monster_bar(i, new_hp_ratio)
+
+        if all(anim is None for anim in self.monster_bar_animation):
+            callback()
+
+    def animate_monster_bar(self, index, new_value):
+        try:
+            current_value = float(self.monster_bars[index]["hp_ratio"])
+            new_value = float(new_value)
+            self.monster_bar_animation[index] = {
+                "start": current_value,
+                "end": new_value,
+                "progress": 0,
+            }
+        except (ValueError, KeyError) as e:
+            self.logger.error(f"Error animating monster bar: {e}")
+            # Set the value directly if conversion fails
+            self.monster_bars[index]["hp_ratio"] = new_value
 
     def draw_stat_bar(self, surface, stat_type, x, y, width, height):
         if self.stat_bar_visible[stat_type]:
@@ -244,6 +318,18 @@ class CombatScreen:
                         anim["start"] + (anim["end"] - anim["start"]) * anim["progress"]
                     )
 
+        # Update monster bar animations
+        for i, anim in enumerate(self.monster_bar_animation):
+            if anim:
+                anim["progress"] += dt * 2  # Adjust speed as needed
+                if anim["progress"] >= 1:
+                    self.monster_bars[i]["hp_ratio"] = anim["end"]
+                    self.monster_bar_animation[i] = None
+                else:
+                    self.monster_bars[i]["hp_ratio"] = (
+                        anim["start"] + (anim["end"] - anim["start"]) * anim["progress"]
+                    )
+
         if current_time - self.elapsed_log_time > self.log_interval:
             self.logger.debug(
                 f"Updating screen (dt: {dt:.2f}ms, total screen time: {self.screen_on_time:.2f}ms)"
@@ -313,6 +399,7 @@ class CombatScreen:
 # Example usage:
 if __name__ == "__main__":
     logger = logging.getLogger("CombatScreenMain")
+    monster_list = [Monster()]
     pygame.init()
     width, height = 480, 270
     scale_factor = 3
@@ -336,6 +423,7 @@ if __name__ == "__main__":
         combat_screen.update(dt)
 
         screen.fill((37, 19, 26))  # White background
+
         combat_screen.draw(screen)
         pygame.display.flip()
 
