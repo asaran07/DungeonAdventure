@@ -1,5 +1,5 @@
 import logging
-from typing import Callable
+from typing import Callable, Optional
 
 import pygame
 import pygame.font
@@ -74,7 +74,7 @@ class CombatScreen:
         self.title_font = None
         self.buttons = []
         self.message = ""
-        self.message_callback = None
+        self.message_callback: Callable = Optional[None]
         self.message_font = None
         self.player_hp = 100
         self.player_max_hp = 100

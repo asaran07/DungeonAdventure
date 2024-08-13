@@ -107,11 +107,13 @@ class CombatManager:
         self.determine_turn_order()
         if self.view:
             self.logger.debug("Connecting to combat screen")
+            self.view
             self.view.set_message("Combat Started!", self.on_setup_message_complete)
         # self.update_combat_screen()
 
     def on_setup_message_complete(self):
         self.logger.debug("Callback from combat_screen received!", stacklevel=2)
+        self.setup_complete()
 
     def determine_turn_order(self) -> None:
         self.logger.info("Determining turn order")
@@ -137,6 +139,12 @@ class CombatManager:
 
     def on_player_action_complete(self):
         self.animation_complete()
+
+    def start_player_turn(self):
+        self.logger.info("Starting Player Turn")
+        if self.current_turn < len(self.turn_order):
+            character = self.turn_order[self.current_turn]
+            self.logger.info(f"Turn starting for {character}")
 
     def start_enemy_turn(self):
         self.logger.info("Starting enemy turn")
