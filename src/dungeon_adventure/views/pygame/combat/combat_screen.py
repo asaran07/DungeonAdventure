@@ -76,13 +76,28 @@ class CombatScreen:
         self.message = ""
         self.message_callback: Callable = Optional[None]
         self.message_font = None
+
         self.player_hp = 100
         self.player_max_hp = 100
+
+        self.hero_title_font = pygame.font.SysFont(
+            None, 20 * self.scale_factor, bold=True
+        )
+        self.stat_bars = {"HP": 0, "Mana": 0, "XP": 0}
+        self.stat_bar_visible = {"HP": False, "Mana": False, "XP": False}
+        self.stat_bar_colors = {
+            "HP": (199, 44, 44),
+            "Mana": (44, 97, 199),
+            "XP": (44, 199, 87),
+        }
+        self.stat_bar_animation = {"HP": None, "Mana": None, "XP": None}
+
         self.animation_queue = []
         self.typewriter_text = ""
         self.typewriter_index = 0
         self.typewriter_speed = 50  # ms per character
         self.last_typewriter_update = 0
+
         self.initialize()
         self.logger.debug(f"CombatScreen initialized with message: '{self.message}'")
 
@@ -136,21 +151,66 @@ class CombatScreen:
         for button in self.buttons:
             button.draw(surface, self.font, self.scale_factor)
 
-        # HP Panel
+        # Stats Panel
         self.draw_panel(surface, 182, 134, 109, 89, (217, 217, 217), (0, 0, 0))
-        self.draw_text(
-            surface, "HP", 236, 144, (0, 0, 0), center=True, font=self.title_font
-        )
+        self.draw_text(surface, "Hero", 217, 141, (0, 0, 0), font=self.hero_title_font)
 
-        # HP Display Bar
-        hp_percentage = self.player_hp / self.player_max_hp
-        hp_width = int(75 * hp_percentage)
-        self.draw_panel(surface, 199, 163, hp_width, 16, (199, 44, 44), (0, 0, 0))
-        self.draw_panel(
-            surface, 199 + hp_width, 163, 75 - hp_width, 16, (150, 150, 150), (0, 0, 0)
+        # Draw stat bars
+        self.draw_stat_bar(surface, "HP", 196, 163, 17, 54)
+        self.draw_stat_bar(surface, "Mana", 228, 163, 17, 54)
+        self.draw_stat_bar(surface, "XP", 260, 163, 17, 54)
+
+    def draw_stat_bar(self, surface, stat_type, x, y, width, height):
+        if self.stat_bar_visible[stat_type]:
+            fill_height = int(height * self.stat_bars[stat_type])
+            pygame.draw.rect(
+                surface,
+                self.stat_bar_colors[stat_type],
+                (
+                    self.scale(x),
+                    self.scale(y + height - fill_height),
+                    self.scale(width),
+                    self.scale(fill_height),
+                ),
+            )
+            pygame.draw.rect(
+                surface,
+                (0, 0, 0),
+                (self.scale(x), self.scale(y), self.scale(width), self.scale(height)),
+                self.scale(1),
+            )
+
+    def display_stat_bars(
+        self, player, show_hp: bool, show_mana: bool, show_xp: bool, callback: Callable
+    ):
+        self.logger.debug(f"Displaying stats bars for {player.hero}")
+        self.stat_bar_visible["HP"] = show_hp
+        self.stat_bar_visible["Mana"] = show_mana
+        self.stat_bar_visible["XP"] = show_xp
+
+        self.update_stat_bars(player, callback)
+
+    def update_stat_bars(self, player, callback: Callable):
+        new_hp = player.hero.current_hp / player.hero.max_hp
+        new_mana = (player.hero.level * player.hero.current_hp) / (
+            player.hero.level * player.hero.max_hp
         )
-        hp_text = f"{self.player_hp}/{self.player_max_hp}"
-        self.draw_text(surface, hp_text, 236, 171, (0, 0, 0), center=True)
+        new_xp = player.hero.xp / player.hero.xp_to_next_level
+
+        self.animate_stat_bar("HP", new_hp)
+        self.animate_stat_bar("Mana", new_mana)
+        self.animate_stat_bar("XP", new_xp)
+
+        if all(anim is None for anim in self.stat_bar_animation.values()):
+            callback()
+
+    def animate_stat_bar(self, stat_type, new_value):
+        if self.stat_bar_visible[stat_type] and self.stat_bars[stat_type] != new_value:
+            self.stat_bar_animation[stat_type] = {
+                "start": self.stat_bars[stat_type],
+                "end": new_value,
+                "progress": 0,
+            }
 
     def update(self, dt):
         current_time = pygame.time.get_ticks()
@@ -171,6 +231,18 @@ class CombatScreen:
                 if self.message == self.typewriter_text:
                     self.logger.debug(f"Typewriter animation finished.")
                     self.on_message_animation_complete()
+
+        # Update stat bar animations
+        for stat_type, anim in self.stat_bar_animation.items():
+            if anim:
+                anim["progress"] += dt * 1  # Adjust speed as needed
+                if anim["progress"] >= 1:
+                    self.stat_bars[stat_type] = anim["end"]
+                    self.stat_bar_animation[stat_type] = None
+                else:
+                    self.stat_bars[stat_type] = (
+                        anim["start"] + (anim["end"] - anim["start"]) * anim["progress"]
+                    )
 
         if current_time - self.elapsed_log_time > self.log_interval:
             self.logger.debug(

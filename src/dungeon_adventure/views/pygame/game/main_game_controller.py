@@ -15,11 +15,11 @@ from dungeon_adventure.views.pygame.services.keybind_manager import KeyBindManag
 
 class MainGameController:
     def __init__(
-            self,
-            game_world: GameWorld,
-            game_screen: GameScreen,
-            pygame_view: PyGameView,
-            debug_manager: DebugManager,
+        self,
+        game_world: GameWorld,
+        game_screen: GameScreen,
+        pygame_view: PyGameView,
+        debug_manager: DebugManager,
     ):
         """
         Initialize the GameController with necessary components.
@@ -113,8 +113,8 @@ class MainGameController:
     def _handle_keydown_event(self, event: pygame.event.Event) -> None:
         """Handle keydown events."""
         if (
-                event.type == pygame.KEYDOWN
-                and not self.combat_manager.enable_input_receiving
+            event.type == pygame.KEYDOWN
+            and not self.combat_manager.enable_input_receiving
         ):
             action = self.key_actions.get(event.key)
             if action:
