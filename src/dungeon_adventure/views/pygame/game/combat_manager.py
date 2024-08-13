@@ -57,6 +57,30 @@ class CombatManager:
             States.COMBAT_END,
             before="handle_combat_end"
         )
+        self.machine.add_transition(
+            "start_monster_turn",
+            States.PLAYER_TURN,
+            States.MONSTER_TURN,
+            after="handle_monster_turn"
+        )
+        self.machine.add_transition(
+            "end_monster_turn",
+            States.MONSTER_TURN,
+            States.PLAYER_TURN,
+            after="start_player_turn"
+        )
+        self.machine.add_transition(
+            'start_combat',
+            [States.WAITING, States.COMBAT_END],  # Allow starting from COMBAT_END too
+            States.PLAYER_TURN,
+            before='setup_combat',
+            after='start_player_turn'
+        )
+        self.machine.add_transition(
+            'reset_combat',
+            '*',  # Allow resetting from any state
+            States.WAITING
+        )
 
     def set_combat_screen(self, combat_screen: CombatScreen) -> None:
         self.logger.info("CURRENT STATE: " + str(self.state))
@@ -127,6 +151,7 @@ class CombatManager:
             )
         else:
             self.logger.error("View is None in start_player_turn")
+        self.waiting_for_animation = False
 
     def on_stat_bars_displayed(self) -> None:
         # self.logger.debug("Player stat bars displayed")
@@ -170,28 +195,91 @@ class CombatManager:
 
     def check_combat_end(self):
         self.logger.debug("Checking combat end...")
-        if all(monster.current_hp <= 0 for monster in self.monsters):
+        if self.player.hero.current_hp <= 0:
+            self.logger.info("Player has been defeated. Ending combat.")
+            self.end_combat()
+        elif all(monster.current_hp <= 0 for monster in self.monsters):
             self.logger.info("All monsters defeated. Ending combat.")
             self.end_combat()
         else:
             self.logger.debug("Combat continues.")
-            # Here you can add logic to proceed to the next turn
-            # For example: self.start_next_turn()
 
     def on_attack_animation_complete(self):
         self.waiting_for_animation = False
         self.check_combat_end()
+        if self.state != States.COMBAT_END:
+            self.start_monster_turn()
 
     def handle_combat_end(self):
         self.logger.info("Combat has ended. Transitioning to post-combat state.")
-        if self.view:
-            self.view.set_message("Victory! All monsters defeated.", self.transition_to_exploration)
+        if self.player.hero.current_hp <= 0:
+            if self.view:
+                self.view.set_message("Game Over! You have been defeated.", self.transition_to_game_over)
+            else:
+                self.transition_to_game_over()
         else:
-            self.transition_to_exploration()
+            if self.view:
+                self.view.set_message("Victory! All monsters defeated.", self.transition_to_exploration)
+            else:
+                self.transition_to_exploration()
+
+    def transition_to_game_over(self):
+        self.logger.info("Transitioning to game over screen.")
+        self.game_world.game_model.set_game_over(True)
 
     def transition_to_exploration(self):
         self.logger.info("Transitioning back to exploration mode.")
         self.game_world.game_model.game_state = GameState.EXPLORING
+        self.reset_combat_state()
+
+    def handle_monster_turn(self):
+        self.logger.info("CURRENT STATE: " + str(self.state))
+        self.logger.info("Starting monster turn")
+        self.waiting_for_animation = True
+        self.process_monster_attacks()
+
+    def process_monster_attacks(self):
+        self.current_monster_index = 0
+        self.process_next_monster_attack()
+
+    def process_next_monster_attack(self):
+        if self.current_monster_index < len(self.monsters):
+            monster = self.monsters[self.current_monster_index]
+            if monster.current_hp > 0:
+                attack_amount = monster.attempt_attack(self.player.hero)
+                if attack_amount == 0:
+                    self.logger.info(f"{monster.name} missed attack on {self.player.hero.name}")
+                    self.view.set_message(f"{monster.name} missed!", self.on_monster_attack_complete)
+                else:
+                    self.logger.info(f"{monster.name} attacked {self.player.hero.name} for {attack_amount} damage")
+                    self.view.set_message(f"{monster.name} hit you for {attack_amount} damage!",
+                                          self.on_monster_attack_complete)
+            else:
+                self.on_monster_attack_complete()
+        else:
+            self.on_all_monster_attacks_complete()
+
+    def on_monster_attack_complete(self):
+        self.current_monster_index += 1
+        self.process_next_monster_attack()
+
+    def on_all_monster_attacks_complete(self):
+        self.waiting_for_animation = False
+        self.check_combat_end()
+        if self.state != States.COMBAT_END:
+            self.end_monster_turn()
+
+    def reset_combat_state(self):
+        self.logger.info("Resetting combat state to WAITING")
+        if self.state != States.WAITING:
+            self.trigger('reset_combat')
+        self.monsters = []
+        self.turn_order = []
+        self.waiting_for_animation = False
+        self.message_animation_complete = False
+
+
+
 
 
 
