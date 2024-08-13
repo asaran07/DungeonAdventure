@@ -104,7 +104,10 @@ class CombatManager:
 
     def process_events(self, event):
         if self.view:
-            self.view.handle_event(event)
+            action = self.view.handle_event(event)
+            if action == CombatAction.ATTACK:
+                self.logger.info("Receiving 'Attack' CombatAction")
+                self.handle_attack()
         else:
             self.logger.warning("Combat screen not initialized")
 
@@ -114,3 +117,15 @@ class CombatManager:
     def end_turn(self):
         self.logger.info("ending turn")
         pass
+
+    # Call this method after any action that changes HP
+    def update_combat_display(self):
+        if self.view:
+            self.view.update_stat_bars(self.player, self.on_stat_bars_updated)
+            self.view.update_monster_stats(self.monsters, self.on_monster_stats_updated)
+
+    def on_stat_bars_updated(self):
+        self.logger.debug("Player stat bars updated")
+
+    def on_monster_stats_updated(self):
+        self.logger.debug("Monster stats updated")

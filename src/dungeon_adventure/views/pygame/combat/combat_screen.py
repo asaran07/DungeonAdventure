@@ -202,20 +202,18 @@ class CombatScreen:
         self.monster_bar_animation = []
         for i, monster in enumerate(monsters[:2]):  # Limit to 2 monsters
             try:
-                hp_ratio = float(monster.current_hp) / float(monster.max_hp)
+                hp_ratio = 0  # Start from 0 for animation
+                self.monster_bars.append({"name": monster.name, "hp_ratio": hp_ratio})
+                self.monster_bar_animation.append(None)
             except (ValueError, AttributeError, ZeroDivisionError):
-                hp_ratio = 0.0
                 self.logger.error(f"Error calculating hp ratio for monster {i}")
 
-            self.monster_bars.append({"name": monster.name, "hp_ratio": hp_ratio})
-            self.monster_bar_animation.append(None)
-        callback()
+        self.update_monster_stats(monsters, callback)  # Trigger immediate update
 
     def update_monster_stats(self, monsters: List, callback: Callable):
         for i, monster in enumerate(monsters[:2]):  # Limit to 2 monsters
             new_hp_ratio = monster.current_hp / monster.max_hp
-            if self.monster_bars[i]["hp_ratio"] != new_hp_ratio:
-                self.animate_monster_bar(i, new_hp_ratio)
+            self.animate_monster_bar(i, new_hp_ratio)
 
         if all(anim is None for anim in self.monster_bar_animation):
             callback()
@@ -349,9 +347,9 @@ class CombatScreen:
             action = button.handle_event(event, self.scale_factor)
             if action:
                 self.logger.debug(f"Button action triggered: {action}")
-                if action == CombatAction.TEST:
-                    self.logger.debug("Test button pressed, initiating sequence")
-                    self.test_animation_sequence()
+                if action == CombatAction.ATTACK:
+                    self.logger.info("Attack CombatAction received")
+                    return CombatAction.ATTACK
                 return action
         return None
 

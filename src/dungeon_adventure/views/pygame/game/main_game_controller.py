@@ -114,7 +114,6 @@ class MainGameController:
         """Handle keydown events."""
         if (
             event.type == pygame.KEYDOWN
-            and not self.combat_manager.enable_input_receiving
         ):
             action = self.key_actions.get(event.key)
             if action:
@@ -123,8 +122,8 @@ class MainGameController:
     def _handle_combat_events(self, event: pygame.event.Event) -> None:
         """Handle combat and inventory-specific events."""
         self.combat_manager.process_events(event)
-        if self.combat_manager.enable_input_receiving:
-            self.combat_manager.wait_for_user_input(event)
+        # if self.combat_manager.enable_input_receiving:
+        #     self.combat_manager.wait_for_user_input(event)
 
     def _handle_inventory_events(self, event: pygame.event.Event) -> None:
         if self.pygame_view.inventory_visible:
