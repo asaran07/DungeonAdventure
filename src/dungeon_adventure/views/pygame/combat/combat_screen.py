@@ -82,6 +82,9 @@ class CombatScreen:
         self.player_hp = 100
         self.player_max_hp = 100
 
+        self.in_monster_selection = False
+        self.monster_selection_buttons = []
+
         self.hero_title_font = pygame.font.SysFont(
             None, 20 * self.scale_factor, bold=True
         )
@@ -111,11 +114,17 @@ class CombatScreen:
         pygame.font.init()
         self.font = pygame.font.SysFont(None, 14 * self.scale_factor, bold=True)
         self.title_font = pygame.font.SysFont(None, 16 * self.scale_factor, bold=True)
-        self.buttons = [
+        self.main_buttons = [
             Button(75, 134, 83, 22, "attack", CombatAction.ATTACK),
             Button(75, 167, 83, 21, "flee", CombatAction.FLEE),
             Button(75, 201, 83, 22, "use item", CombatAction.USE_ITEM),
-            # Button(303, 134, 108, 22, "test", CombatAction.TEST),
+        ]
+        self.buttons = self.main_buttons
+
+    def create_monster_selection_buttons(self):
+        self.monster_selection_buttons = [
+            Button(75, 134 + i * 33, 83, 22, monster["name"], f"ATTACK_{i}")
+            for i, monster in enumerate(self.monster_bars)
         ]
 
     def scale(self, value):
@@ -347,10 +356,18 @@ class CombatScreen:
             action = button.handle_event(event, self.scale_factor)
             if action:
                 self.logger.debug(f"Button action triggered: {action}")
-                if action == CombatAction.ATTACK:
-                    self.logger.info("Attack CombatAction received")
-                    return CombatAction.ATTACK
-                return action
+                if action == CombatAction.ATTACK and not self.in_monster_selection:
+                    self.in_monster_selection = True
+                    self.create_monster_selection_buttons()
+                    self.buttons = self.monster_selection_buttons
+                    return None
+                elif isinstance(action, str) and action.startswith("ATTACK_"):
+                    monster_index = int(action.split("_")[1])
+                    self.in_monster_selection = False
+                    self.buttons = self.main_buttons
+                    return ("ATTACK", monster_index)
+                elif action in (CombatAction.FLEE, CombatAction.USE_ITEM):
+                    return action
         return None
 
     def set_message(self, message: str, callback: Callable = None):

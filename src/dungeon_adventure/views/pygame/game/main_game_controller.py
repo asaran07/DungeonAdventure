@@ -103,6 +103,7 @@ class MainGameController:
             if event.type == pygame.QUIT:
                 self.logger.info("Quit event received")
                 return False
+            self.combat_screen.handle_event(event)
             # Right now this is being called directly from game controller,
             # maybe we can do it through combat manager instead.
             # self.combat_screen.handle_event(event)
