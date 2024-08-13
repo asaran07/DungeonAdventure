@@ -94,7 +94,7 @@ class CombatScreen:
             Button(75, 134, 83, 22, "attack", CombatAction.ATTACK),
             Button(75, 167, 83, 21, "flee", CombatAction.FLEE),
             Button(75, 201, 83, 22, "use item", CombatAction.USE_ITEM),
-            Button(303, 134, 108, 22, "test", CombatAction.TEST),
+            # Button(303, 134, 108, 22, "test", CombatAction.TEST),
         ]
 
     def scale(self, value):
