@@ -21,6 +21,7 @@ class GameWorld:
         self.player_sprite = pygame.sprite.GroupSingle()
         self._game_model = game_model
         self.on_combat_initiated = None
+        self.on_items_in_room = None
         self.logger = logging.getLogger(self.__class__.__name__)
         self.logger.info("Initializing GameWorld")
 
@@ -133,13 +134,16 @@ class GameWorld:
             #     self._end_game()
         if self.current_room.room.has_monsters:
             self.logger.info(f"Monsters found in room: {self.current_room.room.name}")
-            # self.logger.debug(
-            #     f"Monsters: {[m.name for m in self.current_room.room.monsters]}"
-            # )
+            self.logger.debug(
+                f"Monsters: {[m.name for m in self.current_room.room.monsters]}"
+            )
             self.logger.info("Setting GameState to IN_COMBAT")
             self.game_model.game_state = GameState.IN_COMBAT
             if self.on_combat_initiated:
                 self.on_combat_initiated()
+        if self.current_room.room:
+            if self.on_items_in_room:
+                self.on_items_in_room()
         else:
             # Handle empty room
             self.logger.debug(f"Entered empty room: {self.current_room.room.name}")
