@@ -105,7 +105,7 @@ class MainGameController:
                 return False
             # Right now this is being called directly from game controller,
             # maybe we can do it through combat manager instead.
-            self.combat_screen.handle_event(event)
+            # self.combat_screen.handle_event(event)
             self._handle_keydown_event(event)
             self._handle_combat_events(event)
         return True
