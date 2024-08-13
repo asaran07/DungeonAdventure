@@ -122,7 +122,7 @@ class CombatManager:
         if self.view:
             self.view.draw(surface)
 
-    def process_events(self, event: pygame.event.Event) -> None:
+    def process_events(self, event):
         if self.view:
             action = self.view.handle_event(event)
             if isinstance(action, tuple) and action[0] == "ATTACK":

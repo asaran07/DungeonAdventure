@@ -84,6 +84,7 @@ class CombatScreen:
 
         self.in_monster_selection = False
         self.monster_selection_buttons = []
+        self.main_buttons = None
 
         self.hero_title_font = pygame.font.SysFont(
             None, 20 * self.scale_factor, bold=True
