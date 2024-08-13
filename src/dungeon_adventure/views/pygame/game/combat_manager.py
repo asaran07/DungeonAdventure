@@ -99,8 +99,10 @@ class CombatManager:
             attack_amount = self.player.hero.attempt_attack(target)
             if attack_amount == 0:
                 self.logger.info(f"{self.player.hero.name} missed attack on {target.name}")
+                self.view.set_message("You missed!", self.start_next_turn)
             else:
                 self.logger.info(f"{self.player.hero.name} attacked {target.name} for {attack_amount} damage")
+                self.view.update_monster_stats(self.monsters, self.on_monster_stats_updated)
             self.end_turn()
         else:
             self.logger.warning(f"Invalid monster index: {monster_index}")
