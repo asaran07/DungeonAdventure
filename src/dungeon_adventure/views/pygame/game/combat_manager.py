@@ -142,13 +142,13 @@ class CombatManager:
                 self.logger.info(
                     f"{self.player.hero.name} missed attack on {target.name}"
                 )
-                self.view.set_message("You missed!")
+                self.view.set_message("You missed!", self.check_combat_end)
             else:
                 self.logger.info(
                     f"{self.player.hero.name} attacked {target.name} for {attack_amount} damage"
                 )
                 self.view.set_message(
-                    f"You hit {target.name} for {attack_amount} damage!",
+                    f"You hit {target.name} for {attack_amount} damage!", self.check_combat_end
                 )
         else:
             self.logger.warning(f"Invalid monster index: {monster_index}")
@@ -160,6 +160,11 @@ class CombatManager:
     def update(self, dt: float) -> None:
         if self.view:
             self.view.update(dt)
+
+    def check_combat_end(self):
+        self.logger.debug("Checking combat end...")
+        self.logger.debug(f"Monster 1 and 2 hp: {self.monsters[0].current_hp, self.monsters[1].current_hp}")
+
 
     # def prepare_monster_turn(self):
     #     self.logger.info("CURRENT STATE: " + self.state)
