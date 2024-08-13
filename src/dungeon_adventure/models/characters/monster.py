@@ -153,3 +153,19 @@ class Monster(DungeonCharacter):
         except sqlite3.Error as error:
             print("Failed to read data from sqlite", error)
             return None
+
+    def __str__(self):
+        """
+        Get a string representation of Monster Name
+
+        :return: A string representation of Monster's name
+        """
+        return f"{self.name}"
+
+    def __repr__(self):
+        """
+        Get a string representation of Monster name from a list
+
+        :return: A string representation of Monster name from a list:
+        """
+        return self.__str__()

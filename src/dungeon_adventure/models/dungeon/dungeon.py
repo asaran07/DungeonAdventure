@@ -55,7 +55,7 @@ class Dungeon:
                 room_to_disconnect.connections[direction] = None
 
     def connect_rooms(
-        self, room1_name: str, direction: Direction, room2_name: str
+            self, room1_name: str, direction: Direction, room2_name: str
     ) -> bool:
         """Connect two rooms in the dungeon by their names"""
         room1 = self.get_room(room1_name)
@@ -63,7 +63,7 @@ class Dungeon:
         return room1.connect(direction, room2)
 
     def add_and_connect_room(
-        self, new_room_name: str, existing_room_name: str, direction: Direction
+            self, new_room_name: str, existing_room_name: str, direction: Direction
     ) -> Room:
         """Add a new room to the dungeon and connect it to an existing room"""
         existing_room = self.get_room(existing_room_name)
@@ -76,3 +76,24 @@ class Dungeon:
             raise DungeonError(
                 f"Failed to connect room '{new_room_name}' to '{existing_room_name}'. Connection might already exist."
             )
+
+    def __str__(self) -> str:
+        """
+        Get a string representation of the entire dungeon.
+
+        :return: A string representation of the dungeon
+        """
+        rooms = self.get_rooms()
+        dungeon_string = ""
+        for item in rooms:
+            dungeon_string += f"{item}\n"
+
+        return dungeon_string
+
+
+# Testing __str__ method, remove later
+# if __name__ == "__main__":
+#     from dungeon_adventure.services.dungeon_generator import DungeonGenerator
+#
+#     dungeon = DungeonGenerator.generate_default_dungeon()
+#     print(dungeon.__str__())
