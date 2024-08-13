@@ -1,3 +1,4 @@
+import random
 from dungeon_adventure.enums.item_types import PillarType, PotionType, WeaponType
 from dungeon_adventure.enums.room_types import Direction, RoomType
 from dungeon_adventure.models.dungeon.dungeon import Dungeon
@@ -75,7 +76,9 @@ class DungeonGenerator:
         room1.room_type = RoomType.ENTRANCE
 
         room2 = dungeon.get_room("Room 2")
-        # room2.add_monster(Monster("Robby Goblin"))
+        monster_instance = Monster()
+        random_monster = monster_instance.generate_random_monster()
+        room2.add_monster(random_monster)
         # room2.add_monster(Monster("Bobby Goblin"))
         room2.add_item(
             item_factory.create_pillar(
@@ -117,3 +120,4 @@ class DungeonGenerator:
         room15.set_room_type(RoomType.EXIT)
 
         return dungeon
+

@@ -38,8 +38,42 @@ class Monster(DungeonCharacter):
 
     # def monster_type(self, name: str):
     #     data = self.get_SQL_monster_info(name)
-    #     for item in data:
-    #         print(item)
+    #     return data
+
+    def generate_random_monster(self):
+        monster_roll = random.randint(1, 3)
+        monster_name = ""
+        if monster_roll == 1:
+            monster_name = "Skeleton"
+        elif monster_roll == 2:
+            monster_name = "Gremlin"
+        else:
+            monster_name = "Ogre"
+
+        print(f"Attempting to generate a {monster_name}")
+
+        data = self.get_SQL_monster_info(monster_name)
+        print(f"Data returned from get_SQL_monster_info: {data}")
+
+        if data is not None and len(data) > 0:
+            monster_data = data[0]
+            print(f"Monster data: {monster_data}")
+            # Create and return Monster instance as before
+            return Monster(
+                name=monster_data[1],
+                max_hp=monster_data[2],
+                base_min_damage=monster_data[3],
+                base_max_damage=monster_data[4],
+                attack_speed=monster_data[5],
+                base_hit_chance=monster_data[6],
+                heal_chance=monster_data[7],
+                min_heal=monster_data[8],
+                max_heal=monster_data[9],
+                xp_reward=monster_data[10]
+            )
+        else:
+            print(f"No data found for monster: {monster_name}")
+            return Monster(name=monster_name)
 
     def attempt_heal(self) -> int:
         """
@@ -84,7 +118,7 @@ class Monster(DungeonCharacter):
         """
         return cls(**kwargs)
 
-    #
+
     # def get_SQL_monster_info(self, name: str) -> List[any]:
     #     try:
     #         sqliteConnection = sqlite3.connect("monster_factory_new.db")
@@ -95,6 +129,7 @@ class Monster(DungeonCharacter):
     #         cursor.execute(sqlite_select_query, (name,))
     #         records = cursor.fetchall()
     #         cursor.close()
+    #         return records
     #
     #     except sqlite3.Error as error:
     #         print("Failed to read data from sqlite", error)
@@ -102,5 +137,18 @@ class Monster(DungeonCharacter):
     #         if sqliteConnection:
     #             sqliteConnection.close()
     #             print("SQLite connection is closed")
-    #
-    #     return records
+
+    def get_SQL_monster_info(self, name: str) -> List[any]:
+        try:
+            with sqlite3.connect("monster_factory_new.db") as sqliteConnection:
+                cursor = sqliteConnection.cursor()
+                print("Connected to SQLite")
+
+                sqlite_select_query = """select * from monster_factory_new where name = ?"""
+                cursor.execute(sqlite_select_query, (name,))
+                records = cursor.fetchall()
+                return records if records else None
+
+        except sqlite3.Error as error:
+            print("Failed to read data from sqlite", error)
+            return None

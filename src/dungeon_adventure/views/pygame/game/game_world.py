@@ -126,9 +126,9 @@ class GameWorld:
     def _handle_room_encounters(self):
         if self.current_room.room.has_monsters:
             self.logger.info(f"Monsters found in room: {self.current_room.room.name}")
-            self.logger.debug(
-                f"Monsters: {[m.name for m in self.current_room.room.monsters]}"
-            )
+            # self.logger.debug(
+            #     f"Monsters: {[m.name for m in self.current_room.room.monsters]}"
+            # )
             self.logger.info("Setting GameState to IN_COMBAT")
             self.game_model.game_state = GameState.IN_COMBAT
             if self.on_combat_initiated:
