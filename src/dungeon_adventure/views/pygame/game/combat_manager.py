@@ -1,5 +1,4 @@
-import enum
-from enum import auto
+from enum import Enum
 import logging
 from typing import Callable, Dict, List, Optional
 
@@ -17,15 +16,12 @@ from dungeon_adventure.views.pygame.game.game_world import GameWorld
 from dungeon_adventure.views.pygame.sprites.composite_player import CompositePlayer
 
 
-class States(enum.Enum):
-    WAITING = auto()
-    PLAYER_TURN = auto()
-    PLAYER_CHOOSING_TARGET = auto()
-    PLAYER_ATTACKING = auto()
-    ANIMATING_PLAYER_ATTACK = auto()
-    MONSTER_TURN = auto()
-    ANIMATING = auto()
-    COMBAT_END = auto()
+class States(Enum):
+    WAITING = "waiting"
+    PLAYER_TURN = "player_turn"
+    MONSTER_TURN = "monster_turn"
+    ANIMATING = "animating"
+    COMBAT_END = "combat_end"
 
 
 class CombatManager:
@@ -45,66 +41,88 @@ class CombatManager:
         }
         self.animation_timer: Optional[int] = None
         self.animation_duration: int = 1500  # 1.5 seconds
+        self.message_animation_complete = False
 
         # Initialize the state machine
         self.machine: Machine = Machine(
-            model=self, states=States, initial="waiting"
+            model=self, states=States, initial=States.WAITING
         )
 
-        # We're going to go from waiting to player turn, but before that we will set up the combat.
+        # Define transitions
         self.machine.add_transition(
-            "start_combat", States.WAITING, States.PLAYER_TURN, before="setup_combat"
-        )
-
-
-        self.machine.add_transition(
-            "end_player_turn",
+            "start_combat",
+            States.WAITING,
             States.PLAYER_TURN,
-            States.ANIMATING,
-            before="start_animation",
-            after="prepare_monster_turn",
-        )
-        self.machine.add_transition("start_monster_turn", "animating", "monster_turn")
-        self.machine.add_transition(
-            "end_monster_turn",
-            "monster_turn",
-            "animating",
-            before="start_animation",
-            after="prepare_player_turn",
-        )
-        self.machine.add_transition("start_player_turn", "animating", "player_turn")
-        self.machine.add_transition(
-            "end_combat", "*", "combat_end", after="cleanup_combat"
+            before="setup_combat",
+            after="start_player_turn",
         )
 
     def set_combat_screen(self, combat_screen: CombatScreen) -> None:
-        self.logger.info("CURRENT STATE: " + self.state)
+        self.logger.info("CURRENT STATE: " + str(self.state))
         self.logger.info("Initializing combat screen")
         self.view = combat_screen
 
     def setup_combat(self) -> None:
-        self.logger.info("CURRENT STATE: " + self.state)
+        self.logger.info("CURRENT STATE: " + str(self.state))
         self.logger.info("Setting up combat")
         self.monsters = self.game_world.current_room.room.monsters
         self.determine_turn_order()
         self.display_combat_info()
+        # Wait for animation to complete before allowing the transition
+        self.wait_for_animation()
+
+    def wait_for_animation(self):
+        if not self.message_animation_complete:
+            # If the animation isn't complete, check again after a short delay
+            pygame.time.set_timer(pygame.USEREVENT, 100)  # Check every 100ms
 
     def determine_turn_order(self) -> None:
-        self.logger.info("CURRENT STATE: " + self.state)
+        self.logger.info("CURRENT STATE: " + str(self.state))
         self.logger.info("Determining turn order")
         self.turn_order = [self.player.hero] + self.monsters
         self.turn_order.sort(key=lambda x: x.attack_speed, reverse=True)
         self.logger.debug(f"Turn order: {[char.name for char in self.turn_order]}")
 
     def display_combat_info(self) -> None:
-        self.logger.info("CURRENT STATE: " + self.state)
+        self.logger.info("CURRENT STATE: " + str(self.state))
+        self.logger.info("Displaying turn order")
         if self.view:
-            self.view.set_message("Combat Started!", self.on_setup_message_complete)
+            self.message_animation_complete = False
+            self.view.set_message("Combat Started!", self.on_message_complete)
         else:
             self.logger.warning("Combat screen not initialized")
 
+    def on_message_complete(self) -> None:
+        self.message_animation_complete = True
+        self.logger.info("Message animation complete")
+        # Manually trigger the state transition
+        self.to_PLAYER_TURN()
+
+    def start_player_turn(self) -> None:
+        self.logger.info("CURRENT STATE: " + str(self.state))
+        self.logger.info("Starting player turn")
+        if self.view:
+            self.view.set_message("Your turn! Choose an action.", None)
+
+    def process_events(self, event):
+        if event.type == pygame.USEREVENT:
+            if self.message_animation_complete:
+                pygame.time.set_timer(pygame.USEREVENT, 0)  # Stop the timer
+                self.to_PLAYER_TURN()
+            else:
+                self.wait_for_animation()
+        if self.state == "player_turn" and self.view:
+            action = self.view.handle_event(event)
+            if isinstance(action, tuple) and action[0] == "ATTACK":
+                self.logger.info(f"Attacking monster at index {action[1]}")
+                self.handle_attack(action[1])
+            elif action == CombatAction.FLEE:
+                self.handle_flee()
+            elif action == CombatAction.USE_ITEM:
+                self.handle_use_item()
+
     def on_setup_message_complete(self) -> None:
-        self.logger.info("CURRENT STATE: " + self.state)
+        self.logger.info("CURRENT STATE: " + str(self.state))
         self.logger.debug("Setup message display completed")
         if self.view:
             self.view.display_stat_bars(
@@ -113,15 +131,12 @@ class CombatManager:
             self.view.display_monster_stats(
                 self.monsters, self.on_monster_stats_displayed
             )
-        self.start_next_turn()
 
     def start_animation(self):
         # After turn is ended we animate what we need to animate
         self.logger.info("CURRENT STATE: " + self.state)
         self.animation_timer = pygame.time.get_ticks()
-        self.view.update_monster_stats(
-            self.monsters, self.on_monster_stats_updated
-        )
+        self.view.update_monster_stats(self.monsters, self.on_monster_stats_updated)
 
     def prepare_monster_turn(self):
         self.logger.info("CURRENT STATE: " + self.state)
@@ -164,13 +179,6 @@ class CombatManager:
             self.start_player_turn()
         else:
             self.start_monster_turn(current_character)
-
-    def start_player_turn(self) -> None:
-        self.logger.info("CURRENT STATE: " + self.state)
-        self.logger.info("Starting player turn")
-        if self.view:
-            self.view.set_message("Your turn! Choose an action.", None)
-        # Enable player input
 
     def start_monster_turn(self, monster: Monster) -> None:
         self.logger.info("CURRENT STATE: " + self.state)
@@ -229,16 +237,7 @@ class CombatManager:
         if self.view:
             self.view.draw(surface)
 
-    def process_events(self, event):
-        if self.state == "player_turn" and self.view:
-            action = self.view.handle_event(event)
-            if isinstance(action, tuple) and action[0] == "ATTACK":
-                self.logger.info(f"Attacking monster at index {action[1]}")
-                self.handle_attack(action[1])
-            elif action == CombatAction.FLEE:
-                self.handle_flee()
-            elif action == CombatAction.USE_ITEM:
-                self.handle_use_item()
+
 
     def wait_for_user_input(self, event: pygame.event.Event) -> None:
         pass
