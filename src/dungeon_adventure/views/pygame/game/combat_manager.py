@@ -178,13 +178,14 @@ class CombatManager:
             if attack_amount == 0:
                 self.logger.info(f"{self.player.hero.name} missed attack on {target.name}")
                 self.view.set_message("You missed!", self.on_attack_animation_complete)
+                self.view.update_monster_stats(self.monsters)
             else:
                 self.logger.info(f"{self.player.hero.name} attacked {target.name} for {attack_amount} damage")
                 self.view.set_message(f"You hit {target.name} for {attack_amount} damage!",
                                       self.on_attack_animation_complete)
 
                 # Update monster stats and trigger animation
-                self.view.update_monster_stats([target], self.on_monster_stats_updated)
+                self.view.update_monster_stats(self.monsters)
         else:
             self.logger.warning(f"Invalid monster index: {monster_index}")
 
@@ -209,6 +210,7 @@ class CombatManager:
             self.end_combat()
         elif all(monster.current_hp <= 0 for monster in self.monsters):
             self.logger.info("All monsters defeated. Ending combat.")
+            self.game_world.current_room.room.monsters = []
             self.end_combat()
         else:
             self.logger.debug("Combat continues.")

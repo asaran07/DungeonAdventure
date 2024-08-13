@@ -80,7 +80,7 @@ class CombatScreen:
         self.title_font = None
         self.buttons = []
         self.message = ""
-        self.message_callback: Callable = Optional[None]
+        self.message_callback: Optional[Callable] = None
         self.message_font = None
 
         self.player_hp = 100
@@ -199,91 +199,6 @@ class CombatScreen:
             )
             self.draw_monster_bar(surface, i, 319, 155 + y_offset, 76, 16)
 
-    def draw_monster_bar(self, surface, index, x, y, width, height):
-        try:
-            monster = self.monster_bars[index]
-        except IndexError:
-            self.logger.error(f"Invalid monster index: {index}")
-            return
-
-        hp_ratio = max(0, min(monster.get("hp_ratio", 0), 1))  # Ensure ratio is between 0 and 1
-
-        scaled_x, scaled_y = self.scale(x), self.scale(y)
-        scaled_width, scaled_height = self.scale(width), self.scale(height)
-
-        # Draw background (empty portion)
-        pygame.draw.rect(
-            surface,
-            (100, 100, 100),  # Grey color for empty portion
-            (scaled_x, scaled_y, scaled_width, scaled_height)
-        )
-
-        # Draw filled portion
-        fill_width = int(scaled_width * hp_ratio)
-        pygame.draw.rect(
-            surface,
-            (199, 44, 44),  # Red color for filled portion
-            (scaled_x, scaled_y, fill_width, scaled_height)
-        )
-
-        # Draw border
-        pygame.draw.rect(
-            surface,
-            (0, 0, 0),  # Black border
-            (scaled_x, scaled_y, scaled_width, scaled_height),
-            self.scale(1)  # Border width
-        )
-
-    def display_monster_stats(self, monsters: List, callback: Callable):
-        self.monster_bars = []  # Clear existing monster bars
-        self.monster_bar_animation = []
-        for i, monster in enumerate(monsters):  # Remove the [:2] slice
-            try:
-                hp_ratio = (
-                    monster.current_hp / monster.max_hp
-                )  # Calculate initial hp_ratio
-                self.monster_bars.append({"name": monster.name, "hp_ratio": hp_ratio})
-                self.monster_bar_animation.append(None)
-            except (ValueError, AttributeError, ZeroDivisionError) as e:
-                self.logger.error(f"Error calculating hp ratio for monster {i}: {e}")
-
-        if callback is None:
-            self.logger.error("Callback passed to display_monster_stats is None")
-        else:
-            self.monster_stats_callback = callback
-            # self.logger.debug(f"Monster stats callback set: {callback}")
-
-        self.update_monster_stats(monsters, self.monster_stats_callback)
-
-    def update_monster_stats(self, monsters: List[Monster], callback: Callable):
-        for i, monster in enumerate(monsters):
-            if i < len(self.monster_bars):  # Ensure we don't go out of bounds
-                new_hp_ratio = monster.current_hp / monster.max_hp
-                self.animate_monster_bar(i, new_hp_ratio)
-
-        # If there are no animations to run, call the callback immediately
-        if all(anim is None for anim in self.monster_bar_animation):
-            self.logger.debug("No monster bar animations to run, calling callback immediately")
-            if callback:
-                callback()
-        else:
-            pass
-            # self.logger.debug("Monster bar animations started, callback will be called when complete")
-
-    def animate_monster_bar(self, index, new_value):
-        try:
-            current_value = float(self.monster_bars[index]["hp_ratio"])
-            new_value = float(new_value)
-            self.monster_bar_animation[index] = {
-                "start": current_value,
-                "end": new_value,
-                "progress": 0,
-            }
-        except (ValueError, KeyError) as e:
-            self.logger.error(f"Error animating monster bar: {e}")
-            # Set the value directly if conversion fails
-            self.monster_bars[index]["hp_ratio"] = new_value
-
     def draw_stat_bar(self, surface, stat_type, x, y, width, height):
         if self.stat_bar_visible[stat_type]:
             fill_height = int(height * self.stat_bars[stat_type])
@@ -304,6 +219,43 @@ class CombatScreen:
                 self.scale(1),
             )
 
+    def draw_monster_bar(self, surface, index, x, y, width, height):
+        monster = self.monster_bars[index]
+        fill_width = int(width * monster["hp_ratio"])
+        pygame.draw.rect(
+            surface,
+            (199, 44, 44),
+            (self.scale(x), self.scale(y), self.scale(fill_width), self.scale(height)),
+        )
+        pygame.draw.rect(
+            surface,
+            (0, 0, 0),
+            (self.scale(x), self.scale(y), self.scale(width), self.scale(height)),
+            self.scale(1),
+        )
+
+    def display_monster_stats(self, monsters: List, callback: Callable):
+        self.monster_bars = []  # Clear existing monster bars
+        self.monster_bar_animation = []
+        for i, monster in enumerate(monsters):  # Remove the [:2] slice
+            try:
+                if monster.max_hp != 0:
+                    hp_ratio = monster.current_hp / monster.max_hp
+                else:
+                    hp_ratio = 0  # or handle accordingly
+                self.monster_bars.append({"name": monster.name, "hp_ratio": hp_ratio})
+                self.monster_bar_animation.append(None)
+            except (ValueError, AttributeError, ZeroDivisionError) as e:
+                self.logger.error(f"Error calculating hp ratio for monster {i}: {e}")
+
+        if callback is None:
+            self.logger.error("Callback passed to display_monster_stats is None")
+        else:
+            self.monster_stats_callback = callback
+            # self.logger.debug(f"Monster stats callback set: {callback}")
+
+        self.update_monster_stats(monsters, self.monster_stats_callback)
+
     def display_stat_bars(
         self, player, show_hp: bool, show_mana: bool, show_xp: bool, callback: Callable
     ):
@@ -319,6 +271,34 @@ class CombatScreen:
             self.logger.debug(f"Stat bar callback set: {callback}")
 
         self.update_stat_bars(player, self.stat_bar_callback)
+
+    def update_monster_stats(self, monsters: List[Monster], callback: Optional[Callable] = None):
+        for i, monster in enumerate(monsters):
+            if i < len(self.monster_bars):  # Ensure we don't go out of bounds
+                new_hp_ratio = monster.current_hp / monster.max_hp
+                self.animate_monster_bar(i, new_hp_ratio)
+
+        # If there are no animations to run, call the callback immediately
+        if all(anim is None for anim in self.monster_bar_animation):
+            self.logger.debug("No monster bar animations to run, calling callback immediately")
+            if callback:
+                callback()
+        else:
+            self.logger.debug("Monster bar animations started, callback will be called when complete")
+
+    def animate_monster_bar(self, index, new_value):
+        try:
+            current_value = float(self.monster_bars[index]["hp_ratio"])
+            new_value = float(new_value)
+            self.monster_bar_animation[index] = {
+                "start": current_value,
+                "end": new_value,
+                "progress": 0,
+            }
+        except (ValueError, KeyError) as e:
+            self.logger.error(f"Error animating monster bar: {e}")
+            # Set the value directly if conversion fails
+            self.monster_bars[index]["hp_ratio"] = new_value
 
     def update_stat_bars(self, player, callback: Callable):
         new_hp = player.hero.current_hp / player.hero.max_hp

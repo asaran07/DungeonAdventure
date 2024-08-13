@@ -115,7 +115,7 @@ class MainGameController:
         return True
 
     def show_room_items(self):
-        if self.game_world.current_room.room.has_items:
+        if self.game_world.current_room.room.has_items and self.game_world.game_model.game_state != GameState.IN_COMBAT:
             self.pygame_view.room_items_visible = True
         else:
             self.pygame_view.room_items_visible = False
