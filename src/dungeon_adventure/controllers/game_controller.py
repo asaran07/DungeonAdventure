@@ -1,13 +1,11 @@
-from dungeon_adventure.controllers.player_action_controller import (
-    PlayerActionController,
-)
+from dungeon_adventure.controllers.player_action_controller import PlayerActionController
 from dungeon_adventure.enums.game_state import GameState
 from dungeon_adventure.exceptions.dungeon import RoomNotFoundError
 from dungeon_adventure.exceptions.game_logic import GameStateError
 from dungeon_adventure.exceptions.input import InvalidInputError
 from dungeon_adventure.exceptions.player import InvalidPlayerActionError
+from dungeon_adventure.game_model import GameModel
 from dungeon_adventure.views.view import View
-from src import GameModel
 from serialization.game_snapshot import GameSnapshot, load_game
 
 

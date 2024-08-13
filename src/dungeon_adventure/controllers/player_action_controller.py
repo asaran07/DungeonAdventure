@@ -2,19 +2,15 @@ from typing import Optional
 
 from dungeon_adventure.controllers.combat_controller import CombatController
 from dungeon_adventure.enums.room_types import Direction, RoomType
-from dungeon_adventure.exceptions.player import (
-    InvalidDirectionError,
-    ItemNotInInventoryError,
-    ItemNotInRoomError,
-    PlayerNotInRoomError,
-)
+from dungeon_adventure.exceptions.player import InvalidDirectionError, ItemNotInInventoryError, ItemNotInRoomError, \
+    PlayerNotInRoomError
+from dungeon_adventure.game_model import GameModel
 from dungeon_adventure.models.dungeon.room import Room
 from dungeon_adventure.models.items import Item, Weapon
-from dungeon_adventure.models.player import Player
+from dungeon_adventure.models.player.player import Player
 from dungeon_adventure.views.console.map_visualizer import MapVisualizer
 from dungeon_adventure.views.view import View
 from dungeon_adventure.utils.R import Resources as Res
-from src import GameModel
 from serialization.game_snapshot import GameSnapshot, save_game
 
 
@@ -209,7 +205,8 @@ class PlayerActionController:
 
         self._handle_room_hazards()
         self._display_room_contents()
-        self._handle_room_encounters()
+        # Gonna comment this out because pygame does this
+        # self._handle_room_encounters()
         if self.current_room.room_type == RoomType.EXIT:
             if self._check_item_in_inventory("Abstraction Pillar"):
                 # and self._check_item_in_inventory("Encapsulation Pillar") and self._check_item_in_inventory("Inheritance Pillar") and self._check_item_in_inventory("Polymorphism Pillar"):

@@ -2,10 +2,13 @@ import logging
 
 import pygame
 
+from dungeon_adventure.controllers.player_action_controller import PlayerActionController
 from dungeon_adventure.game_model import GameModel, GameModelError
 from dungeon_adventure.logging_config import setup_logging
 from dungeon_adventure.models.player.player import Player
 from dungeon_adventure.services.dungeon_generator import DungeonGenerator
+from dungeon_adventure.views.console.console_view import ConsoleView
+from dungeon_adventure.views.console.map_visualizer import MapVisualizer
 from dungeon_adventure.views.pygame.game.game_screen import GameScreen
 from dungeon_adventure.views.pygame.game.game_world import GameWorld
 from dungeon_adventure.views.pygame.game.main_game_controller import MainGameController
@@ -37,6 +40,9 @@ def main():
     if game_model:
         py_player = PyPlayer()
         composite_player = CompositePlayer(game_model.player, py_player)
+        map_visualizer = MapVisualizer(game_model.dungeon)
+        console_view = ConsoleView()
+        player_action_controller = PlayerActionController(game_model, map_visualizer, console_view)
         game_world = GameWorld(game_model, composite_player)
         game_screen = GameScreen()
         debug_manager = DebugManager()

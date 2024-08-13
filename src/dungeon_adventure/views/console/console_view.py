@@ -1,12 +1,12 @@
 from typing import Dict, List
 
 from dungeon_adventure.enums.game_state import GameState
+from dungeon_adventure.game_model import GameModel
 from dungeon_adventure.models.characters.monster import Monster
 from dungeon_adventure.models.dungeon.room import Room
-from dungeon_adventure.models.player import Player
+from dungeon_adventure.models.player.player import Player
 from dungeon_adventure.views.console.map_visualizer import MapVisualizer
 from dungeon_adventure.views.view import View
-from src import GameModel
 
 
 class ConsoleViewException(Exception):
