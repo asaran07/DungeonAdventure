@@ -1,4 +1,5 @@
 import logging
+from typing import Callable
 
 import pygame
 import pygame.font
@@ -62,13 +63,19 @@ class AnimationEvent:
 class CombatScreen:
     def __init__(self, width, height, scale_factor=3):
         self.logger = logging.getLogger(self.__class__.__name__)
+        self.elapsed_log_time = 0
+        self.log_interval = 5000
+        self.screen_on_time = 0
+
         self.width = width
         self.height = height
         self.scale_factor = scale_factor
         self.font = None
         self.title_font = None
         self.buttons = []
-        self.message = "Combat started!"
+        self.message = ""
+        self.message_callback = None
+        self.message_font = None
         self.player_hp = 100
         self.player_max_hp = 100
         self.animation_queue = []
@@ -124,7 +131,6 @@ class CombatScreen:
         # Text Panel
         self.draw_panel(surface, 72, 37, 339, 85, (217, 217, 217), (0, 0, 0))
         self.draw_text(surface, self.typewriter_text, 80, 45, (0, 0, 0))
-        self.logger.debug(f"Drawing text: '{self.typewriter_text}'")
 
         # Buttons
         for button in self.buttons:
@@ -162,9 +168,23 @@ class CombatScreen:
                 self.typewriter_index += 1
                 self.last_typewriter_update = current_time
                 self.logger.debug(f"Typewriter updated: '{self.typewriter_text}'")
+                if self.message == self.typewriter_text:
+                    self.logger.debug(f"Typewriter animation finished.")
+                    self.on_message_animation_complete()
 
-        self.logger.debug(
-            f"Update: current_time={current_time}, message='{self.message}', typewriter='{self.typewriter_text}'")
+        if current_time - self.elapsed_log_time > self.log_interval:
+            self.logger.debug(
+                f"Updating screen (dt: {dt:.2f}ms, total screen time: {self.screen_on_time:.2f}ms)"
+            )
+            self.logger.debug(
+                f"Update: current_time={current_time}, message='{self.message}', typewriter='{self.typewriter_text}'"
+            )
+            self.elapsed_log_time = current_time
+
+    def on_message_animation_complete(self):
+        if self.message_callback:
+            self.logger.debug(f"Calling {self.message_callback} callback")
+            self.message_callback()
 
     def handle_event(self, event):
         for button in self.buttons:
@@ -177,9 +197,10 @@ class CombatScreen:
                 return action
         return None
 
-    def set_message(self, message):
+    def set_message(self, message: str, callback: Callable = None):
         self.logger.debug(f"Setting new message: '{message}'")
         self.message = message
+        self.message_callback = callback
         self.typewriter_text = ""
         self.typewriter_index = 0
         self.last_typewriter_update = pygame.time.get_ticks()
@@ -191,14 +212,22 @@ class CombatScreen:
     def test_animation_sequence(self):
         current_time = pygame.time.get_ticks()
         self.animation_queue = [
-            AnimationEvent(current_time + 0, self.set_message, "Initiating test sequence..."),
-            AnimationEvent(current_time + 2000, self.set_message, "Prepare for combat!"),
-            AnimationEvent(current_time + 4000, self.set_message, "Blinking attack button..."),
+            AnimationEvent(
+                current_time + 0, self.set_message, "Initiating test sequence..."
+            ),
+            AnimationEvent(
+                current_time + 2000, self.set_message, "Prepare for combat!"
+            ),
+            AnimationEvent(
+                current_time + 4000, self.set_message, "Blinking attack button..."
+            ),
             AnimationEvent(current_time + 4000, self.blink_button, "attack", True),
             AnimationEvent(current_time + 4500, self.blink_button, "attack", False),
             AnimationEvent(current_time + 5000, self.blink_button, "attack", True),
             AnimationEvent(current_time + 5500, self.blink_button, "attack", False),
-            AnimationEvent(current_time + 6000, self.set_message, "Test sequence complete!"),
+            AnimationEvent(
+                current_time + 6000, self.set_message, "Test sequence complete!"
+            ),
         ]
         self.logger.debug("Test animation sequence initiated")
 
@@ -211,7 +240,7 @@ class CombatScreen:
 
 # Example usage:
 if __name__ == "__main__":
-    logger = logging.getLogger('CombatScreenMain')
+    logger = logging.getLogger("CombatScreenMain")
     pygame.init()
     width, height = 480, 270
     scale_factor = 3
