@@ -57,6 +57,9 @@ class CompositePlayer:
     def heal(self, heal_amount):
         self.player.heal(heal_amount)
 
+    def hurt(self, hurt_amount):
+        self.player.hurt(hurt_amount)
+
     def __str__(self):
         return str(self.player)
 

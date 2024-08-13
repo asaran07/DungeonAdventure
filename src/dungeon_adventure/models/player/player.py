@@ -50,6 +50,9 @@ class Player:
     def heal(self, heal_amount: int):
         self._hero.heal(heal_amount)
 
+    def hurt(self, hurt_amount: int):
+        self._hero.hurt(hurt_amount)
+
     def __str__(self) -> str:
         return (
             f"Player: {self._name}\nHP: {self._hero.current_hp}\n{str(self._inventory)}"

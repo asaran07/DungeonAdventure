@@ -179,9 +179,11 @@ class Room:
             # f"Room: {self.name}\n"
             # f"Type: {self.room_type.name}\n"
             # f"Visible: {'Yes' if self.is_visible else 'No'}\n"
-            f"{self.get_desc()}\n"
+            # f"{self.get_desc()}\n"
+            f"{self.name}\n"
+            f"Monsters: {self.monsters}\n"
             f"Connections: {connections}\n"
-            f"Items: {items}"
+            f"Items: {items}\n"
         )
 
     @staticmethod
