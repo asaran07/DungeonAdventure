@@ -103,7 +103,7 @@ class DungeonGenerator:
         )
 
         room6 = dungeon.get_room("Room 6")
-        # put a pit trap here!
+        room6.room_type = RoomType.PIT
 
         room7 = dungeon.get_room("Room 7")
         random_monster_5 = monster_instance.generate_random_monster()
@@ -169,7 +169,7 @@ class DungeonGenerator:
         )
 
         room14 = dungeon.get_room("Room 14")
-        # ADD TRAP HERE
+        room14.room_type = RoomType.PIT
 
         room15 = dungeon.get_room("Room 15 - Exit Chamber")
         room15.set_room_type(RoomType.EXIT)

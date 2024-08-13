@@ -4,7 +4,7 @@ from typing import Dict, Optional
 import pygame
 
 from dungeon_adventure.enums.game_state import GameState
-from dungeon_adventure.enums.room_types import Direction
+from dungeon_adventure.enums.room_types import Direction, RoomType
 from dungeon_adventure.game_model import GameModel
 from dungeon_adventure.models.dungeon.room import Room
 from dungeon_adventure.views.pygame.room.game_room import GameRoom
@@ -124,6 +124,13 @@ class GameWorld:
             self._handle_room_encounters()
 
     def _handle_room_encounters(self):
+        if self.current_room.room.room_type is RoomType.PIT:
+            self.composite_player.hurt(20)
+            self.logger.info(f"Pit trap found in room: {self.current_room.room.name}")
+            # self.player.hero.take_damage(Res.GameValues.PIT_DAMAGE)
+            # self.view.display_pit_damage(Res.GameValues.PIT_DAMAGE)
+            # if not self.player.hero.is_alive:
+            #     self._end_game()
         if self.current_room.room.has_monsters:
             self.logger.info(f"Monsters found in room: {self.current_room.room.name}")
             # self.logger.debug(
