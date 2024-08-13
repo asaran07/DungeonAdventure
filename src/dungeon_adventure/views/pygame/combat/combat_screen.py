@@ -307,7 +307,7 @@ class CombatScreen:
         # Update stat bar animations
         for stat_type, anim in self.stat_bar_animation.items():
             if anim:
-                anim["progress"] += dt * 1  # Adjust speed as needed
+                anim["progress"] += dt * 0.5  # Adjust speed as needed
                 if anim["progress"] >= 1:
                     self.stat_bars[stat_type] = anim["end"]
                     self.stat_bar_animation[stat_type] = None
@@ -319,7 +319,7 @@ class CombatScreen:
         # Update monster bar animations
         for i, anim in enumerate(self.monster_bar_animation):
             if anim:
-                anim["progress"] += dt * 2  # Adjust speed as needed
+                anim["progress"] += dt * 0.5  # Adjust speed as needed
                 if anim["progress"] >= 1:
                     self.monster_bars[i]["hp_ratio"] = anim["end"]
                     self.monster_bar_animation[i] = None

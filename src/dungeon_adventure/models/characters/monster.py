@@ -69,7 +69,7 @@ class Monster(DungeonCharacter):
                 heal_chance=monster_data[7],
                 min_heal=monster_data[8],
                 max_heal=monster_data[9],
-                xp_reward=monster_data[10]
+                xp_reward=monster_data[10],
             )
         else:
             print(f"No data found for monster: {monster_name}")
@@ -118,7 +118,6 @@ class Monster(DungeonCharacter):
         """
         return cls(**kwargs)
 
-
     # def get_SQL_monster_info(self, name: str) -> List[any]:
     #     try:
     #         sqliteConnection = sqlite3.connect("monster_factory_new.db")
@@ -144,7 +143,9 @@ class Monster(DungeonCharacter):
                 cursor = sqliteConnection.cursor()
                 print("Connected to SQLite")
 
-                sqlite_select_query = """select * from monster_factory_new where name = ?"""
+                sqlite_select_query = (
+                    """select * from monster_factory_new where name = ?"""
+                )
                 cursor.execute(sqlite_select_query, (name,))
                 records = cursor.fetchall()
                 return records if records else None

@@ -120,4 +120,3 @@ class DungeonGenerator:
         room15.set_room_type(RoomType.EXIT)
 
         return dungeon
-
