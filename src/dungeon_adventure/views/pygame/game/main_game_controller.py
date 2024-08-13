@@ -57,6 +57,7 @@ class MainGameController:
         self.combat_manager.set_combat_screen(self.combat_screen)
 
         self.game_world.on_combat_initiated = self.initiate_combat
+        self.game_world.on_items_in_room = self.show_room_items
 
         self.key_actions: Dict[int, Callable] = {
             pygame.K_i: lambda: self.pygame_view.toggle_visibility("inventory"),
@@ -72,6 +73,10 @@ class MainGameController:
     def initiate_combat(self):
         self.logger.debug("Initiating combat", stacklevel=2)
         self.combat_manager.reset_combat_state()  # Ensure we're in WAITING state
+        self.pygame_view.room_items_display.is_visible = False
+        self.pygame_view.minimap.is_visible = False
+        self.pygame_view.controls_visible = False
+        self.pygame_view.player_message_visible = False
         self.combat_manager.trigger('start_combat')
 
     def initialize(self) -> None:
@@ -108,6 +113,12 @@ class MainGameController:
             self._handle_keydown_event(event)
             self._handle_combat_events(event)
         return True
+
+    def show_room_items(self):
+        if self.game_world.current_room.room.has_items:
+            self.pygame_view.room_items_visible = True
+        else:
+            self.pygame_view.room_items_visible = False
 
     def _handle_keydown_event(self, event: pygame.event.Event) -> None:
         """Handle keydown events."""

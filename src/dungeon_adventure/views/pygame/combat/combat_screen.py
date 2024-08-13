@@ -200,18 +200,38 @@ class CombatScreen:
             self.draw_monster_bar(surface, i, 319, 155 + y_offset, 76, 16)
 
     def draw_monster_bar(self, surface, index, x, y, width, height):
-        monster = self.monster_bars[index]
-        fill_width = int(width * monster["hp_ratio"])
+        try:
+            monster = self.monster_bars[index]
+        except IndexError:
+            self.logger.error(f"Invalid monster index: {index}")
+            return
+
+        hp_ratio = max(0, min(monster.get("hp_ratio", 0), 1))  # Ensure ratio is between 0 and 1
+
+        scaled_x, scaled_y = self.scale(x), self.scale(y)
+        scaled_width, scaled_height = self.scale(width), self.scale(height)
+
+        # Draw background (empty portion)
         pygame.draw.rect(
             surface,
-            (199, 44, 44),
-            (self.scale(x), self.scale(y), self.scale(fill_width), self.scale(height)),
+            (100, 100, 100),  # Grey color for empty portion
+            (scaled_x, scaled_y, scaled_width, scaled_height)
         )
+
+        # Draw filled portion
+        fill_width = int(scaled_width * hp_ratio)
         pygame.draw.rect(
             surface,
-            (0, 0, 0),
-            (self.scale(x), self.scale(y), self.scale(width), self.scale(height)),
-            self.scale(1),
+            (199, 44, 44),  # Red color for filled portion
+            (scaled_x, scaled_y, fill_width, scaled_height)
+        )
+
+        # Draw border
+        pygame.draw.rect(
+            surface,
+            (0, 0, 0),  # Black border
+            (scaled_x, scaled_y, scaled_width, scaled_height),
+            self.scale(1)  # Border width
         )
 
     def display_monster_stats(self, monsters: List, callback: Callable):
@@ -247,7 +267,8 @@ class CombatScreen:
             if callback:
                 callback()
         else:
-            self.logger.debug("Monster bar animations started, callback will be called when complete")
+            pass
+            # self.logger.debug("Monster bar animations started, callback will be called when complete")
 
     def animate_monster_bar(self, index, new_value):
         try:
