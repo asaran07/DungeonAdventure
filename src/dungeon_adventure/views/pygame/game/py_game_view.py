@@ -9,6 +9,7 @@ from dungeon_adventure.views.pygame.room.controls_display import ControlsDisplay
 from dungeon_adventure.views.pygame.room.game_room import GameRoom
 from dungeon_adventure.views.pygame.room.inventory_display import InventoryDisplay
 from dungeon_adventure.views.pygame.room.mini_map import MiniMap
+from dungeon_adventure.views.pygame.room.player_message_display import PlayerMessageDisplay
 from dungeon_adventure.views.pygame.room.room_items_display import RoomItemsDisplay
 
 
@@ -29,6 +30,7 @@ class PyGameView:
         self.room_items_display: Optional[RoomItemsDisplay] = None
         self.controls_display: Optional[ControlsDisplay] = None
         self.combat_screen: Optional[CombatScreen] = None
+        self.player_message_display: Optional[PlayerMessageDisplay] = None
 
         self.logger: logging.Logger = logging.getLogger(self.__class__.__name__)
         self._minimap_visible: bool = True
@@ -36,6 +38,7 @@ class PyGameView:
         self._controls_visible: bool = True
         self._room_items_visible: bool = False
         self._inventory_visible: bool = False
+        self.player_message_visible: bool = True
 
     def initialize(self) -> None:
         """Initialize all UI components."""
@@ -48,6 +51,10 @@ class PyGameView:
         )
         self.room_items_display = RoomItemsDisplay(self.scale_factor)
         self.controls_display = ControlsDisplay(
+            self.window_width * self.scale_factor,
+            self.window_height * self.scale_factor,
+        )
+        self.player_message_display = PlayerMessageDisplay(
             self.window_width * self.scale_factor,
             self.window_height * self.scale_factor,
         )
@@ -80,6 +87,8 @@ class PyGameView:
             self.room_items_display.draw(screen)
         if self._controls_visible:
             self.controls_display.draw(screen)
+        if self._player_message_visible:
+            self.player_message_display.draw(screen)
 
     def handle_event(self, event: pygame.event.Event) -> bool:
         """Handle pygame events for UI components."""
@@ -130,6 +139,15 @@ class PyGameView:
         self._inventory_visible = value
         self.logger.info(f"Inventory visibility set to {value}")
 
+    @property
+    def player_message_visible(self) -> bool:
+        return self._player_message_visible
+
+    @player_message_visible.setter
+    def player_message_visible(self, value: bool) -> None:
+        self._player_message_visible = value
+        self.logger.info(f"Player message visibility set to {value}")
+
     def toggle_visibility(self, component: str) -> None:
         """
         Toggle the visibility of a UI component.
@@ -147,6 +165,8 @@ class PyGameView:
             self.room_items_visible = not self.room_items_visible
         elif component == "inventory":
             self.inventory_visible = not self.inventory_visible
+        elif component == "message":
+            self.player_message_visible = not self.player_message_visible
         else:
             self.logger.warning(
                 f"Unknown component: {component} for toggling visibility"
