@@ -72,14 +72,16 @@ class DungeonGenerator:
         # Room 14
         dungeon.connect_rooms("Room 14", Direction.SOUTH, "Room 15 - Exit Chamber")
 
+        monster_instance = Monster()
+
         room1 = dungeon.get_room("Room 1 - Entrance Hall")
         room1.room_type = RoomType.ENTRANCE
 
         room2 = dungeon.get_room("Room 2")
-        monster_instance = Monster()
         random_monster = monster_instance.generate_random_monster()
+        random_monster_2 = monster_instance.generate_random_monster()
         room2.add_monster(random_monster)
-        # room2.add_monster(Monster("Bobby Goblin"))
+        room2.add_monster(random_monster_2)
         room2.add_item(
             item_factory.create_pillar(
                 PillarType.ENCAPSULATION,
@@ -95,28 +97,87 @@ class DungeonGenerator:
             item_factory.create_potion("Healing Potion", PotionType.HEALING, 15, 2)
         )
 
-        # room3 = dungeon.get_room("Room 3")
-        # room3.add_monster(
-        #     Monster("Gobby King", max_hp=50, base_min_damage=15, base_max_damage=25)
-        # )
+        room3 = dungeon.get_room("Room 3")
+        room3.add_item(
+            item_factory.create_rope()
+        )
+
+        room6 = dungeon.get_room("Room 6")
+        # put a pit trap here!
+
+        room7 = dungeon.get_room("Room 7")
+        random_monster_5 = monster_instance.generate_random_monster()
+        random_monster_6 = monster_instance.generate_random_monster()
+        room7.add_monster(random_monster_5)
+        room7.add_monster(random_monster_6)
+        room7.add_item(
+            item_factory.create_pillar(
+                PillarType.INHERITANCE,
+                "Inheritance Pillar",
+                "An inheritance pillar",
+                10
+            )
+        )
+
+        room8 = dungeon.get_room("Room 8")
+        random_monster_12 = monster_instance.generate_random_monster()
+        room8.add_monster(random_monster_12)
+        room8.add_item(
+            item_factory.create_potion("Healing Potion", PotionType.HEALING, 15, 2)
+        )
+
+        room9 = dungeon.get_room("Room 9")
+        random_monster_7 = monster_instance.generate_random_monster()
+        random_monster_8 = monster_instance.generate_random_monster()
+        room9.add_monster(random_monster_7)
+        room9.add_monster(random_monster_8)
+        room9.add_item(
+            item_factory.create_pillar(
+                PillarType.POLYMORPHISM,
+                "Polymorphism Pillar",
+                "A polymorphism pillar",
+                10
+            )
+        )
+
+        room10 = dungeon.get_room("Room 10")
+        room10.add_item(
+            item_factory.create_potion("Vision Potion", PotionType.VISION, 0, 2)
+        )
+
+        room11 = dungeon.get_room("Room 11")
+        random_monster_13 = monster_instance.generate_random_monster()
+        room11.add_monster(random_monster_13)
 
         room12 = dungeon.get_room("Room 12")
         room12.add_item(
+            item_factory.create_potion("Healing Potion", PotionType.HEALING, 15, 2)
+        )
+
+        room13 = dungeon.get_room("Room 13")
+        random_monster_3 = monster_instance.generate_random_monster()
+        random_monster_4 = monster_instance.generate_random_monster()
+        room13.add_monster(random_monster_3)
+        room13.add_monster(random_monster_4)
+        room13.add_item(
+            item_factory.create_rope()
+        )
+        room13.add_item(
             item_factory.create_pillar(
                 PillarType.ABSTRACTION, "Abstraction Pillar", "A abstract pillar", 5
             )
         )
 
-        room12.add_item(
-            item_factory.create_weapon("Rusty Sword", WeaponType.SWORD, 10, 7, 100)
-        )
-        room12.add_item(
-            item_factory.create_potion("Healing Potion", PotionType.HEALING, 15, 2)
-        )
-        room12.add_monster(Monster())
-        room12.add_monster(Monster("Monster Bob"))
+        room14 = dungeon.get_room("Room 14")
+        # ADD TRAP HERE
 
         room15 = dungeon.get_room("Room 15 - Exit Chamber")
         room15.set_room_type(RoomType.EXIT)
+        random_monster_9 = monster_instance.generate_random_monster()
+        random_monster_10 = monster_instance.generate_random_monster()
+        random_monster_11 = monster_instance.generate_random_monster()
+        room15.add_monster(random_monster_9)
+        room15.add_monster(random_monster_10)
+        room15.add_monster(random_monster_11)
 
         return dungeon
