@@ -142,7 +142,7 @@ class CombatManager:
                 self.logger.info(
                     f"{self.player.hero.name} missed attack on {target.name}"
                 )
-                self.view.set_message("You missed!", (need a callback here))
+                self.view.set_message("You missed!")
             else:
                 self.logger.info(
                     f"{self.player.hero.name} attacked {target.name} for {attack_amount} damage"
@@ -160,8 +160,6 @@ class CombatManager:
     def update(self, dt: float) -> None:
         if self.view:
             self.view.update(dt)
-
-
 
     # def prepare_monster_turn(self):
     #     self.logger.info("CURRENT STATE: " + self.state)
@@ -202,8 +200,6 @@ class CombatManager:
     #     self.logger.info(f"Starting turn for {monster.name}")
     #     # Implement monster AI here
     #     self.end_turn()
-
-
 
     # def handle_flee(self) -> None:
     #     self.logger.info("CURRENT STATE: " + self.state)

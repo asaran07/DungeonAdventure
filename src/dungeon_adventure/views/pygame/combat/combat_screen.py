@@ -131,7 +131,9 @@ class CombatScreen:
             Button(75, 134 + i * 33, 83, 22, monster["name"], f"ATTACK_{i}")
             for i, monster in enumerate(self.monster_bars)
         ]
-        self.logger.debug(f"Created {len(self.monster_selection_buttons)} monster selection buttons")
+        self.logger.debug(
+            f"Created {len(self.monster_selection_buttons)} monster selection buttons"
+        )
 
     def scale(self, value):
         return value * self.scale_factor
@@ -217,7 +219,9 @@ class CombatScreen:
         self.monster_bar_animation = []
         for i, monster in enumerate(monsters):  # Remove the [:2] slice
             try:
-                hp_ratio = monster.current_hp / monster.max_hp  # Calculate initial hp_ratio
+                hp_ratio = (
+                    monster.current_hp / monster.max_hp
+                )  # Calculate initial hp_ratio
                 self.monster_bars.append({"name": monster.name, "hp_ratio": hp_ratio})
                 self.monster_bar_animation.append(None)
             except (ValueError, AttributeError, ZeroDivisionError) as e:
@@ -239,7 +243,9 @@ class CombatScreen:
 
         # If there are no animations to run, call the callback immediately
         if all(anim is None for anim in self.monster_bar_animation):
-            self.logger.debug("No monster bar animations to run, calling callback immediately")
+            self.logger.debug(
+                "No monster bar animations to run, calling callback immediately"
+            )
             if callback:
                 callback()
             else:
