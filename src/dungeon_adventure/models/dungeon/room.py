@@ -35,6 +35,14 @@ class Room:
     def monsters(self, value):
         self._monsters = value
 
+    @property
+    def is_visible(self) -> bool:
+        return self._is_visible
+
+    @is_visible.setter
+    def is_visible(self, value):
+        self._is_visible = value
+
     def add_monster(self, monster: Monster) -> None:
         self.monsters.append(monster)
 

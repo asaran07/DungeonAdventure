@@ -35,6 +35,7 @@ class GameWorld:
     def initialize(self):
         self._create_game_rooms()
         self.current_room = self._get_starting_room()
+        self.current_room.room.is_visible = True
         self.composite_player.initialize()
         self.composite_player.py_player.rect.center = self.current_room.rect.center
         self.player_sprite.add(self.composite_player.py_player)
@@ -112,6 +113,7 @@ class GameWorld:
         self.logger.debug(
             f"Room transition: {self.current_room.room.name} -> {direction}"
         )
+        self.current_room.room.is_visible = True
         current_dungeon_room = self.current_room.room
         next_dungeon_room = current_dungeon_room.connections[direction]
         if next_dungeon_room:

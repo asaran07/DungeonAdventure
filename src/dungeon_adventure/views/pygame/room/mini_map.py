@@ -58,7 +58,7 @@ class MiniMap:
         self._draw_room(current_room, center_pos, True)
 
         for direction, room in adjacent_rooms.items():
-            if room:
+            if room and room.room.is_visible:  # Only draw visible rooms
                 pos = self._get_adjacent_position(center_pos, direction)
                 self._draw_room(room, pos)
 
