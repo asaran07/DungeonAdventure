@@ -213,7 +213,6 @@ class MainGameController:
             self.lose_condition = True
             self.handle_win_condition()
 
-
     def update(self, dt: float) -> None:
         self.game_world.update(dt)
         self.pygame_view.update(self.game_world.current_room, self.game_world.room_dict, self.game_world.composite_player.player)
