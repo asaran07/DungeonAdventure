@@ -1,3 +1,5 @@
+import logging
+
 from dungeon_adventure.models.player.player import Player
 from dungeon_adventure.views.pygame.sprites.py_player import PyPlayer
 from dungeon_adventure.views.pygame.room.game_room import GameRoom
@@ -8,6 +10,7 @@ class CompositePlayer:
     def __init__(self, core_player: Player, py_player: PyPlayer):
         self.player = core_player
         self.py_player = py_player
+        self.logger = logging.getLogger(self.__class__.__name__)
 
     def initialize(self):
         self.py_player.initialize()

@@ -77,7 +77,7 @@ class MainGameController:
         self.pygame_view.minimap.is_visible = False
         self.pygame_view.controls_visible = False
         self.pygame_view.player_message_visible = False
-        self.combat_manager.trigger('start_combat')
+        self.combat_manager.trigger("start_combat")
 
     def initialize(self) -> None:
         """Initialize all game components."""
@@ -110,12 +110,16 @@ class MainGameController:
             # Right now this is being called directly from game controller,
             # maybe we can do it through combat manager instead.
             # self.combat_screen.handle_event(event)
+            self._handle_inventory_events(event)
             self._handle_keydown_event(event)
             self._handle_combat_events(event)
         return True
 
     def show_room_items(self):
-        if self.game_world.current_room.room.has_items and self.game_world.game_model.game_state != GameState.IN_COMBAT:
+        if (
+            self.game_world.current_room.room.has_items
+            and self.game_world.game_model.game_state != GameState.IN_COMBAT
+        ):
             self.pygame_view.room_items_visible = True
         else:
             self.pygame_view.room_items_visible = False
@@ -135,7 +139,9 @@ class MainGameController:
 
     def _handle_inventory_events(self, event: pygame.event.Event) -> None:
         if self.pygame_view.inventory_visible:
-            self.pygame_view.handle_event(event)
+            self.pygame_view.handle_event(
+                event, self.game_world.composite_player.player
+            )
 
     def update(self, dt: float) -> None:
         self.game_world.update(dt)
@@ -172,7 +178,4 @@ class MainGameController:
 
     def _draw_gui(self) -> None:
         if not self.debug_manager.debug_mode:
-            self.pygame_view.draw(
-                self.screen,
-                self.game_world.composite_player.inventory,
-            )
+            self.pygame_view.draw(self.screen, self.game_world.composite_player.player)

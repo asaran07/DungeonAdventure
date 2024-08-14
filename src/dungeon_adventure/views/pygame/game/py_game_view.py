@@ -3,13 +3,17 @@ from typing import Dict, Optional
 
 import pygame
 
-from dungeon_adventure.models.inventory.inventory import Inventory
+from dungeon_adventure.models.player.player import Player
+from dungeon_adventure.views.pygame.UI.enhanced_inventory_display import (
+    EnhancedInventoryDisplay,
+)
 from dungeon_adventure.views.pygame.combat.combat_screen import CombatScreen
 from dungeon_adventure.views.pygame.room.controls_display import ControlsDisplay
 from dungeon_adventure.views.pygame.room.game_room import GameRoom
-from dungeon_adventure.views.pygame.room.inventory_display import InventoryDisplay
 from dungeon_adventure.views.pygame.room.mini_map import MiniMap
-from dungeon_adventure.views.pygame.room.player_message_display import PlayerMessageDisplay
+from dungeon_adventure.views.pygame.room.player_message_display import (
+    PlayerMessageDisplay,
+)
 from dungeon_adventure.views.pygame.room.room_items_display import RoomItemsDisplay
 
 
@@ -26,19 +30,19 @@ class PyGameView:
         self.window_height: int = window_height
         self.scale_factor: int = scale_factor
         self.minimap: Optional[MiniMap] = None
-        self.inventory_display: Optional[InventoryDisplay] = None
+        self.inventory_display: Optional[EnhancedInventoryDisplay] = None
         self.room_items_display: Optional[RoomItemsDisplay] = None
         self.controls_display: Optional[ControlsDisplay] = None
         self.combat_screen: Optional[CombatScreen] = None
         self.player_message_display: Optional[PlayerMessageDisplay] = None
 
         self.logger: logging.Logger = logging.getLogger(self.__class__.__name__)
-        self._minimap_visible: bool = True
+        self._minimap_visible: bool = False
         self._combat_screen_visible: bool = False
-        self._controls_visible: bool = True
+        self._controls_visible: bool = False
         self._room_items_visible: bool = False
         self._inventory_visible: bool = False
-        self.player_message_visible: bool = True
+        self.player_message_visible: bool = False
 
     def initialize(self) -> None:
         """Initialize all UI components."""
@@ -46,7 +50,7 @@ class PyGameView:
             self.window_width * self.scale_factor,
             self.window_height * self.scale_factor,
         )
-        self.inventory_display = InventoryDisplay(
+        self.inventory_display = EnhancedInventoryDisplay(
             self.window_width, self.window_height, self.scale_factor
         )
         self.room_items_display = RoomItemsDisplay(self.scale_factor)
@@ -69,20 +73,20 @@ class PyGameView:
         self.minimap.update(current_room, room_dict)
         self.room_items_display.update(current_room.room)
 
-    def draw(self, screen: pygame.Surface, player_inventory: Inventory) -> None:
+    def draw(self, screen: pygame.Surface, player: Player) -> None:
         """
         Draw all UI components to the screen.
 
         :param screen: The pygame surface to draw on
-        :param player_inventory: The player's inventory
+        :param player: The player instance
         """
         if self._minimap_visible:
             self.minimap.draw(screen)
         # if self._combat_screen_visible:
         #     self.combat_screen.draw(screen)
         if self._inventory_visible:
-            self.inventory_display.draw(screen, player_inventory)
-            self.inventory_display.item_details_popup.draw(screen)
+            self.inventory_display.draw(screen, player)
+
         if self._room_items_visible:
             self.room_items_display.draw(screen)
         if self._controls_visible:
@@ -90,9 +94,19 @@ class PyGameView:
         if self._player_message_visible:
             self.player_message_display.draw(screen)
 
-    def handle_event(self, event: pygame.event.Event) -> bool:
+    def handle_event(self, event: pygame.event.Event, player: Player):
         """Handle pygame events for UI components."""
-        return self.inventory_display.handle_event(event)
+        action = self.inventory_display.handle_event(event, player)
+        if action:
+            action_type, item_id = action
+            if action_type == "use":
+                item = player.inventory.get_item_by_id(item_id)
+                if item:
+                    player.use_item(item)
+            elif action_type == "drop":
+                item = player.inventory.remove_item_by_id(item_id)
+                if item:
+                    player.current_room.add_item(item)
 
     @property
     def minimap_visible(self) -> bool:
