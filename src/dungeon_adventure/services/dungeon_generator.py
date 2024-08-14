@@ -98,9 +98,7 @@ class DungeonGenerator:
         )
 
         room3 = dungeon.get_room("Room 3")
-        room3.add_item(
-            item_factory.create_rope()
-        )
+        room3.add_item(item_factory.create_rope())
 
         room6 = dungeon.get_room("Room 6")
         room6.room_type = RoomType.PIT
@@ -115,7 +113,7 @@ class DungeonGenerator:
                 PillarType.INHERITANCE,
                 "Inheritance Pillar",
                 "An inheritance pillar",
-                10
+                10,
             )
         )
 
@@ -136,7 +134,7 @@ class DungeonGenerator:
                 PillarType.POLYMORPHISM,
                 "Polymorphism Pillar",
                 "A polymorphism pillar",
-                10
+                10,
             )
         )
 
@@ -159,9 +157,7 @@ class DungeonGenerator:
         random_monster_4 = monster_instance.generate_random_monster()
         room13.add_monster(random_monster_3)
         room13.add_monster(random_monster_4)
-        room13.add_item(
-            item_factory.create_rope()
-        )
+        room13.add_item(item_factory.create_rope())
         room13.add_item(
             item_factory.create_pillar(
                 PillarType.ABSTRACTION, "Abstraction Pillar", "A abstract pillar", 5

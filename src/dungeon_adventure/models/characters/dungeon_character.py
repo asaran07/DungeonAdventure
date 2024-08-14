@@ -154,7 +154,7 @@ class DungeonCharacter:
         """
         self.current_hp += amount
 
-    def hurt(self, amount:int) -> None:
+    def hurt(self, amount: int) -> None:
         self.current_hp -= amount
 
     def reset_health(self) -> None:
