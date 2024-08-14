@@ -38,7 +38,7 @@ class PlayerMessageDisplay:
 
         self._ensure_font_initialized()
 
-        if hasattr(self, 'message'):
+        if hasattr(self, "message"):
             text_surface = self.font.render(self.message, True, (255, 255, 255))
             text_rect = text_surface.get_rect(center=self.controls_rect.center)
             surface.blit(text_surface, text_rect)

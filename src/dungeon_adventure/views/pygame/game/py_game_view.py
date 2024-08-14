@@ -7,6 +7,7 @@ from dungeon_adventure.models.player.player import Player
 from dungeon_adventure.views.pygame.UI.enhanced_inventory_display import (
     EnhancedInventoryDisplay,
 )
+from dungeon_adventure.views.pygame.UI.player_status_display import PlayerStatusDisplay
 from dungeon_adventure.views.pygame.combat.combat_screen import CombatScreen
 from dungeon_adventure.views.pygame.room.controls_display import ControlsDisplay
 from dungeon_adventure.views.pygame.room.game_room import GameRoom
@@ -35,6 +36,7 @@ class PyGameView:
         self.controls_display: Optional[ControlsDisplay] = None
         self.combat_screen: Optional[CombatScreen] = None
         self.player_message_display: Optional[PlayerMessageDisplay] = None
+        self.player_status_display: Optional[PlayerStatusDisplay] = None
 
         self.logger: logging.Logger = logging.getLogger(self.__class__.__name__)
         self._minimap_visible: bool = True
@@ -43,6 +45,7 @@ class PyGameView:
         self._room_items_visible: bool = False
         self._inventory_visible: bool = False
         self.player_message_visible: bool = False
+        self._player_stats_visible: bool = True
 
     def initialize(self) -> None:
         """Initialize all UI components."""
@@ -62,16 +65,23 @@ class PyGameView:
             self.window_width * self.scale_factor,
             self.window_height * self.scale_factor,
         )
+        self.player_status_display = PlayerStatusDisplay(
+            self.window_width * self.scale_factor,
+            self.window_height * self.scale_factor,
+            self.scale_factor
+        )
 
-    def update(self, current_room: GameRoom, room_dict: Dict[str, GameRoom]) -> None:
+    def update(self, current_room: GameRoom, room_dict: Dict[str, GameRoom], player: Player) -> None:
         """
         Update the state of UI components.
 
+        :param player: The player
         :param current_room: The current GameRoom the player is in
         :param room_dict: Dictionary of all GameRooms in the game
         """
         self.minimap.update(current_room, room_dict)
         self.room_items_display.update(current_room.room)
+        self.player_status_display.update(player)
 
     def draw(self, screen: pygame.Surface, player: Player) -> None:
         """
@@ -93,6 +103,8 @@ class PyGameView:
             self.controls_display.draw(screen)
         if self._player_message_visible:
             self.player_message_display.draw(screen)
+        if self.player_stats_visible:
+            self.player_status_display.draw(screen, player)
 
     def handle_event(self, event: pygame.event.Event, player: Player):
         """Handle pygame events for UI components."""
@@ -153,6 +165,15 @@ class PyGameView:
     def inventory_visible(self, value: bool) -> None:
         self._inventory_visible = value
         self.logger.info(f"Inventory visibility set to {value}")
+
+    @property
+    def player_stats_visible(self) -> bool:
+        return self._player_stats_visible
+
+    @player_stats_visible.setter
+    def player_stats_visible(self, value: bool) -> None:
+        self._player_stats_visible = value
+        self.logger.info(f"Player Status visibility set to {value}")
 
     @property
     def player_message_visible(self) -> bool:
