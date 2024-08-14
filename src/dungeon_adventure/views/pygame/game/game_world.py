@@ -154,17 +154,18 @@ class GameWorld:
             self.logger.debug(f"Entered empty room: {self.current_room.room.name}")
 
     def _check_win_condition(self):
-        inventory_items = self.composite_player.inventory.get_all_items()
-        pillar_types = set()
+        if self.current_room.room.room_type is RoomType.EXIT:
+            inventory_items = self.composite_player.inventory.get_all_items()
+            pillar_types = set()
 
-        for item, _ in inventory_items:
-            if item.item_type == ItemType.PILLAR:
-                pillar_types.add(item.pillar_type)
+            for item, _ in inventory_items:
+                if item.item_type == ItemType.PILLAR:
+                    pillar_types.add(item.pillar_type)
 
-        if len(pillar_types) == len(PillarType):
-            self.logger.info("Player has collected all pillar types. Win condition met!")
-            if self.on_win_condition:
-                self.on_win_condition()
+            if len(pillar_types) == len(PillarType):
+                self.logger.info("Player has collected all pillar types. Win condition met!")
+                if self.on_win_condition:
+                    self.on_win_condition()
 
     def _reposition_player(self, entry_direction: Direction):
         opposite_direction = Room.opposite(entry_direction)
