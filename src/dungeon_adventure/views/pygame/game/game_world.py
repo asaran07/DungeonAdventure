@@ -24,6 +24,8 @@ class GameWorld:
         self.on_items_in_room = None
         self.logger = logging.getLogger(self.__class__.__name__)
         self.logger.info("Initializing GameWorld")
+        self.pit_encounter = None
+        self.on_room_enter = None
 
     @property
     def game_model(self):
@@ -128,6 +130,8 @@ class GameWorld:
         if self.current_room.room.room_type is RoomType.PIT:
             self.composite_player.hurt(20)
             self.logger.info(f"Pit trap found in room: {self.current_room.room.name}")
+            if self.pit_encounter:
+                self.pit_encounter()
             # self.player.hero.take_damage(Res.GameValues.PIT_DAMAGE)
             # self.view.display_pit_damage(Res.GameValues.PIT_DAMAGE)
             # if not self.player.hero.is_alive:
@@ -142,6 +146,8 @@ class GameWorld:
             if self.on_combat_initiated:
                 self.on_combat_initiated()
         if self.current_room.room:
+            if self.on_room_enter:
+                self.on_room_enter()
             if self.on_items_in_room:
                 self.on_items_in_room()
         else:

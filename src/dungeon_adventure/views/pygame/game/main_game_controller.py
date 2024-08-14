@@ -4,6 +4,7 @@ from typing import Callable, Dict
 import pygame
 
 from dungeon_adventure.enums.game_state import GameState
+from dungeon_adventure.enums.room_types import RoomType
 from dungeon_adventure.views.pygame.combat.combat_screen import CombatScreen
 from dungeon_adventure.views.pygame.game.combat_manager import CombatManager
 from dungeon_adventure.views.pygame.game.game_screen import GameScreen
@@ -58,6 +59,8 @@ class MainGameController:
 
         self.game_world.on_combat_initiated = self.initiate_combat
         self.game_world.on_items_in_room = self.show_room_items
+        self.game_world.pit_encounter = self.handle_pit_encounter
+        self.game_world.on_room_enter = self.handle_room_enter
 
         self.key_actions: Dict[int, Callable] = {
             pygame.K_i: lambda: self.pygame_view.toggle_visibility("inventory"),
@@ -142,6 +145,14 @@ class MainGameController:
             self.pygame_view.handle_event(
                 event, self.game_world.composite_player.player
             )
+
+    def handle_room_enter(self):
+        if self.pygame_view.player_message_visible and self.game_world.current_room.room.room_type != RoomType.PIT:
+            self.pygame_view.player_message_visible = False
+
+    def handle_pit_encounter(self):
+        self.pygame_view.player_message_visible = True
+        self.pygame_view.player_message_display.set_message("Oh no! This room has a spike trap! You've taken damage.")
 
     def update(self, dt: float) -> None:
         self.game_world.update(dt)
