@@ -6,10 +6,10 @@ class ControlsDisplay:
         self.controls_width = int(screen_width * 0.15)  # 15% of screen width
         self.controls_height = int(screen_height * 0.25)  # 25% of screen height
         self.controls_rect = pygame.Rect(
-            screen_width - self.controls_width - 10,
+            screen_width - self.controls_width - 35,
             screen_height - self.controls_height - 315,
-            self.controls_width,
-            self.controls_height,
+            self.controls_width + 20,
+            self.controls_height + 100,
         )
         self.font = pygame.font.Font(None, 24)
         self.keybindings = [
@@ -18,7 +18,9 @@ class ControlsDisplay:
             ("M", "Map"),
             ("T", "Take Items"),
             ("X", "Drop Items"),
-            # ("B", "Debug"),
+            ("G", "Room Items"),
+            ("Y", "Joy Mode"),
+            ("B", "Debug View"),
         ]
 
     def draw(self, surface: pygame.Surface):

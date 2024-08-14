@@ -28,6 +28,7 @@ class GameWorld:
         self.pit_encounter = None
         self.on_room_enter = None
         self.on_win_condition = None
+        self.on_combat_end = None
 
     @property
     def game_model(self):
@@ -190,3 +191,7 @@ class GameWorld:
             self.composite_player.rect.left = door_hitbox.right + room_center_offset[0]
         elif opposite_direction == Direction.EAST:
             self.composite_player.rect.right = door_hitbox.left + room_center_offset[0]
+
+    def end_combat(self):
+        if self.on_combat_end:
+            self.on_combat_end()

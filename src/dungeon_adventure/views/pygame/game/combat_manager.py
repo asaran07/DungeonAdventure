@@ -37,6 +37,7 @@ class CombatManager:
         self.combat_state: CombatState = CombatState.WAITING
         self.turn_order: List[Hero | Monster] = []
         self.message_animation_complete = False
+        self.combat_finished = None
 
         # Initialize the state machine
         self.machine: Machine = Machine(
@@ -200,7 +201,7 @@ class CombatManager:
     def on_monster_stats_updated(self):
         # This method will be called when the monster stats animation is complete
         self.logger.debug("Monster stats updated and animated")
-        # You can add any additional logic here if needed
+        # We can add any additional logic here if needed
         pass
 
     def draw(self, surface: pygame.Surface) -> None:
@@ -218,6 +219,7 @@ class CombatManager:
             self.end_combat()
         elif all(monster.current_hp <= 0 for monster in self.monsters):
             self.logger.info("All monsters defeated. Ending combat.")
+            self.game_world.end_combat()
             self.game_world.current_room.room.monsters = []
             self.end_combat()
         else:

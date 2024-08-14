@@ -66,6 +66,7 @@ class MainGameController:
         self.game_world.pit_encounter = self.handle_pit_encounter
         self.game_world.on_room_enter = self.handle_room_enter
         self.game_world.on_win_condition = self.handle_win_condition
+        self.game_world.on_combat_end = self.handle_combat_end
 
         self.key_actions: Dict[int, Callable] = {
             pygame.K_i: lambda: self.pygame_view.toggle_visibility("inventory"),
@@ -87,10 +88,16 @@ class MainGameController:
         self.logger.debug("Initiating combat", stacklevel=2)
         self.combat_manager.reset_combat_state()  # Ensure we're in WAITING state
         self.pygame_view.room_items_display.is_visible = False
-        self.pygame_view.minimap.is_visible = False
+        self.pygame_view.minimap_visible = False
         self.pygame_view.controls_visible = False
         self.pygame_view.player_message_visible = False
         self.combat_manager.trigger("start_combat")
+
+    def handle_combat_end(self):
+        if self.game_world.current_room.room.has_items:
+            self.pygame_view.room_items_display.is_visible = True
+        self.pygame_view.minimap_visible = True
+        self.pygame_view.controls_visible = True
 
     def load_and_play_music(self):
         try:
