@@ -3,6 +3,7 @@ from typing import Callable, Dict
 
 import pygame
 
+from dungeon_adventure.config import RESOURCES_DIR
 from dungeon_adventure.enums.game_state import GameState
 from dungeon_adventure.enums.room_types import RoomType
 from dungeon_adventure.views.pygame.combat.combat_screen import CombatScreen
@@ -25,7 +26,7 @@ class MainGameController:
         """
         Initialize the GameController with necessary components.
 
-        :param game_world: The game world containing game logic and state
+        :param game_world: The game world contains game logic and state
         :param game_screen: The game screen for rendering
         :param pygame_view: The GUI manager for handling UI elements
         :param debug_manager: The debug manager for debug-related functionality
@@ -35,9 +36,12 @@ class MainGameController:
         self.pygame_view: PyGameView = pygame_view
         self.debug_manager: DebugManager = debug_manager
         self.key_bind_manager: KeyBindManager = KeyBindManager()
+        self.debug_mode = False
 
         self.logger: logging.Logger = logging.getLogger(self.__class__.__name__)
         pygame.init()
+        pygame.mixer.init()
+        self.load_and_play_music()
 
         # Set up the display
         self.screen = pygame.display.set_mode(
@@ -61,6 +65,7 @@ class MainGameController:
         self.game_world.on_items_in_room = self.show_room_items
         self.game_world.pit_encounter = self.handle_pit_encounter
         self.game_world.on_room_enter = self.handle_room_enter
+        self.game_world.on_win_condition = self.handle_win_condition
 
         self.key_actions: Dict[int, Callable] = {
             pygame.K_i: lambda: self.pygame_view.toggle_visibility("inventory"),
@@ -73,7 +78,12 @@ class MainGameController:
             pygame.K_h: lambda: self.pygame_view.toggle_visibility("controls"),
         }
 
+        self.font = pygame.font.Font(None, 18)
+        self.win_message = None
+
     def initiate_combat(self):
+        if self.debug_mode:
+            return
         self.logger.debug("Initiating combat", stacklevel=2)
         self.combat_manager.reset_combat_state()  # Ensure we're in WAITING state
         self.pygame_view.room_items_display.is_visible = False
@@ -81,6 +91,14 @@ class MainGameController:
         self.pygame_view.controls_visible = False
         self.pygame_view.player_message_visible = False
         self.combat_manager.trigger("start_combat")
+
+    def load_and_play_music(self):
+        try:
+            pygame.mixer.music.load(RESOURCES_DIR + "/dungeon_adventure.wav")
+            pygame.mixer.music.set_volume(0.05)
+            pygame.mixer.music.play(-1)
+        except pygame.error as e:
+            self.logger.error(f"Error loading music: {e}")
 
     def initialize(self) -> None:
         """Initialize all game components."""
@@ -99,17 +117,29 @@ class MainGameController:
         while running:
             time_delta = clock.tick(60) / 1000.0
             running = self.handle_events()
-            self.update(time_delta)
+
+            if self.game_world.game_model.game_state != GameState.GAME_OVER:
+                self.update(time_delta)
+
             self.draw()
             pygame.display.flip()
+
         self.logger.info("Game loop ended")
         pygame.quit()
 
     def handle_events(self) -> bool:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                pygame.mixer.music.stop()
                 self.logger.info("Quit event received")
                 return False
+            if self.game_world.game_model.game_state == GameState.GAME_OVER:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_r:
+                        self.restart_game()
+                        return True
+                    elif event.key == pygame.K_q:
+                        return False
             # Right now this is being called directly from game controller,
             # maybe we can do it through combat manager instead.
             # self.combat_screen.handle_event(event)
@@ -130,6 +160,8 @@ class MainGameController:
     def _handle_keydown_event(self, event: pygame.event.Event) -> None:
         """Handle keydown events."""
         if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_y:
+                self.debug_mode = not self.debug_mode
             action = self.key_actions.get(event.key)
             if action:
                 action()
@@ -147,12 +179,21 @@ class MainGameController:
             )
 
     def handle_room_enter(self):
-        if self.pygame_view.player_message_visible and self.game_world.current_room.room.room_type != RoomType.PIT:
+        if self.debug_mode:
+            return
+        if (
+            self.pygame_view.player_message_visible
+            and self.game_world.current_room.room.room_type != RoomType.PIT
+        ):
             self.pygame_view.player_message_visible = False
 
     def handle_pit_encounter(self):
+        if self.debug_mode:
+            return
         self.pygame_view.player_message_visible = True
-        self.pygame_view.player_message_display.set_message("Oh no! This room has a spike trap! You've taken damage.")
+        self.pygame_view.player_message_display.set_message(
+            "Oh no! This room has a spike trap! You've taken damage."
+        )
 
     def update(self, dt: float) -> None:
         self.game_world.update(dt)
@@ -163,13 +204,23 @@ class MainGameController:
         self.combat_manager.update(dt)
 
     def draw(self) -> None:
-        self.game_screen.draw_background()
-        self._draw_game_world()
-        self._draw_debug_info()
-        self.game_screen.blit_scaled()
-        if self.game_world.game_model.game_state == GameState.IN_COMBAT:
-            self._draw_combat_screen()
-        self._draw_gui()
+        if self.game_world.game_model.game_state == GameState.GAME_OVER and self.win_message:
+            self.game_screen.get_game_surface().fill((0, 0, 0))  # Clear screen
+            for i, line in enumerate(self.win_message):
+                text_surface = self.font.render(line, True, (255, 255, 255))
+                text_rect = text_surface.get_rect(
+                    center=(self.game_screen.width // 2, self.game_screen.height // 2 + i * 40))
+                self.game_screen.get_game_surface().blit(text_surface, text_rect)
+        else:
+            self.game_screen.draw_background()
+            self._draw_game_world()
+            self._draw_debug_info()
+            self.game_screen.blit_scaled()
+            if self.game_world.game_model.game_state == GameState.IN_COMBAT and not self.debug_mode:
+                self._draw_combat_screen()
+            self._draw_gui()
+        if self.game_world.game_model.game_state == GameState.GAME_OVER:
+            self.game_screen.blit_scaled()
 
     def _draw_combat_screen(self) -> None:
         self.combat_screen.draw(self.screen)
@@ -190,3 +241,18 @@ class MainGameController:
     def _draw_gui(self) -> None:
         if not self.debug_manager.debug_mode:
             self.pygame_view.draw(self.screen, self.game_world.composite_player.player)
+
+    def handle_win_condition(self):
+        self.logger.info("Win condition met! Player has collected all pillars.")
+        self.win_message = [
+            "Congratulations! You've collected all pillars and won the game!",
+            "Press 'R' to restart or 'Q' to quit."
+        ]
+        self.game_world.game_model.game_state = GameState.GAME_OVER
+
+    def restart_game(self):
+        # TODO: Still need to empty out the player inventory
+        self.game_world = GameWorld(self.game_world.game_model, self.game_world.composite_player)
+        self.game_world.initialize()
+        self.game_world.game_model.game_state = GameState.EXPLORING
+        self.win_message = None

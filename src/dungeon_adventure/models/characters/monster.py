@@ -8,7 +8,6 @@ from dungeon_adventure.models.items import Item
 
 
 class Monster(DungeonCharacter):
-    # TODO: Add properties for get and set
     def __init__(
         self,
         name: str = "Generic Monster",
@@ -93,7 +92,9 @@ class Monster(DungeonCharacter):
         :return: Amount healed (0 if healing didn't occur)
         """
         if random.randint(1, 100) <= self.heal_chance:
-            self.logger.info(f"Monster heal chance successful, healing for {self.heal_chance}")
+            self.logger.info(
+                f"Monster heal chance successful, healing for {self.heal_chance}"
+            )
             heal_amount = random.randint(self.min_heal, self.max_heal)
             self.heal(heal_amount)
             return heal_amount

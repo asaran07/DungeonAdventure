@@ -4,6 +4,7 @@ from typing import Dict, Optional
 import pygame
 
 from dungeon_adventure.enums.game_state import GameState
+from dungeon_adventure.enums.item_types import ItemType, PillarType
 from dungeon_adventure.enums.room_types import Direction, RoomType
 from dungeon_adventure.game_model import GameModel
 from dungeon_adventure.models.dungeon.room import Room
@@ -26,6 +27,7 @@ class GameWorld:
         self.logger.info("Initializing GameWorld")
         self.pit_encounter = None
         self.on_room_enter = None
+        self.on_win_condition = None
 
     @property
     def game_model(self):
@@ -132,10 +134,6 @@ class GameWorld:
             self.logger.info(f"Pit trap found in room: {self.current_room.room.name}")
             if self.pit_encounter:
                 self.pit_encounter()
-            # self.player.hero.take_damage(Res.GameValues.PIT_DAMAGE)
-            # self.view.display_pit_damage(Res.GameValues.PIT_DAMAGE)
-            # if not self.player.hero.is_alive:
-            #     self._end_game()
         if self.current_room.room.has_monsters:
             self.logger.info(f"Monsters found in room: {self.current_room.room.name}")
             self.logger.debug(
@@ -150,10 +148,22 @@ class GameWorld:
                 self.on_room_enter()
             if self.on_items_in_room:
                 self.on_items_in_room()
+            self._check_win_condition()
         else:
-            # Handle empty room
             self.logger.debug(f"Entered empty room: {self.current_room.room.name}")
-            pass
+
+    def _check_win_condition(self):
+        inventory_items = self.composite_player.inventory.get_all_items()
+        pillar_types = set()
+
+        for item, _ in inventory_items:
+            if item.item_type == ItemType.PILLAR:
+                pillar_types.add(item.pillar_type)
+
+        if len(pillar_types) == len(PillarType):
+            self.logger.info("Player has collected all pillar types. Win condition met!")
+            if self.on_win_condition:
+                self.on_win_condition()
 
     def _reposition_player(self, entry_direction: Direction):
         opposite_direction = Room.opposite(entry_direction)

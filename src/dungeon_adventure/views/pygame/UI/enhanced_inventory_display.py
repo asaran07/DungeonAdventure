@@ -20,7 +20,7 @@ class EnhancedInventoryDisplay:
             "panel": "#D9D9D9",
             "button": "#EFEFEF",
             "text": "#000000",
-            'button_hover': '#D0D0D0',
+            "button_hover": "#D0D0D0",
         }
 
         # Fonts
@@ -103,10 +103,18 @@ class EnhancedInventoryDisplay:
         for i, button in enumerate(self.item_buttons):
             if i < len(inventory_items):
                 item, quantity = inventory_items[i]
-                color = self.colors['button_hover'] if button == self.hovered_button else self.colors['button']
+                color = (
+                    self.colors["button_hover"]
+                    if button == self.hovered_button
+                    else self.colors["button"]
+                )
                 pygame.draw.rect(surface, color, button)
-                pygame.draw.rect(surface, self.colors['text'], button, self.scale_factor)
-                text = self.fonts['button'].render(f"{item.name} ({quantity})", True, self.colors['text'])
+                pygame.draw.rect(
+                    surface, self.colors["text"], button, self.scale_factor
+                )
+                text = self.fonts["button"].render(
+                    f"{item.name} ({quantity})", True, self.colors["text"]
+                )
                 text_rect = text.get_rect(center=button.center)
                 surface.blit(text, text_rect)
 
@@ -163,7 +171,7 @@ class EnhancedInventoryDisplay:
     def handle_popup_click(self, pos: Tuple[int, int]) -> Optional[Tuple[str, str]]:
         for action, button in self.popup_buttons.items():
             if button.collidepoint(pos):
-                item_id = self.popup['item_id']
+                item_id = self.popup["item_id"]
                 self.close_popup()
                 return (action, item_id)
         self.close_popup()
@@ -197,42 +205,54 @@ class EnhancedInventoryDisplay:
         return info
 
     def draw_item_info(self, surface: pygame.Surface):
-        pygame.draw.rect(surface, self.colors['button'], self.item_info_panel)
-        pygame.draw.rect(surface, self.colors['text'], self.item_info_panel, self.scale_factor)
+        pygame.draw.rect(surface, self.colors["button"], self.item_info_panel)
+        pygame.draw.rect(
+            surface, self.colors["text"], self.item_info_panel, self.scale_factor
+        )
         self.draw_text(surface, self.current_item_info, self.item_info_text)
 
     def show_popup(self, item_id: str, inventory):
         self.popup = {
-            'panel': self.scale_rect(178, 98, 133, 75),
-            'inner_panel': self.scale_rect(187, 106, 115, 57),
-            'item_id': item_id
+            "panel": self.scale_rect(178, 98, 133, 75),
+            "inner_panel": self.scale_rect(187, 106, 115, 57),
+            "item_id": item_id,
         }
         self.popup_buttons = {
-            'use': self.scale_rect(204, 115, 83, 17),
-            'drop': self.scale_rect(204, 136, 83, 17)
+            "use": self.scale_rect(204, 115, 83, 17),
+            "drop": self.scale_rect(204, 136, 83, 17),
         }
 
         item = inventory.get_item_by_id(item_id)
         if isinstance(item, Weapon):
-            self.popup_buttons['equip'] = self.scale_rect(204, 157, 83, 17)
-            self.popup['panel'].height += 21 * self.scale_factor
-            self.popup['inner_panel'].height += 21 * self.scale_factor
+            self.popup_buttons["equip"] = self.scale_rect(204, 157, 83, 17)
+            self.popup["panel"].height += 21 * self.scale_factor
+            self.popup["inner_panel"].height += 21 * self.scale_factor
 
     def close_popup(self):
         self.popup = None
         self.popup_buttons = None
 
     def draw_popup(self, surface: pygame.Surface):
-        pygame.draw.rect(surface, self.colors['background'], self.popup['panel'])
-        pygame.draw.rect(surface, self.colors['stroke'], self.popup['panel'], 3 * self.scale_factor)
-        pygame.draw.rect(surface, self.colors['button'], self.popup['inner_panel'])
-        pygame.draw.rect(surface, self.colors['text'], self.popup['inner_panel'], self.scale_factor)
+        pygame.draw.rect(surface, self.colors["background"], self.popup["panel"])
+        pygame.draw.rect(
+            surface, self.colors["stroke"], self.popup["panel"], 3 * self.scale_factor
+        )
+        pygame.draw.rect(surface, self.colors["button"], self.popup["inner_panel"])
+        pygame.draw.rect(
+            surface, self.colors["text"], self.popup["inner_panel"], self.scale_factor
+        )
 
         for action, button in self.popup_buttons.items():
-            color = self.colors['button_hover'] if self.hovered_popup_button == action else self.colors['button']
+            color = (
+                self.colors["button_hover"]
+                if self.hovered_popup_button == action
+                else self.colors["button"]
+            )
             pygame.draw.rect(surface, color, button)
-            pygame.draw.rect(surface, self.colors['text'], button, self.scale_factor)
-            text = self.fonts['button'].render(action.capitalize(), True, self.colors['text'])
+            pygame.draw.rect(surface, self.colors["text"], button, self.scale_factor)
+            text = self.fonts["button"].render(
+                action.capitalize(), True, self.colors["text"]
+            )
             text_rect = text.get_rect(center=button.center)
             surface.blit(text, text_rect)
 
@@ -244,6 +264,15 @@ class EnhancedInventoryDisplay:
         self.draw_text(pygame.display.get_surface(), info, self.item_info_text)
 
     def clear_item_info(self):
-        pygame.draw.rect(pygame.display.get_surface(), self.colors['button'], self.item_info_panel)
-        pygame.draw.rect(pygame.display.get_surface(), self.colors['button'], self.item_info_panel)
-        pygame.draw.rect(pygame.display.get_surface(), self.colors['text'], self.item_info_panel, self.scale_factor)
+        pygame.draw.rect(
+            pygame.display.get_surface(), self.colors["button"], self.item_info_panel
+        )
+        pygame.draw.rect(
+            pygame.display.get_surface(), self.colors["button"], self.item_info_panel
+        )
+        pygame.draw.rect(
+            pygame.display.get_surface(),
+            self.colors["text"],
+            self.item_info_panel,
+            self.scale_factor,
+        )
