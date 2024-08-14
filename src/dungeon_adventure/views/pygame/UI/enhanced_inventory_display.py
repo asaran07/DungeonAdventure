@@ -21,8 +21,6 @@ class EnhancedInventoryDisplay:
             "button": "#EFEFEF",
             "text": "#000000",
             'button_hover': '#D0D0D0',
-            'xp_bar': '#2CC757',
-            'hp_bar': '#C72C2C'
         }
 
         # Fonts
@@ -43,10 +41,6 @@ class EnhancedInventoryDisplay:
         # Text areas
         self.item_info_text = self.scale_rect(295, 61, 88, 68)
         self.player_info_text = self.scale_rect(295, 152, 40, 53)
-
-        # Bars
-        self.xp_bar = self.scale_rect(339, 151, 17, 54)
-        self.hp_bar = self.scale_rect(364, 151, 17, 54)
 
         # Popup
         self.popup = None
@@ -83,9 +77,6 @@ class EnhancedInventoryDisplay:
         # Draw item buttons
         self.draw_item_buttons(surface, player.inventory)
 
-        # Draw bars
-        self.draw_bars(surface, player)
-
         # Draw info panels
         pygame.draw.rect(surface, self.colors["button"], self.item_info_panel)
         pygame.draw.rect(
@@ -118,18 +109,6 @@ class EnhancedInventoryDisplay:
                 text = self.fonts['button'].render(f"{item.name} ({quantity})", True, self.colors['text'])
                 text_rect = text.get_rect(center=button.center)
                 surface.blit(text, text_rect)
-
-    def draw_bars(self, surface: pygame.Surface, player):
-        self.draw_stat_bar(surface, "XP", self.xp_bar, player.hero.xp / player.hero.xp_to_next_level)
-        self.draw_stat_bar(surface, "HP", self.hp_bar, player.hero.current_hp / player.hero.max_hp)
-
-    def draw_stat_bar(self, surface: pygame.Surface, stat_type: str, bar_rect: pygame.Rect, fill_ratio: float):
-        pygame.draw.rect(surface, self.colors[f'{stat_type.lower()}_bar'], bar_rect)
-        fill_height = int(bar_rect.height * fill_ratio)
-        empty_rect = bar_rect.copy()
-        empty_rect.height -= fill_height
-        pygame.draw.rect(surface, self.colors['background'], empty_rect)
-        pygame.draw.rect(surface, self.colors['text'], bar_rect, self.scale_factor)
 
     def draw_player_info(self, surface: pygame.Surface, player):
         info = f"HP: {player.hero.current_hp}/{player.hero.max_hp}\n"
