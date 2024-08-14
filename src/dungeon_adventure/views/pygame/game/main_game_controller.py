@@ -91,6 +91,7 @@ class MainGameController:
         self.pygame_view.minimap_visible = False
         self.pygame_view.controls_visible = False
         self.pygame_view.player_message_visible = False
+        self.pygame_view.player_stats_visible = False
         self.combat_manager.trigger("start_combat")
 
     def handle_combat_end(self):
@@ -98,6 +99,7 @@ class MainGameController:
             self.pygame_view.room_items_display.is_visible = True
         self.pygame_view.minimap_visible = True
         self.pygame_view.controls_visible = True
+        self.pygame_view.player_stats_visible = True
 
     def load_and_play_music(self):
         try:
@@ -204,7 +206,7 @@ class MainGameController:
 
     def update(self, dt: float) -> None:
         self.game_world.update(dt)
-        self.pygame_view.update(self.game_world.current_room, self.game_world.room_dict)
+        self.pygame_view.update(self.game_world.current_room, self.game_world.room_dict, self.game_world.composite_player.player)
         self.debug_manager.update_fps(self.game_screen.clock)
         if self.game_world.game_model.game_state == GameState.IN_COMBAT:
             self.combat_manager.update(dt)
