@@ -284,5 +284,10 @@ class MainGameController:
         game_model = GameModel(core_player, dungeon)
         self.game_world = GameWorld(game_model, player)
         self.game_world.initialize()
+        self.pygame_view.minimap_visible = True
+        self.pygame_view.controls_visible = True
+        self.pygame_view.player_stats_visible = True
+        self.pygame_view.player_message_visible = False
         self.game_world.game_model.game_state = GameState.EXPLORING
+        self.combat_manager.reset_combat_state()
         self.win_message = None

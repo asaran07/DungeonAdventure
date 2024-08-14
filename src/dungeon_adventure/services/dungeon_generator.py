@@ -91,9 +91,6 @@ class DungeonGenerator:
             )
         )
         room2.add_item(
-            item_factory.create_weapon("Rusty Sword", WeaponType.SWORD, 10, 7, 100)
-        )
-        room2.add_item(
             item_factory.create_potion("Healing Potion", PotionType.HEALING, 15, 2)
         )
 
@@ -151,6 +148,9 @@ class DungeonGenerator:
         room12.add_item(
             item_factory.create_potion("Healing Potion", PotionType.HEALING, 15, 2)
         )
+        room12.add_item(
+            item_factory.create_weapon("Rusty Sword", WeaponType.SWORD, 10, 7, 100)
+        )
 
         room13 = dungeon.get_room("Room 13")
         random_monster_3 = monster_instance.generate_random_monster()
@@ -160,19 +160,18 @@ class DungeonGenerator:
         room13.add_item(item_factory.create_rope())
         room13.add_item(
             item_factory.create_pillar(
-                PillarType.ABSTRACTION, "Abstraction Pillar", "A abstract pillar", 5
+                PillarType.ABSTRACTION, "Abstraction Pillar", "A pillar that is a bit abstract.", 5
             )
         )
 
         room14 = dungeon.get_room("Room 14")
         room14.room_type = RoomType.PIT
-        room14.add_item(item_factory.create_pillar(PillarType.ABSTRACTION, "Abstraction Pillar", "A abstract pillar", 5))
         room14.add_item(
-            item_factory.create_pillar(PillarType.ENCAPSULATION, "Encap Pillar", "A encap pillar", 5))
+            item_factory.create_pillar(PillarType.ENCAPSULATION, "Encapsulation Pillar", "A encap pillar", 5))
         room14.add_item(
-            item_factory.create_pillar(PillarType.INHERITANCE, "Inherit Pillar", "A inh pillar", 5))
+            item_factory.create_pillar(PillarType.INHERITANCE, "Inheritance Pillar", "A inh pillar", 5))
         room14.add_item(
-            item_factory.create_pillar(PillarType.POLYMORPHISM, "poly Pillar", "A poly pillar", 5))
+            item_factory.create_pillar(PillarType.POLYMORPHISM, "Polymorphism Pillar", "A poly pillar", 5))
 
         room15 = dungeon.get_room("Room 15 - Exit Chamber")
         room15.set_room_type(RoomType.EXIT)
