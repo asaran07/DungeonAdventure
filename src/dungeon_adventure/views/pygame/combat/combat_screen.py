@@ -288,9 +288,10 @@ class CombatScreen:
             if callback:
                 callback()
         else:
-            self.logger.debug(
-                "Monster bar animations started, callback will be called when complete"
-            )
+            pass
+            # self.logger.debug(
+            #     "Monster bar animations started, callback will be called when complete"
+            # )
 
     def animate_monster_bar(self, index, new_value):
         try:

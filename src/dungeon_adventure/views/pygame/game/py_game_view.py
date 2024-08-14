@@ -106,7 +106,8 @@ class PyGameView:
             elif action_type == "drop":
                 item = player.inventory.remove_item_by_id(item_id)
                 if item:
-                    player.current_room.add_item(item)
+                    pass
+                    #  player.current_room.add_item(item)
 
     @property
     def minimap_visible(self) -> bool:
