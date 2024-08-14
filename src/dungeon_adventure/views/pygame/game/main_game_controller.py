@@ -6,6 +6,9 @@ import pygame
 from dungeon_adventure.config import RESOURCES_DIR
 from dungeon_adventure.enums.game_state import GameState
 from dungeon_adventure.enums.room_types import RoomType
+from dungeon_adventure.game_model import GameModel
+from dungeon_adventure.models.player.player import Player
+from dungeon_adventure.services.dungeon_generator import DungeonGenerator
 from dungeon_adventure.views.pygame.combat.combat_screen import CombatScreen
 from dungeon_adventure.views.pygame.game.combat_manager import CombatManager
 from dungeon_adventure.views.pygame.game.game_screen import GameScreen
@@ -13,6 +16,8 @@ from dungeon_adventure.views.pygame.game.game_world import GameWorld
 from dungeon_adventure.views.pygame.game.py_game_view import PyGameView
 from dungeon_adventure.views.pygame.services.debug_manager import DebugManager
 from dungeon_adventure.views.pygame.services.keybind_manager import KeyBindManager
+from dungeon_adventure.views.pygame.sprites.composite_player import CompositePlayer
+from dungeon_adventure.views.pygame.sprites.py_player import PyPlayer
 
 
 class MainGameController:
@@ -66,6 +71,7 @@ class MainGameController:
         self.game_world.pit_encounter = self.handle_pit_encounter
         self.game_world.on_room_enter = self.handle_room_enter
         self.game_world.on_win_condition = self.handle_win_condition
+        self.lose_condition = False
         self.game_world.on_combat_end = self.handle_combat_end
 
         self.key_actions: Dict[int, Callable] = {
@@ -203,6 +209,10 @@ class MainGameController:
         self.pygame_view.player_message_display.set_message(
             "Oh no! This room has a spike trap! You've taken damage."
         )
+        if not self.game_world.composite_player.player.hero.is_alive:
+            self.lose_condition = True
+            self.handle_win_condition()
+
 
     def update(self, dt: float) -> None:
         self.game_world.update(dt)
@@ -252,16 +262,28 @@ class MainGameController:
             self.pygame_view.draw(self.screen, self.game_world.composite_player.player)
 
     def handle_win_condition(self):
-        self.logger.info("Win condition met! Player has collected all pillars.")
-        self.win_message = [
-            "Congratulations! You've collected all pillars and won the game!",
-            "Press 'R' to restart or 'Q' to quit."
-        ]
+        if not self.lose_condition:
+            self.logger.info("Win condition met! Player has collected all pillars.")
+            self.win_message = [
+                "Congratulations! You've collected all pillars and won the game!",
+                "Press 'R' to restart or 'Q' to quit."
+            ]
+        else:
+            self.logger.info("Lose condition met! Player was defeated.")
+            self.win_message = [
+                "ope",
+                "Press 'R' to restart or 'Q' to quit."
+            ]
         self.game_world.game_model.game_state = GameState.GAME_OVER
 
     def restart_game(self):
         # TODO: Still need to empty out the player inventory
-        self.game_world = GameWorld(self.game_world.game_model, self.game_world.composite_player)
+        core_player = Player("Player 1", 50)
+        py_player = PyPlayer()
+        player = CompositePlayer(core_player, py_player)
+        dungeon = DungeonGenerator.generate_default_dungeon()
+        game_model = GameModel(core_player, dungeon)
+        self.game_world = GameWorld(game_model, player)
         self.game_world.initialize()
         self.game_world.game_model.game_state = GameState.EXPLORING
         self.win_message = None
