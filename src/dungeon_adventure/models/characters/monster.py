@@ -1,3 +1,4 @@
+import logging
 import random
 import sqlite3
 from typing import List, Optional
@@ -35,10 +36,20 @@ class Monster(DungeonCharacter):
         self.max_heal: int = max_heal
         self.xp_reward: int = xp_reward
         self.loot: List[Item] = loot if loot is not None else []
+        self.logger = logging.getLogger(self.__class__.__name__)
 
     # def monster_type(self, name: str):
     #     data = self.get_SQL_monster_info(name)
     #     return data
+
+    def take_damage(self, damage: int) -> None:
+        """
+        Apply damage to the monster and attempt to heal.
+
+        :param damage: Amount of damage to take
+        """
+        super().take_damage(damage)
+        self.attempt_heal()
 
     def generate_random_monster(self):
         monster_roll = random.randint(1, 3)
@@ -77,14 +88,16 @@ class Monster(DungeonCharacter):
 
     def attempt_heal(self) -> int:
         """
-        Attempt to heal based on heal chance.
+        Attempt to heal based on healed chance.
 
         :return: Amount healed (0 if healing didn't occur)
         """
         if random.randint(1, 100) <= self.heal_chance:
+            self.logger.info(f"Monster heal chance successful, healing for {self.heal_chance}")
             heal_amount = random.randint(self.min_heal, self.max_heal)
             self.heal(heal_amount)
             return heal_amount
+        self.logger.info(f"Healing failed for {self.name}")
         return 0
 
     def drop_loot(self) -> List[Item]:
