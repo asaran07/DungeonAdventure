@@ -18,15 +18,16 @@ from dungeon_adventure.views.pygame.services.debug_manager import DebugManager
 from dungeon_adventure.views.pygame.services.keybind_manager import KeyBindManager
 from dungeon_adventure.views.pygame.sprites.composite_player import CompositePlayer
 from dungeon_adventure.views.pygame.sprites.py_player import PyPlayer
+from serialization.game_snapshot import save_game, GameSnapshotPygame, load_game
 
 
 class MainGameController:
     def __init__(
-        self,
-        game_world: GameWorld,
-        game_screen: GameScreen,
-        pygame_view: PyGameView,
-        debug_manager: DebugManager,
+            self,
+            game_world: GameWorld,
+            game_screen: GameScreen,
+            pygame_view: PyGameView,
+            debug_manager: DebugManager,
     ):
         """
         Initialize the GameController with necessary components.
@@ -83,6 +84,8 @@ class MainGameController:
             pygame.K_m: lambda: self.pygame_view.toggle_visibility("minimap"),
             pygame.K_c: lambda: self.pygame_view.toggle_visibility("combat_screen"),
             pygame.K_h: lambda: self.pygame_view.toggle_visibility("controls"),
+            pygame.K_F5: lambda: self.game_world.handle_save(),
+            pygame.K_F6: lambda: self.game_world.handle_load()
         }
 
         self.font = pygame.font.Font(None, 18)

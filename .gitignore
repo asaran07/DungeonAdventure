@@ -13,3 +13,4 @@ venv_windows/
 .vscode/
 .idea/
 site/
+src/save.pkl

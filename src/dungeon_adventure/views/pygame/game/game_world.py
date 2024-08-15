@@ -10,6 +10,7 @@ from dungeon_adventure.game_model import GameModel
 from dungeon_adventure.models.dungeon.room import Room
 from dungeon_adventure.views.pygame.room.game_room import GameRoom
 from dungeon_adventure.views.pygame.sprites.composite_player import CompositePlayer
+from serialization.game_snapshot import GameSnapshotPygame, save_game, load_game
 
 
 class GameWorld:
@@ -60,6 +61,34 @@ class GameWorld:
     def _get_starting_room(self) -> GameRoom:
         starting_room_name = next(iter(self.dungeon.rooms.keys()))
         return self.room_dict[starting_room_name]
+
+    def handle_save(self):
+        room_dict_values = []
+        for item in self.room_dict.values():
+            room_dict_values.append(item.room)
+        proj_state = GameSnapshotPygame(
+            self.dungeon,
+            room_dict_values,
+            self.current_room.room,
+            self.composite_player.player,
+            self._game_model,
+        )
+        save_game(proj_state, "save.pkl")
+        self.logger.info("Saving Game")
+
+    def handle_load(self):
+        try:
+            proj_state: GameSnapshotPygame = load_game("save.pkl")
+            self.dungeon = proj_state.get_dungeon()
+            # self.room_dict = proj_state.get_room_dict()
+            self.current_room.room = proj_state.get_current_room()
+            self.composite_player.player = proj_state.get_player()
+            self.game_model = proj_state.get_game_model()
+            self.logger.info("Loading Game")
+        except FileNotFoundError as e:
+            #  display message saying file wasn't found here, get rid of print statement
+            # use player_message_display (I think) once it's finished
+            print(e)
 
     def update(self, dt):
         self.composite_player.update(dt, self.current_room)
