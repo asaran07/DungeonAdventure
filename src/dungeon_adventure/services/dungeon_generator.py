@@ -160,18 +160,30 @@ class DungeonGenerator:
         room13.add_item(item_factory.create_rope())
         room13.add_item(
             item_factory.create_pillar(
-                PillarType.ABSTRACTION, "Abstraction Pillar", "A pillar that is a bit abstract.", 5
+                PillarType.ABSTRACTION,
+                "Abstraction Pillar",
+                "A pillar that is a bit abstract.",
+                5,
             )
         )
 
         room14 = dungeon.get_room("Room 14")
         room14.room_type = RoomType.PIT
         room14.add_item(
-            item_factory.create_pillar(PillarType.ENCAPSULATION, "Encapsulation Pillar", "A encap pillar", 5))
+            item_factory.create_pillar(
+                PillarType.ENCAPSULATION, "Encapsulation Pillar", "A encap pillar", 5
+            )
+        )
         room14.add_item(
-            item_factory.create_pillar(PillarType.INHERITANCE, "Inheritance Pillar", "A inh pillar", 5))
+            item_factory.create_pillar(
+                PillarType.INHERITANCE, "Inheritance Pillar", "A inh pillar", 5
+            )
+        )
         room14.add_item(
-            item_factory.create_pillar(PillarType.POLYMORPHISM, "Polymorphism Pillar", "A poly pillar", 5))
+            item_factory.create_pillar(
+                PillarType.POLYMORPHISM, "Polymorphism Pillar", "A poly pillar", 5
+            )
+        )
 
         room15 = dungeon.get_room("Room 15 - Exit Chamber")
         room15.set_room_type(RoomType.EXIT)

@@ -1,21 +1,28 @@
 from abc import ABC, abstractmethod
-
 import pygame
 
 
 class UIElement(ABC):
-    def __init__(self):
-        self.x: int
-        self.y: int
-        self.width: int
-        self.height: int
-        self.rect: pygame.Rect
-        self.surface: pygame.Surface
-
+    @property
     @abstractmethod
-    def get_surface(self) -> pygame.Surface:
+    def width(self) -> int:
         pass
 
+    @property
     @abstractmethod
-    def get_frame(self) -> pygame.Rect:
+    def height(self) -> int:
         pass
+
+    @property
+    @abstractmethod
+    def surface(self) -> pygame.Surface:
+        pass
+
+    @property
+    @abstractmethod
+    def frame(self) -> pygame.Rect:
+        pass
+
+    @property
+    def size(self) -> tuple[int, int]:
+        return self.width, self.height

@@ -68,10 +68,12 @@ class PyGameView:
         self.player_status_display = PlayerStatusDisplay(
             self.window_width * self.scale_factor,
             self.window_height * self.scale_factor,
-            self.scale_factor
+            self.scale_factor,
         )
 
-    def update(self, current_room: GameRoom, room_dict: Dict[str, GameRoom], player: Player) -> None:
+    def update(
+        self, current_room: GameRoom, room_dict: Dict[str, GameRoom], player: Player
+    ) -> None:
         """
         Update the state of UI components.
 
