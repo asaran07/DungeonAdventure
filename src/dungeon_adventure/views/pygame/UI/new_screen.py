@@ -10,6 +10,8 @@ from dungeon_adventure.views.pygame.UI.panel import Panel
 class TestScreen:
     BEIGE = (120, 81, 79)
     DARK_BROWN = (94, 58, 56)
+    OFF_WHITE = (217, 217, 217)
+    BLACK = (0, 0, 0)
 
     def __init__(self, width: int, height: int, scale_factor: int):
         self.logger = logging.getLogger(self.__class__.__name__)
@@ -17,7 +19,8 @@ class TestScreen:
         self.height = height * scale_factor * 0.9
         self.surface: pygame.Surface = pygame.Surface(self.size)
         self._screen: Optional[pygame.Surface] = None
-        self.main_panel = Panel(*self.size)
+        self.main_panel = Panel(*self.surface.size)
+        self.panels: [pygame.Surface] = []
 
     @property
     def screen(self) -> pygame.Surface:
@@ -40,6 +43,11 @@ class TestScreen:
             self.main_panel.surface,
             self.main_panel.center_of(self.surface),
         )
+
+        panel = Panel(self.main_panel.width - 65, self.main_panel.height // 2)
+        panel.create_default_panel()
+        self.surface.blit(panel.surface, panel.align(self.surface, "top", 30))
+
         self.screen.blit(self.surface, self.center)
 
     @property
