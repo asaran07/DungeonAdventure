@@ -64,14 +64,9 @@ class AnimationEvent:
 
 class CombatScreen:
     def __init__(self, width, height, scale_factor=3):
-        self.monster_stats_callback_called = False
         self.stat_bar_callback_called = False
-        self.monster_stats_callback = None
         self.stat_bar_callback = None
         self.logger = logging.getLogger(self.__class__.__name__)
-        self.elapsed_log_time = 0
-        self.log_interval = 5000
-        self.screen_on_time = 0
 
         self.width = width
         self.height = height
@@ -86,7 +81,6 @@ class CombatScreen:
         self.player_hp = 100
         self.player_max_hp = 100
 
-        self.in_monster_selection = False
         self.monster_selection_buttons = []
         self.main_buttons = None
 
@@ -186,19 +180,6 @@ class CombatScreen:
         # Monster Stats Panel
         self.draw_panel(surface, 303, 134, 108, 89, (217, 217, 217), (0, 0, 0))
 
-        # Draw monster stats
-        for i, monster in enumerate(self.monster_bars):
-            y_offset = i * 37
-            self.draw_text(
-                surface,
-                monster["name"],
-                316,
-                141 + y_offset,
-                (0, 0, 0),
-                font=self.monster_font,
-            )
-            self.draw_monster_bar(surface, i, 319, 155 + y_offset, 76, 16)
-
     def draw_stat_bar(self, surface, stat_type, x, y, width, height):
         if self.stat_bar_visible[stat_type]:
             fill_height = int(height * self.stat_bars[stat_type])
@@ -219,43 +200,6 @@ class CombatScreen:
                 self.scale(1),
             )
 
-    def draw_monster_bar(self, surface, index, x, y, width, height):
-        monster = self.monster_bars[index]
-        fill_width = int(width * monster["hp_ratio"])
-        pygame.draw.rect(
-            surface,
-            (199, 44, 44),
-            (self.scale(x), self.scale(y), self.scale(fill_width), self.scale(height)),
-        )
-        pygame.draw.rect(
-            surface,
-            (0, 0, 0),
-            (self.scale(x), self.scale(y), self.scale(width), self.scale(height)),
-            self.scale(1),
-        )
-
-    def display_monster_stats(self, monsters: List, callback: Callable):
-        self.monster_bars = []  # Clear existing monster bars
-        self.monster_bar_animation = []
-        for i, monster in enumerate(monsters):  # Remove the [:2] slice
-            try:
-                if monster.max_hp != 0:
-                    hp_ratio = monster.current_hp / monster.max_hp
-                else:
-                    hp_ratio = 0  # or handle accordingly
-                self.monster_bars.append({"name": monster.name, "hp_ratio": hp_ratio})
-                self.monster_bar_animation.append(None)
-            except (ValueError, AttributeError, ZeroDivisionError) as e:
-                self.logger.error(f"Error calculating hp ratio for monster {i}: {e}")
-
-        if callback is None:
-            self.logger.error("Callback passed to display_monster_stats is None")
-        else:
-            self.monster_stats_callback = callback
-            # self.logger.debug(f"Monster stats callback set: {callback}")
-
-        self.update_monster_stats(monsters, self.monster_stats_callback)
-
     def display_stat_bars(
         self, player, show_hp: bool, show_mana: bool, show_xp: bool, callback: Callable
     ):
@@ -271,41 +215,6 @@ class CombatScreen:
             self.logger.debug(f"Stat bar callback set: {callback}")
 
         self.update_stat_bars(player, self.stat_bar_callback)
-
-    def update_monster_stats(
-        self, monsters: List[Monster], callback: Optional[Callable] = None
-    ):
-        for i, monster in enumerate(monsters):
-            if i < len(self.monster_bars):  # Ensure we don't go out of bounds
-                new_hp_ratio = monster.current_hp / monster.max_hp
-                self.animate_monster_bar(i, new_hp_ratio)
-
-        # If there are no animations to run, call the callback immediately
-        if all(anim is None for anim in self.monster_bar_animation):
-            self.logger.debug(
-                "No monster bar animations to run, calling callback immediately"
-            )
-            if callback:
-                callback()
-        else:
-            pass
-            # self.logger.debug(
-            #     "Monster bar animations started, callback will be called when complete"
-            # )
-
-    def animate_monster_bar(self, index, new_value):
-        try:
-            current_value = float(self.monster_bars[index]["hp_ratio"])
-            new_value = float(new_value)
-            self.monster_bar_animation[index] = {
-                "start": current_value,
-                "end": new_value,
-                "progress": 0,
-            }
-        except (ValueError, KeyError) as e:
-            self.logger.error(f"Error animating monster bar: {e}")
-            # Set the value directly if conversion fails
-            self.monster_bars[index]["hp_ratio"] = new_value
 
     def update_stat_bars(self, player, callback: Callable):
         new_hp = player.hero.current_hp / player.hero.max_hp
@@ -340,104 +249,15 @@ class CombatScreen:
             }
 
     def update(self, dt):
-        current_time = pygame.time.get_ticks()
-
-        # Handle animation queue
-        while self.animation_queue and current_time >= self.animation_queue[0].delay:
-            event = self.animation_queue.pop(0)
-            self.logger.debug(f"Executing animation event: {event.action.__name__}")
-            event.action(*event.args)
-
-        # Update typewriter effect
-        if self.typewriter_index < len(self.message):
-            if current_time - self.last_typewriter_update > self.typewriter_speed:
-                self.typewriter_text += self.message[self.typewriter_index]
-                self.typewriter_index += 1
-                self.last_typewriter_update = current_time
-                self.logger.debug(f"Typewriter updated: '{self.typewriter_text}'")
-                if self.message == self.typewriter_text:
-                    self.logger.debug(f"Typewriter animation finished.")
-                    self.on_message_animation_complete()
-
-        # Update stat bar animations
-        for stat_type, anim in self.stat_bar_animation.items():
-            if anim:
-                anim["progress"] += dt * 0.5  # Adjust speed as needed
-                if anim["progress"] >= 1:
-                    self.stat_bars[stat_type] = anim["end"]
-                    self.stat_bar_animation[stat_type] = None
-                else:
-                    self.stat_bars[stat_type] = (
-                        anim["start"] + (anim["end"] - anim["start"]) * anim["progress"]
-                    )
-
-        # Update monster bar animations
-        for i, anim in enumerate(self.monster_bar_animation):
-            if anim:
-                anim["progress"] += dt * 0.5  # Adjust speed as needed
-                if anim["progress"] >= 1:
-                    self.monster_bars[i]["hp_ratio"] = anim["end"]
-                    self.monster_bar_animation[i] = None
-                else:
-                    self.monster_bars[i]["hp_ratio"] = (
-                        anim["start"] + (anim["end"] - anim["start"]) * anim["progress"]
-                    )
-
-        # Check if all stat bar animations are complete
-        if all(anim is None for anim in self.stat_bar_animation.values()):
-            if self.stat_bar_callback is not None:
-                # self.logger.debug("All stat bar animations complete, calling callback")
-                self.stat_bar_callback()
-                self.stat_bar_callback_called = (
-                    True  # Set a flag instead of clearing the callback
-                )
-            else:
-                pass
-                # self.logger.warning("Stat bar animations complete, but callback is None")
-
-        # Check if all monster bar animations are complete
-        if all(anim is None for anim in self.monster_bar_animation):
-            if self.monster_stats_callback is not None:
-                # self.logger.debug("All monster bar animations complete, calling callback")
-                self.monster_stats_callback()
-                self.monster_stats_callback_called = (
-                    True  # Set a flag instead of clearing the callback
-                )
-            else:
-                pass
-                # self.logger.warning("Monster bar animations complete, but callback is None")
-
-        if current_time - self.elapsed_log_time > self.log_interval:
-            self.logger.debug(
-                f"Updating screen (dt: {dt:.2f}ms, total screen time: {self.screen_on_time:.2f}ms)"
-            )
-            self.logger.debug(
-                f"Update: current_time={current_time}, message='{self.message}', typewriter='{self.typewriter_text}'"
-            )
-            self.elapsed_log_time = current_time
-
-    def on_message_animation_complete(self):
-        if self.message_callback:
-            self.logger.debug(f"Calling {self.message_callback} callback")
-            self.message_callback()
+        pass
 
     def handle_event(self, event):
         for button in self.buttons:
             action = button.handle_event(event, self.scale_factor)
             if action:
                 self.logger.debug(f"Button action triggered: {action}")
-                if action == CombatAction.ATTACK and not self.in_monster_selection:
-                    self.logger.debug("Turning on Monster Selection buttons")
-                    self.in_monster_selection = True
-                    self.create_monster_selection_buttons()
-                    self.buttons = self.monster_selection_buttons
-                    self.logger.debug(self.buttons)
+                if action == CombatAction.ATTACK:
                     return None
-                elif isinstance(action, str) and action.startswith("ATTACK_"):
-                    monster_index = int(action.split("_")[1])
-                    self.in_monster_selection = False
-                    self.buttons = self.main_buttons
-                    return "ATTACK", monster_index
                 elif action in (CombatAction.FLEE, CombatAction.USE_ITEM):
                     return action
         return None
