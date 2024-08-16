@@ -56,7 +56,7 @@ class GameSnapshotPygame:
 
     ):
         self.dungeon = dungeon
-        self.room_dict_values = room_dict_values
+        # self.room_dict_values = room_dict_values
         self.current_room: Room = current_room
         self.player: Player = player
         self.game_model: GameModel = game_model
@@ -64,8 +64,8 @@ class GameSnapshotPygame:
     def get_dungeon(self) -> Dungeon:
         return self.dungeon
 
-    def get_room_dict_values(self):
-        return self.room_dict_values
+    # def get_room_dict_values(self):
+    #     return self.room_dict_values
 
     def get_current_room(self) -> Room:
         return self.current_room

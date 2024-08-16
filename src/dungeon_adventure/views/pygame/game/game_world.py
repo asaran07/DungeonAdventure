@@ -63,12 +63,12 @@ class GameWorld:
         return self.room_dict[starting_room_name]
 
     def handle_save(self):
-        room_dict_values = []
-        for item in self.room_dict.values():
-            room_dict_values.append(item.room)
+        # room_dict_values = []
+        # for item in self.room_dict.values():
+        #     room_dict_values.append(item.room)
         proj_state = GameSnapshotPygame(
             self.dungeon,
-            room_dict_values,
+            # room_dict_values,
             self.current_room.room,
             self.composite_player.player,
             self._game_model,
