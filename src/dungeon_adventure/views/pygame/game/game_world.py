@@ -78,6 +78,7 @@ class GameWorld:
 
     def handle_load(self):
         try:
+            # TODO: Get rid of unnecessary logger stuff and comments
             proj_state: GameSnapshotPygame = load_game("save.pkl")
             self.dungeon = proj_state.get_dungeon()
             self.logger.info("test")
@@ -86,18 +87,40 @@ class GameWorld:
             other_strang = ("room_dict:", self.room_dict)
             # self.room_dict = proj_state.get_room_dict()
             # self.room_dict.values() = proj_state.get_room_dict_values()
-            for key, new_value in zip(self.room_dict.keys(), proj_state.get_room_dict_values()):
-                self.room_dict[key].room = new_value
+            # for key, new_value in zip(self.room_dict.keys(), proj_state.get_room_dict_values()):
+            #     self.room_dict[key].room = new_value
             other_strang = ("room_dict:", self.room_dict)
             self.logger.info(other_strang)
             self.current_room.room = proj_state.get_current_room()
+            self.current_room.initialize()
             self.composite_player.player = proj_state.get_player()
+            # self.composite_player.initialize()
             self.game_model = proj_state.get_game_model()
+
             self.logger.info("Loading Game")
         except FileNotFoundError as e:
             #  display message saying file wasn't found here, get rid of print statement
             # use player_message_display (I think) once it's finished
             print(e)
+        # try:
+        #     proj_state: GameSnapshotPygame = load_game("save.pkl")
+        #     self.dungeon = proj_state.get_dungeon()
+        #     self.current_room = self.room_dict[proj_state.get_current_room().name]
+        #     self.current_room.initialize()  # Reinitialize visuals for the current room
+        #     self.composite_player.player = proj_state.get_player()
+        #     self.game_model = proj_state.get_game_model()
+        #
+        #     # Reinitialize player position in the room
+        #     self.composite_player.py_player.rect.center = self.current_room.rect.center
+        #
+        #     # Update the minimap to reflect the current game state
+        #     # self.update_minimap()
+        #
+        #     self.draw(pygame.display.get_surface())  # Force a visual refresh
+        #
+        #     self.logger.info("Loading Game")
+        # except FileNotFoundError as e:
+        #     print(e)
 
     def update(self, dt):
         self.composite_player.update(dt, self.current_room)

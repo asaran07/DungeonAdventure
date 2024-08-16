@@ -85,11 +85,15 @@ class MainGameController:
             pygame.K_c: lambda: self.pygame_view.toggle_visibility("combat_screen"),
             pygame.K_h: lambda: self.pygame_view.toggle_visibility("controls"),
             pygame.K_F5: lambda: self.game_world.handle_save(),
-            pygame.K_F6: lambda: self.game_world.handle_load()
+            pygame.K_F6: lambda: self.handle_load()
         }
 
         self.font = pygame.font.Font(None, 18)
         self.win_message = None
+
+    def handle_load(self):
+        self.game_world.handle_load()
+        self.initialize()
 
     def initiate_combat(self):
         if self.debug_mode:
