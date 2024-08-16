@@ -46,8 +46,9 @@ class TestScreen:
 
         panel = Panel(self.main_panel.width - 65, self.main_panel.height // 2)
         panel.create_default_panel()
-        self.surface.blit(panel.surface, panel.align(self.surface, "top", 30))
+        panel.add_text("This is some testing text.", 24, self.BLACK, "top_right")
 
+        self.surface.blit(panel.surface, panel.align(self.surface, "top", 30))
         self.screen.blit(self.surface, self.center)
 
     @property
