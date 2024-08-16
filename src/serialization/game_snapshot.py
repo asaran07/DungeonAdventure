@@ -49,14 +49,14 @@ class GameSnapshotPygame:
     def __init__(
             self,
             dungeon,
-            # room_dict,
+            room_dict_values,
             current_room,
             player,
             game_model: GameModel,
 
     ):
         self.dungeon = dungeon
-        # self.room_dict: dict = room_dict
+        self.room_dict_values = room_dict_values
         self.current_room: Room = current_room
         self.player: Player = player
         self.game_model: GameModel = game_model
@@ -64,9 +64,9 @@ class GameSnapshotPygame:
     def get_dungeon(self) -> Dungeon:
         return self.dungeon
 
-    # def get_room_dict(self) -> dict:
-    #     return self.room_dict
-    #
+    def get_room_dict_values(self):
+        return self.room_dict_values
+
     def get_current_room(self) -> Room:
         return self.current_room
 
@@ -77,16 +77,16 @@ class GameSnapshotPygame:
         return self.game_model
 
 
-def load_game(file_path: str):
-    if os.path.exists(file_path):
-        if os.path.getsize(file_path) > 0:
-            with open(file_path, "rb") as file:
+def load_game(file_name: str):
+    if os.path.exists(file_name):
+        if os.path.getsize(file_name) > 0:
+            with open(file_name, "rb") as file:
                 return pickle.load(file)
         else:
             print("Error: File is empty.")
 
     else:
-        print(f"Error: File {file_path} does not exist.")
+        print(f"Error: File {file_name} does not exist.")
 
 
 def save_game(game_state, file_name: str) -> None:

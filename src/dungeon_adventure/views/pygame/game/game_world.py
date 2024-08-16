@@ -80,7 +80,16 @@ class GameWorld:
         try:
             proj_state: GameSnapshotPygame = load_game("save.pkl")
             self.dungeon = proj_state.get_dungeon()
+            self.logger.info("test")
+            strang = ("room_dict:", self.room_dict)
+            self.logger.info(strang)
+            other_strang = ("room_dict:", self.room_dict)
             # self.room_dict = proj_state.get_room_dict()
+            # self.room_dict.values() = proj_state.get_room_dict_values()
+            for key, new_value in zip(self.room_dict.keys(), proj_state.get_room_dict_values()):
+                self.room_dict[key].room = new_value
+            other_strang = ("room_dict:", self.room_dict)
+            self.logger.info(other_strang)
             self.current_room.room = proj_state.get_current_room()
             self.composite_player.player = proj_state.get_player()
             self.game_model = proj_state.get_game_model()
