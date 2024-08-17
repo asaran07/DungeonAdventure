@@ -224,7 +224,9 @@ class GameWorld:
                     pillar_types.add(item.pillar_type)
 
             if len(pillar_types) == len(PillarType):
-                self.logger.info("Player has collected all pillar types. Win condition met!")
+                self.logger.info(
+                    "Player has collected all pillar types. Win condition met!"
+                )
                 if self.on_win_condition:
                     self.on_win_condition()
 

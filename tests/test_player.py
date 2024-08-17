@@ -29,7 +29,9 @@ class TestPlayer:
             pytest.fail("InvalidPlayerAttributeError wasn't raised")
 
     def test_to_string(self, new_player: Player):
-        expected_string = "Player: John\n" "HP: 75\n" "Inventory:\n" "Total Weight: 0/50.0"
+        expected_string = (
+            "Player: John\n" "HP: 75\n" "Inventory:\n" "Total Weight: 0/50.0"
+        )
         adventurer_one = new_player
         actual_string = adventurer_one.__str__()
         # NOTE: switching these around changes what is shown as expected vs actual
