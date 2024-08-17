@@ -1,9 +1,9 @@
 import unittest
 from unittest.mock import MagicMock, patch
 
-from dungeon_adventure.services import ItemFactory
+from dungeon_adventure.models.characters.dungeon_character import DungeonCharacter
+from dungeon_adventure.services.item_factory import ItemFactory
 from src.dungeon_adventure.enums.item_types import WeaponType
-from src.dungeon_adventure.models.characters import DungeonCharacter
 from src.dungeon_adventure.models.characters.hero import Hero
 
 
@@ -41,7 +41,7 @@ class TestHero(unittest.TestCase):
 
     # @unittest.skip('still need to update loot')
     def test_equip_weapon(self):
-        weapon = self.item_factory.create_weapon("Sword", WeaponType.SWORD, 1, 10)
+        weapon = self.item_factory.create_weapon("Sword", WeaponType.SWORD, 1, 10, 5)
         self.hero.equip_weapon(weapon)
         self.assertEqual(self.hero.equipped_weapon, weapon)
         self.assertEqual(self.hero.stat_modifiers.get("min_damage", 1), 1)
@@ -49,14 +49,14 @@ class TestHero(unittest.TestCase):
 
     # @unittest.skip('still need to update loot')
     def test_equip_weapon_replace(self):
-        weapon1 = self.item_factory.create_weapon("Sword", WeaponType.SWORD, 1, 10)
-        weapon2 = self.item_factory.create_weapon("Bow", WeaponType.BOW, 2, 25)
+        weapon1 = self.item_factory.create_weapon("Sword", WeaponType.SWORD, 1, 10, 5)
+        weapon2 = self.item_factory.create_weapon("Bow", WeaponType.BOW, 2, 25, 5)
         self.hero.equip_weapon(weapon1)
         self.hero.equip_weapon(weapon2)
         self.assertEqual(self.hero.equipped_weapon, weapon2)
-        self.assertEqual(self.hero.stat_modifiers.get("min_damage", 1), 1)
+        self.assertEqual(self.hero.stat_modifiers.get("min_damage", 1), 2)
         # bow reduces set damage by 1 for min
-        self.assertEqual(self.hero.stat_modifiers.get("max_damage", 3), 3)
+        self.assertEqual(self.hero.stat_modifiers.get("max_damage", 3), 4)
         # bow increases from min damage by 2 for max
 
     def test_gain_xp_no_level_up(self):
