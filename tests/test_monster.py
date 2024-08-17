@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import MagicMock, patch
 
-from src.dungeon_adventure.models.characters import DungeonCharacter
+from dungeon_adventure.models.characters.dungeon_character import DungeonCharacter
 from src.dungeon_adventure.models.characters.monster import Monster
 from src.dungeon_adventure.models.items import Item
 

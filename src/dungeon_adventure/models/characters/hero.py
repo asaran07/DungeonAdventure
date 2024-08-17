@@ -11,10 +11,10 @@ class Hero(DungeonCharacter):
         self,
         name: str = "Hero",
         max_hp: int = 150,
-        base_min_damage: int = 15,
-        base_max_damage: int = 40,
+        base_min_damage: int = 30,
+        base_max_damage: int = 45,
         attack_speed: int = 5,
-        base_hit_chance: int = 70,
+        base_hit_chance: int = 75,
         block_chance: int = 20,
     ):
         super().__init__(

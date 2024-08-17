@@ -92,20 +92,19 @@ class PyGameView:
         :param screen: The pygame surface to draw on
         :param player: The player instance
         """
-        if self._minimap_visible:
+        if self._minimap_visible and not self._inventory_visible:
             self.minimap.draw(screen)
         # if self._combat_screen_visible:
         #     self.combat_screen.draw(screen)
         if self._inventory_visible:
             self.inventory_display.draw(screen, player)
-
-        if self._room_items_visible:
+        if self._room_items_visible and not self._inventory_visible:
             self.room_items_display.draw(screen)
-        if self._controls_visible:
+        if self._controls_visible and not self._inventory_visible:
             self.controls_display.draw(screen)
         if self._player_message_visible:
             self.player_message_display.draw(screen)
-        if self.player_stats_visible:
+        if self.player_stats_visible and not self._inventory_visible:
             self.player_status_display.draw(screen, player)
 
     def handle_event(self, event: pygame.event.Event, player: Player):

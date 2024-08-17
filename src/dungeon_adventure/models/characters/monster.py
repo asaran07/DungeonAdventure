@@ -69,7 +69,7 @@ class Monster(DungeonCharacter):
                     heal_chance=int(monster_data[7]),
                     min_heal=int(monster_data[8]),
                     max_heal=int(monster_data[9]),
-                    xp_reward=int(monster_data[10])
+                    xp_reward=int(monster_data[10]),
                 )
             except Exception as e:
                 print(f"Error creating monster from data: {e}")
@@ -131,7 +131,8 @@ class Monster(DungeonCharacter):
         try:
             with sqlite3.connect("monster_factory_new.db") as conn:
                 cursor = conn.cursor()
-                cursor.execute('''
+                cursor.execute(
+                    """
                     CREATE TABLE IF NOT EXISTS monster_factory_new (
                         id INTEGER PRIMARY KEY,
                         name TEXT,
@@ -145,7 +146,8 @@ class Monster(DungeonCharacter):
                         max_heal INTEGER,
                         xp_reward INTEGER
                     )
-                ''')
+                """
+                )
                 conn.commit()
             print("Database initialized successfully")
         except sqlite3.Error as e:
@@ -161,15 +163,18 @@ class Monster(DungeonCharacter):
                 count = cursor.fetchone()[0]
 
                 if count == 0:
-                    cursor.executemany('''
+                    cursor.executemany(
+                        """
                         INSERT INTO monster_factory_new 
                         (name, max_hp, base_min_damage, base_max_damage, attack_speed, base_hit_chance, heal_chance, min_heal, max_heal, xp_reward)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    ''', [
-                        ("Skeleton", 100, 10, 20, 5, 70, 10, 5, 10, 50),
-                        ("Gremlin", 70, 15, 30, 5, 80, 20, 10, 20, 100),
-                        ("Ogre", 200, 30, 50, 3, 60, 10, 30, 50, 200)
-                    ])
+                    """,
+                        [
+                            ("Skeleton", 100, 10, 20, 5, 70, 10, 5, 10, 50),
+                            ("Gremlin", 70, 15, 30, 5, 80, 20, 10, 20, 100),
+                            ("Ogre", 200, 30, 50, 3, 60, 10, 30, 50, 200),
+                        ],
+                    )
                     conn.commit()
                     print("Sample data inserted successfully")
                 else:
@@ -181,7 +186,9 @@ class Monster(DungeonCharacter):
         try:
             with sqlite3.connect("monster_factory_new.db") as conn:
                 cursor = conn.cursor()
-                cursor.execute("SELECT * FROM monster_factory_new WHERE name = ? LIMIT 1", (name,))
+                cursor.execute(
+                    "SELECT * FROM monster_factory_new WHERE name = ? LIMIT 1", (name,)
+                )
                 record = cursor.fetchone()
                 if not record:
                     print(f"No data found for monster: {name}")
@@ -216,6 +223,7 @@ def test_db_connection():
     for monster_type in monster_types:
         result = monster.get_SQL_monster_info(monster_type)
         print(f"Test query result for {monster_type}: {result}")
+
 
 if __name__ == "__main__":
     test_db_connection()
