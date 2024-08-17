@@ -10,9 +10,9 @@ class Hero(DungeonCharacter):
     def __init__(
         self,
         name: str = "Hero",
-        max_hp: int = 75,
-        base_min_damage: int = 10,
-        base_max_damage: int = 20,
+        max_hp: int = 150,
+        base_min_damage: int = 15,
+        base_max_damage: int = 40,
         attack_speed: int = 5,
         base_hit_chance: int = 70,
         block_chance: int = 20,
@@ -137,6 +137,6 @@ class Hero(DungeonCharacter):
         return records
 
 
-# if __name__ == "__main__":
-#     hero = Hero()
-#     hero.hero_class("Thief")
+if __name__ == "__main__":
+    hero = Hero()
+    hero.hero_class("Thief")

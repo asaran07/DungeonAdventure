@@ -36,10 +36,8 @@ class Monster(DungeonCharacter):
         self.xp_reward: int = xp_reward
         self.loot: List[Item] = loot if loot is not None else []
         self.logger = logging.getLogger(self.__class__.__name__)
-
-    # def monster_type(self, name: str):
-    #     data = self.get_SQL_monster_info(name)
-    #     return data
+        self.initialize_database()
+        # self.insert_sample_data()
 
     def take_damage(self, damage: int) -> None:
         """
@@ -51,39 +49,36 @@ class Monster(DungeonCharacter):
         self.attempt_heal()
 
     def generate_random_monster(self):
-        monster_roll = random.randint(1, 3)
-        monster_name = ""
-        if monster_roll == 1:
-            monster_name = "Skeleton"
-        elif monster_roll == 2:
-            monster_name = "Gremlin"
-        else:
-            monster_name = "Ogre"
-
+        monster_types = ["Skeleton", "Gremlin", "Ogre"]
+        monster_name = random.choice(monster_types)
         print(f"Attempting to generate a {monster_name}")
 
-        data = self.get_SQL_monster_info(monster_name)
-        print(f"Data returned from get_SQL_monster_info: {data}")
+        monster_data = self.get_SQL_monster_info(monster_name)
+        print(f"Data returned from get_SQL_monster_info: {monster_data}")
+        print(f"Type of monster_data: {type(monster_data)}")
 
-        if data is not None and len(data) > 0:
-            monster_data = data[0]
-            print(f"Monster data: {monster_data}")
-            # Create and return Monster instance as before
-            return Monster(
-                name=monster_data[1],
-                max_hp=monster_data[2],
-                base_min_damage=monster_data[3],
-                base_max_damage=monster_data[4],
-                attack_speed=monster_data[5],
-                base_hit_chance=monster_data[6],
-                heal_chance=monster_data[7],
-                min_heal=monster_data[8],
-                max_heal=monster_data[9],
-                xp_reward=monster_data[10],
-            )
+        if monster_data and isinstance(monster_data, tuple):
+            try:
+                return Monster(
+                    name=str(monster_data[1]),
+                    max_hp=int(monster_data[2]),
+                    base_min_damage=int(monster_data[3]),
+                    base_max_damage=int(monster_data[4]),
+                    attack_speed=int(monster_data[5]),
+                    base_hit_chance=int(monster_data[6]),
+                    heal_chance=int(monster_data[7]),
+                    min_heal=int(monster_data[8]),
+                    max_heal=int(monster_data[9]),
+                    xp_reward=int(monster_data[10])
+                )
+            except Exception as e:
+                print(f"Error creating monster from data: {e}")
+                print(f"monster_data: {monster_data}")
         else:
-            print(f"No data found for monster: {monster_name}")
-            return Monster(name=monster_name)
+            print(f"Invalid data returned for monster: {monster_name}")
+
+        # Fallback to default monster creation
+        return Monster(name=monster_name)
 
     def attempt_heal(self) -> int:
         """
@@ -132,40 +127,67 @@ class Monster(DungeonCharacter):
         """
         return cls(**kwargs)
 
-    # def get_SQL_monster_info(self, name: str) -> List[any]:
-    #     try:
-    #         sqliteConnection = sqlite3.connect("monster_factory_new.db")
-    #         cursor = sqliteConnection.cursor()
-    #         print("Connected to SQLite")
-    #
-    #         sqlite_select_query = """select * from monster_factory_new where name = ?"""
-    #         cursor.execute(sqlite_select_query, (name,))
-    #         records = cursor.fetchall()
-    #         cursor.close()
-    #         return records
-    #
-    #     except sqlite3.Error as error:
-    #         print("Failed to read data from sqlite", error)
-    #     finally:
-    #         if sqliteConnection:
-    #             sqliteConnection.close()
-    #             print("SQLite connection is closed")
-
-    def get_SQL_monster_info(self, name: str) -> List[any]:
+    def initialize_database(self):
         try:
-            with sqlite3.connect("monster_factory_new.db") as sqliteConnection:
-                cursor = sqliteConnection.cursor()
-                print("Connected to SQLite")
+            with sqlite3.connect("monster_factory_new.db") as conn:
+                cursor = conn.cursor()
+                cursor.execute('''
+                    CREATE TABLE IF NOT EXISTS monster_factory_new (
+                        id INTEGER PRIMARY KEY,
+                        name TEXT,
+                        max_hp INTEGER,
+                        base_min_damage INTEGER,
+                        base_max_damage INTEGER,
+                        attack_speed INTEGER,
+                        base_hit_chance INTEGER,
+                        heal_chance INTEGER,
+                        min_heal INTEGER,
+                        max_heal INTEGER,
+                        xp_reward INTEGER
+                    )
+                ''')
+                conn.commit()
+            print("Database initialized successfully")
+        except sqlite3.Error as e:
+            print(f"Error initializing database: {e}")
 
-                sqlite_select_query = (
-                    """select * from monster_factory_new where name = ?"""
-                )
-                cursor.execute(sqlite_select_query, (name,))
-                records = cursor.fetchall()
-                return records if records else None
+    def insert_sample_data(self):
+        try:
+            with sqlite3.connect("monster_factory_new.db") as conn:
+                cursor = conn.cursor()
 
-        except sqlite3.Error as error:
-            print("Failed to read data from sqlite", error)
+                # Check if the table is empty
+                cursor.execute("SELECT COUNT(*) FROM monster_factory_new")
+                count = cursor.fetchone()[0]
+
+                if count == 0:
+                    cursor.executemany('''
+                        INSERT INTO monster_factory_new 
+                        (name, max_hp, base_min_damage, base_max_damage, attack_speed, base_hit_chance, heal_chance, min_heal, max_heal, xp_reward)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ''', [
+                        ("Skeleton", 100, 10, 20, 5, 70, 10, 5, 10, 50),
+                        ("Gremlin", 70, 15, 30, 5, 80, 20, 10, 20, 100),
+                        ("Ogre", 200, 30, 50, 3, 60, 10, 30, 50, 200)
+                    ])
+                    conn.commit()
+                    print("Sample data inserted successfully")
+                else:
+                    print("Table already contains data, skipping insertion")
+        except sqlite3.Error as e:
+            print(f"Error inserting sample data: {e}")
+
+    def get_SQL_monster_info(self, name: str) -> Optional[tuple]:
+        try:
+            with sqlite3.connect("monster_factory_new.db") as conn:
+                cursor = conn.cursor()
+                cursor.execute("SELECT * FROM monster_factory_new WHERE name = ? LIMIT 1", (name,))
+                record = cursor.fetchone()
+                if not record:
+                    print(f"No data found for monster: {name}")
+                return record
+        except sqlite3.Error as e:
+            print(f"Database error: {e}")
             return None
 
     def __str__(self):
@@ -183,3 +205,17 @@ class Monster(DungeonCharacter):
         :return: A string representation of Monster name from a list:
         """
         return self.__str__()
+
+
+def test_db_connection():
+    monster = Monster()
+    monster.initialize_database()
+    monster.insert_sample_data()
+
+    monster_types = ["Skeleton", "Gremlin", "Ogre"]
+    for monster_type in monster_types:
+        result = monster.get_SQL_monster_info(monster_type)
+        print(f"Test query result for {monster_type}: {result}")
+
+if __name__ == "__main__":
+    test_db_connection()
