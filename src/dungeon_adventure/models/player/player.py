@@ -1,6 +1,7 @@
 import logging
 from typing import Optional
 
+from dungeon_adventure.enums.item_types import PotionType
 from dungeon_adventure.models.characters.hero import Hero
 from dungeon_adventure.models.dungeon.room import Room
 from dungeon_adventure.models.inventory.inventory import Inventory
@@ -36,7 +37,11 @@ class Player:
     def inventory(self) -> Inventory:
         return self._inventory
 
-    def use_item(self, item: Item) -> bool:
+    def use_item(self, item: Item, minimap) -> bool:
+        self.logger.info(f"Item used: {item.name}")
+        if item.name == "Vision Potion":
+            self.logger.info("Activating vision potion")
+            minimap.activate_vision_potion()
         if self._inventory.remove_item(item):
             self.logger.info(f"Removed item {item} from inventory")
             return item.use(self)

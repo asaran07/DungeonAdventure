@@ -68,10 +68,12 @@ class PyGameView:
         self.player_status_display = PlayerStatusDisplay(
             self.window_width * self.scale_factor,
             self.window_height * self.scale_factor,
-            self.scale_factor
+            self.scale_factor,
         )
 
-    def update(self, current_room: GameRoom, room_dict: Dict[str, GameRoom], player: Player) -> None:
+    def update(
+        self, current_room: GameRoom, room_dict: Dict[str, GameRoom], player: Player
+    ) -> None:
         """
         Update the state of UI components.
 
@@ -114,7 +116,7 @@ class PyGameView:
             if action_type == "use":
                 item = player.inventory.get_item_by_id(item_id)
                 if item:
-                    player.use_item(item)
+                    player.use_item(item, self.minimap)
             elif action_type == "drop":
                 item = player.inventory.remove_item_by_id(item_id)
                 if item:
