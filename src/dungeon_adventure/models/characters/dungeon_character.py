@@ -123,8 +123,8 @@ class DungeonCharacter:
 
     def _calculate_damage(self) -> int:
         """Calculate the damage for a successful attack."""
-        min_damage = self._base_min_damage + self._stat_modifiers.get("min_damage", 0)
-        max_damage = self._base_max_damage + self._stat_modifiers.get("max_damage", 0)
+        min_damage = self._base_min_damage # + self._stat_modifiers.get("min_damage", 0)
+        max_damage = self._base_max_damage # + self._stat_modifiers.get("max_damage", 0)
         return random.randint(min_damage, max_damage)
 
     def get_total_hit_chance(self) -> int:

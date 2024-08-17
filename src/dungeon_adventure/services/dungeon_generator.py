@@ -91,7 +91,7 @@ class DungeonGenerator:
             )
         )
         room2.add_item(
-            item_factory.create_potion("Healing Potion", PotionType.HEALING, 15, 2)
+            item_factory.create_potion("Healing Potion", PotionType.HEALING, 300, 2)
         )
 
         room3 = dungeon.get_room("Room 3")
@@ -106,6 +106,9 @@ class DungeonGenerator:
         room7.add_monster(random_monster_5)
         room7.add_monster(random_monster_6)
         room7.add_item(
+            item_factory.create_potion("Healing Potion", PotionType.HEALING, 300, 2)
+        )
+        room7.add_item(
             item_factory.create_pillar(
                 PillarType.INHERITANCE,
                 "Inheritance Pillar",
@@ -118,7 +121,7 @@ class DungeonGenerator:
         random_monster_12 = monster_instance.generate_random_monster()
         room8.add_monster(random_monster_12)
         room8.add_item(
-            item_factory.create_potion("Healing Potion", PotionType.HEALING, 15, 2)
+            item_factory.create_potion("Healing Potion", PotionType.HEALING, 300, 2)
         )
 
         room9 = dungeon.get_room("Room 9")
@@ -146,7 +149,7 @@ class DungeonGenerator:
 
         room12 = dungeon.get_room("Room 12")
         room12.add_item(
-            item_factory.create_potion("Healing Potion", PotionType.HEALING, 15, 2)
+            item_factory.create_potion("Healing Potion", PotionType.HEALING, 300, 2)
         )
         room12.add_item(
             item_factory.create_weapon("Rusty Sword", WeaponType.SWORD, 10, 7, 100)
@@ -159,6 +162,9 @@ class DungeonGenerator:
         room13.add_monster(random_monster_4)
         room13.add_item(item_factory.create_rope())
         room13.add_item(
+            item_factory.create_potion("Healing Potion", PotionType.HEALING, 300, 2)
+        )
+        room13.add_item(
             item_factory.create_pillar(
                 PillarType.ABSTRACTION,
                 "Abstraction Pillar",
@@ -169,21 +175,6 @@ class DungeonGenerator:
 
         room14 = dungeon.get_room("Room 14")
         room14.room_type = RoomType.PIT
-        room14.add_item(
-            item_factory.create_pillar(
-                PillarType.ENCAPSULATION, "Encapsulation Pillar", "A encap pillar", 5
-            )
-        )
-        room14.add_item(
-            item_factory.create_pillar(
-                PillarType.INHERITANCE, "Inheritance Pillar", "A inh pillar", 5
-            )
-        )
-        room14.add_item(
-            item_factory.create_pillar(
-                PillarType.POLYMORPHISM, "Polymorphism Pillar", "A poly pillar", 5
-            )
-        )
 
         room15 = dungeon.get_room("Room 15 - Exit Chamber")
         room15.set_room_type(RoomType.EXIT)
