@@ -46,6 +46,14 @@ class MiniMap:
             ).convert_alpha(),
             icon_size,
         )
+        self.vision_potion_active = False
+
+    def activate_vision_potion(self):
+        print("Activating vision potion")
+        self.vision_potion_active = True
+
+    def deactivate_vision_potion(self):
+        self.vision_potion_active = False
 
     def update(self, current_room: GameRoom, all_rooms: Dict[str, GameRoom]):
         self.minimap_surface.fill((26, 12, 17))  # Dark gray background
@@ -58,9 +66,14 @@ class MiniMap:
         self._draw_room(current_room, center_pos, True)
 
         for direction, room in adjacent_rooms.items():
-            if room and room.room.is_visible:  # Only draw visible rooms
-                pos = self._get_adjacent_position(center_pos, direction)
-                self._draw_room(room, pos)
+            if not self.vision_potion_active:
+                if room and room.room.is_visible:  # Only draw visible rooms
+                    pos = self._get_adjacent_position(center_pos, direction)
+                    self._draw_room(room, pos)
+            else:
+                if room:
+                    pos = self._get_adjacent_position(center_pos, direction)
+                    self._draw_room(room, pos)
 
     def _get_adjacent_rooms(
         self, current_room: GameRoom, all_rooms: Dict[str, GameRoom]

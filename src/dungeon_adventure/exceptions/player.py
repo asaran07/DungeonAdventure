@@ -39,4 +39,5 @@ class InvalidDirectionError(PlayerError):
 
 class InvalidPlayerAttributeError(PlayerError):
     """Raised when an attribute set to player is invalid"""
+
     pass

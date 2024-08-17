@@ -215,26 +215,40 @@ class MainGameController:
 
     def update(self, dt: float) -> None:
         self.game_world.update(dt)
-        self.pygame_view.update(self.game_world.current_room, self.game_world.room_dict, self.game_world.composite_player.player)
+        self.pygame_view.update(
+            self.game_world.current_room,
+            self.game_world.room_dict,
+            self.game_world.composite_player.player,
+        )
         self.debug_manager.update_fps(self.game_screen.clock)
         if self.game_world.game_model.game_state == GameState.IN_COMBAT:
             self.combat_manager.update(dt)
         self.combat_manager.update(dt)
 
     def draw(self) -> None:
-        if self.game_world.game_model.game_state == GameState.GAME_OVER and self.win_message:
+        if (
+            self.game_world.game_model.game_state == GameState.GAME_OVER
+            and self.win_message
+        ):
             self.game_screen.get_game_surface().fill((0, 0, 0))  # Clear screen
             for i, line in enumerate(self.win_message):
                 text_surface = self.font.render(line, True, (255, 255, 255))
                 text_rect = text_surface.get_rect(
-                    center=(self.game_screen.width // 2, self.game_screen.height // 2 + i * 40))
+                    center=(
+                        self.game_screen.width // 2,
+                        self.game_screen.height // 2 + i * 40,
+                    )
+                )
                 self.game_screen.get_game_surface().blit(text_surface, text_rect)
         else:
             self.game_screen.draw_background()
             self._draw_game_world()
             self._draw_debug_info()
             self.game_screen.blit_scaled()
-            if self.game_world.game_model.game_state == GameState.IN_COMBAT and not self.debug_mode:
+            if (
+                self.game_world.game_model.game_state == GameState.IN_COMBAT
+                and not self.debug_mode
+            ):
                 self._draw_combat_screen()
             self._draw_gui()
         if self.game_world.game_model.game_state == GameState.GAME_OVER:
@@ -265,14 +279,11 @@ class MainGameController:
             self.logger.info("Win condition met! Player has collected all pillars.")
             self.win_message = [
                 "Congratulations! You've collected all pillars and won the game!",
-                "Press 'R' to restart or 'Q' to quit."
+                "Press 'R' to restart or 'Q' to quit.",
             ]
         else:
             self.logger.info("Lose condition met! Player was defeated.")
-            self.win_message = [
-                "ope",
-                "Press 'R' to restart or 'Q' to quit."
-            ]
+            self.win_message = ["ope", "Press 'R' to restart or 'Q' to quit."]
         self.game_world.game_model.game_state = GameState.GAME_OVER
 
     def restart_game(self):
