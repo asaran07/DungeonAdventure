@@ -137,6 +137,6 @@ class Hero(DungeonCharacter):
         return records
 
 
-# if __name__ == "__main__":
-#     hero = Hero()
-#     hero.hero_class("Thief")
+if __name__ == "__main__":
+    hero = Hero()
+    hero.hero_class("Thief")
