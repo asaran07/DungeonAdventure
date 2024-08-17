@@ -275,7 +275,7 @@ class MainGameController:
             self.pygame_view.draw(self.screen, self.game_world.composite_player.player)
 
     def handle_win_condition(self):
-        if not self.lose_condition:
+        if self.game_world.composite_player.hero.is_alive:
             self.logger.info("Win condition met! Player has collected all pillars.")
             self.win_message = [
                 "Congratulations! You've collected all pillars and won the game!",
@@ -283,7 +283,10 @@ class MainGameController:
             ]
         else:
             self.logger.info("Lose condition met! Player was defeated.")
-            self.win_message = ["ope", "Press 'R' to restart or 'Q' to quit."]
+            self.win_message = [
+                "Game Over! You have been defeated.",
+                "Press 'R' to restart or 'Q' to quit.",
+            ]
         self.game_world.game_model.game_state = GameState.GAME_OVER
 
     def restart_game(self):

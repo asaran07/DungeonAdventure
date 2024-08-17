@@ -198,3 +198,10 @@ class GameWorld:
     def end_combat(self):
         if self.on_combat_end:
             self.on_combat_end()
+
+    def on_game_over(self):
+        self.game_model.game_state = GameState.GAME_OVER
+        if self.on_win_condition:
+            self.on_win_condition()
+
+

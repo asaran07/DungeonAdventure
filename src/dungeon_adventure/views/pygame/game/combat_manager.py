@@ -78,6 +78,12 @@ class CombatManager:
             after="start_player_turn",
         )
         self.machine.add_transition(
+            "end_combat",
+            [States.PLAYER_TURN, States.MONSTER_TURN],  # Allow ending from both states
+            States.COMBAT_END,
+            before="handle_combat_end",
+        )
+        self.machine.add_transition(
             "reset_combat", "*", States.WAITING  # Allow resetting from any state
         )
 
@@ -216,12 +222,12 @@ class CombatManager:
         self.logger.debug("Checking combat end...")
         if self.player.hero.current_hp <= 0:
             self.logger.info("Player has been defeated. Ending combat.")
-            self.end_combat()
+            self.trigger("end_combat")
         elif all(monster.current_hp <= 0 for monster in self.monsters):
             self.logger.info("All monsters defeated. Ending combat.")
             self.game_world.end_combat()
             self.game_world.current_room.room.monsters = []
-            self.end_combat()
+            self.trigger("end_combat")
         else:
             self.logger.debug("Combat continues.")
 
@@ -251,6 +257,8 @@ class CombatManager:
     def transition_to_game_over(self):
         self.logger.info("Transitioning to game over screen.")
         self.game_world.game_model.set_game_over(True)
+        if hasattr(self.game_world, 'on_game_over'):
+            self.game_world.on_game_over()
 
     def transition_to_exploration(self):
         self.logger.info("Transitioning back to exploration mode.")
@@ -268,6 +276,8 @@ class CombatManager:
         self.process_next_monster_attack()
 
     def process_next_monster_attack(self):
+        if self.state == States.COMBAT_END:
+            return  # Combat has already ended, don't process further attacks
         if self.current_monster_index < len(self.monsters):
             monster = self.monsters[self.current_monster_index]
             if monster.current_hp > 0:
